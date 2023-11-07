@@ -1,55 +1,78 @@
-const { DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
-const sequelize = require('./database');
+const { DataTypes } = require("sequelize");
+const bcrypt = require("bcrypt");
+const sequelize = require("./database");
 
-const User = sequelize.define('users', {
+const User = sequelize.define(
+  "users",
+  {
     // Model attributes are defined here
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        allowNull: false,
-        primaryKey: true
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
     },
     firstName: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     lastName: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true
-        }
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
+      requaired: true, //Bara
+      len: [8, 50], //Bara
+    }, //Bara
+    logoutAt: {
+      type: DataTypes.DATE,
+    }, //Bara
+    passwordResetCode: {
+      type: DataTypes.STRING,
+    }, //Bara
+    passwordResetExpire: {
+      type: DataTypes.DATE,
+    }, //Bara
+    passwordResetVerified: {
+      type: DataTypes.BOOLEAN,
+    }, //Bara
+    emailVerificationToken: {
+      type: DataTypes.STRING,
+    }, //Bara
+    verifiedEmail: {
+      type: DataTypes.BOOLEAN,
     },
     role: {
-        type: DataTypes.STRING, //(e.g., admin, educator, student).
-        allowNull: false
-    }
- 
-}, {
+      type: DataTypes.STRING, //(e.g., admin, educator, student).
+      allowNull: false,
+    },
+  },
+  {
     // Other model options go here
     createdAt: false, // disable createdAt
-    updatedAt: false // disable updatedAt
-});
+    updatedAt: false, // disable updatedAt
+  }
+);
 
 //The User.beforeCreate hook hashes the password before a new user is created.
 User.beforeCreate(async (user, options) => {
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(user.password, salt);
 });
 
 //The validPassword function is an instance method added to the User model. It uses bcrypt.compare to check whether the given password matches the hashed password for the user.
 User.prototype.validPassword = async function (password) {
-    return await bcrypt.compare(password, this.password);
-}
+  return await bcrypt.compare(password, this.password);
+};
 
 module.exports = User;
