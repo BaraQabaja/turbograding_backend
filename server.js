@@ -19,7 +19,7 @@ const passportJWT = require("passport-jwt");
 // Diclirations
 const app = express();
 
-
+console.log("test bara")
 /*const configuration = new Configuration({
     apiKey: config.api.gpt_key,
 });*/
