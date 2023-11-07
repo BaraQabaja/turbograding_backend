@@ -1,6 +1,6 @@
-require('dotenv').config();
-const fs = require('fs');
-
+const dotenv = require("dotenv");
+dotenv.config({ path: "config.env" });const fs = require('fs');
+console.log(process.env.HTTP_PORT)
 module.exports = {
   app: {
     http_port: process.env.HTTP_PORT,

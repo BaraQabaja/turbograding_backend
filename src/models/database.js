@@ -1,7 +1,9 @@
 const config = require('../config');
 
 const Sequelize = require('sequelize');
-
+console.log( config.db.database,
+    config.db.username,
+    config.db.password,)
 const sequelize = new Sequelize(
     config.db.database,
     config.db.username,
@@ -10,9 +12,9 @@ const sequelize = new Sequelize(
         host: config.db.host,
         dialect: 'postgres',
         port: 5432, //should be remove
-        dialectOptions: {
-            ssl: { rejectUnauthorized: false }
-        } //should be remove
+        // dialectOptions: {
+        //     ssl: { rejectUnauthorized: false }
+        // } //should be remove
     });
 
 module.exports = sequelize;

@@ -17,8 +17,6 @@ const httpStatusText = require("../utils/httpStatusText");
 //models
 const User = require("../models/User");
 
-
-
 // @desc    Protect logic (verify token issue) authinticaion middleware
 exports.protect = async (req, res, next) => {
   //Check if token sent with req or not
@@ -61,11 +59,29 @@ exports.protect = async (req, res, next) => {
   next();
 };
 
-// @desc    Logout logic 
-// @route   POST /auth/logout
+exports.emailVerification = async (req, res) => {
+  const token = req.params.token;
+  const user = await User.findOne({ where: { emailVerificationToken: token } });
+  if (!user) {
+    return res.json({
+      statsu: httpStatusText.FAIL,
+      data: { title: "Invalid token" },
+    });
+  }
+  user.verifiedEmail = true;
+  user.emailVerificationToken = undefined;
+  await user.save();
+  return res.json({
+    statsu: httpStatusText.SUCCESS,
+    data: { title: "Account verified successfully" },
+  });
+};
+
+// @desc    Logout logic
+// @route   POST /api/auth/logout
 // @access  Public
 exports.logoutUser = async (req, res) => {
-    User.findByPk(req.user.email)
+  User.findByPk(req.user.email)
     .then(async (user) => {
       if (user) {
         user.logoutAt = Date.now(); //change the logoutAt attripute to be Date.now() so that allow you to check the time that the user logedout so if he entered to any unotharized page and send a request or do any thing he will be forworded to login page, i will use this property in protect function
@@ -203,7 +219,7 @@ exports.registerUser = async (req, res) => {
 };
 
 // @desc    Login logic with authorization JWT
-// @route   POST /auth/login
+// @route   POST /api/auth/login
 // @access  Public
 exports.loginUser = async (req, res) => {
   const email = req.body.email;
@@ -258,10 +274,10 @@ exports.loginUser = async (req, res) => {
      });*/
 };
 
-// @desc    forget pass logic,send verification code to email
-// @route   POST /auth/forgot-password
+// @desc    forget pass logic,send verification code to email - 1st step in forget password process
+// @route   POST /api/auth/forgot-password
 // @access  Public
-exports.forgotPassword =async (req, res) => {
+exports.forgotPassword = async (req, res) => {
   //1) Get user by email
   const email = req.body.email;
   const user = await User.findByPk(email);
@@ -330,43 +346,43 @@ exports.forgotPassword =async (req, res) => {
   });
 };
 
-// @desc    Verify the code sent to your email
+// @desc    Verify the code sent to your email - 2nd step in forget password process
 // @route   POST /api/verifyPasswordResetCode
 // @access  Public
 exports.verifyPasswordResetCode = async (req, res, next) => {
-    // 1) Get user based on reset code
-    const hashedResetCode = crypto
-      .createHash("sha256")
-      .update(req.body.resetCode)
-      .digest("hex");
-  
-    const user = await User.findOne({
-      where: {
-        passwordResetCode: hashedResetCode,
-        passwordResetExpire: {
-          [Op.gt]: new Date(), // Check if the reset expiration is in the future
-        },
+  // 1) Get user based on reset code
+  const hashedResetCode = crypto
+    .createHash("sha256")
+    .update(req.body.resetCode)
+    .digest("hex");
+
+  const user = await User.findOne({
+    where: {
+      passwordResetCode: hashedResetCode,
+      passwordResetExpire: {
+        [Op.gt]: new Date(), // Check if the reset expiration is in the future
       },
-    });
-    if (!user) {
-      return res.json({
-        status: httpStatusText.FAIL,
-        data: { title: "reset code invalid" },
-      });
-    }
-  
-    // 2) Reset code valid
-  
-    user.passwordResetVerified = true;
-    await user.save();
+    },
+  });
+  if (!user) {
     return res.json({
-      status: httpStatusText.SUCCESS,
-      data: { title: "reset code verified" },
+      status: httpStatusText.FAIL,
+      data: { title: "reset code invalid" },
     });
-  };
+  }
+
+  // 2) Reset code valid
+
+  user.passwordResetVerified = true;
+  await user.save();
+  return res.json({
+    status: httpStatusText.SUCCESS,
+    data: { title: "reset code verified" },
+  });
+};
 
 // @desc    Reset password - 3ed step in forget passwrod process
-// @route   PUT /auth/reset-password
+// @route   PUT /api/auth/reset-password
 // @access  Public
 exports.resetPassword = async (req, res) => {
   const email = req.body.email;

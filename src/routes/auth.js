@@ -1,17 +1,28 @@
-// routes/auth.js
+// route /api/auth
 
+const rateLimit = require("express-rate-limit");
 const express = require('express');
 const authController = require('../controllers/authController');
 
 const router = express.Router();
  
+//is limiter especially for login
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit to 5 login attempts
+  message: 'too many login attempts. Please try again later.',
+});
 
 router.post('/register', authController.registerUser);  // Registration route
-router.post('/login', authController.loginUser);  // Login route
-router.post('/forgot-password', authController.forgotPassword);  // Forgot password route
-router.post('/reset-password', authController.resetPassword);  // Reset password route
+router.post('/login',loginLimiter, authController.loginUser);  // Login route
+router.post('/forgot-password', authController.forgotPassword);  // Forgot password route - 1st step in forget password process
+router.post('/verifyPasswordResetCode', authController.verifyPasswordResetCode);  // verify password reset code that was sent to email - 2nd step in forget password process
+router.post('/reset-password', authController.resetPassword);  // Reset password route - 3ed step in forget password process
 
 router.post('/logout', authController.logoutUser);
+
+// Express route to handle verification
+router.get("/verify/:token",authController.emailVerification );//email verification
 //router.post('/token', authController.refreshToken);
 //router.post('/confirm-email', authController.confirmEmail);
 
