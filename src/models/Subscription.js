@@ -1,25 +1,13 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./database');
 
-const Subscription = sequelize.define('subscriptions', {
+
+const Subscription = sequelize.define('Subscription', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
-    },
-    userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users', // 'users' refers to the table name
-            key: 'id',
-        },
-        onDelete: 'CASCADE',
-    },
-    planId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
     },
     startDate: {
         type: DataTypes.DATE,
@@ -40,5 +28,14 @@ const Subscription = sequelize.define('subscriptions', {
     createdAt: false, // disable createdAt
     updatedAt: false // disable updatedAt
 });
+
+Subscription.associate = models => {
+    Subscription.belongsTo(models.User, { foreignKey: 'userId' });
+    Subscription.belongsTo(models.Plan, { foreignKey: 'planId' });
+    Subscription.hasMany(models.Payment, { foreignKey: 'subscriptionId' });
+
+  };
+
+
 
 module.exports = Subscription;

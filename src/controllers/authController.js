@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const RefreshToken = require("../models/RefreshToken");
 const { Op } = require("sequelize");
+const validator = require("validator");
 
 //send email function
 const sendEmail = require("../utils/sendEmail");
@@ -55,6 +56,8 @@ exports.protect = async (req, res, next) => {
       return res.send("you recently logout. please login again ..");
     }
   }
+
+  //! So importent, here i store user data into req object so i can retrive this data in any function then, ex: req.user.id ....
   req.user = currentUser;
   next();
 };
@@ -103,10 +106,12 @@ exports.logoutUser = async (req, res) => {
 // @access  Public
 exports.registerUser = async (req, res) => {
   //12 is the number of rounds of hashing. so the password hashing process is more computationally expensive and therefore more secure against brute-force attacks.
+
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
   const email = req.body.email;
-  const username = req.body.username;
+  const firstName = req.body.firstName;
+  const lastName=req.body.lastName
   console.log("signup", email, password);
   //check if the password and confirm password is matched or not
   if (password !== confirmPassword) {
@@ -156,8 +161,9 @@ exports.registerUser = async (req, res) => {
       if (hashPassword) {
         //create new user with the given data
         User.create({
+          firstName:firstName,
+          lastName:lastName,
           email: email,
-          username: username,
           password: hashPassword,
           verifiedEmail: false,
         })
@@ -172,7 +178,9 @@ exports.registerUser = async (req, res) => {
               user.emailVerificationToken = token;
               await user.save();
               try {
-                const verificationLink = `http://localhost:3000/verify/${token}`;
+                //${req.protocole}://${req.get('host')}/orders
+                console.log(`${req.protocole}://${req.get('host')}/verify/${token}`)
+                const verificationLink = `http://http://localhost:3000//verify/${token}`;//! for now keep it like this, when you want to deploy the app you should change it to be   const verificationLink = `${req.protocole}://${req.get('host')}/verify/${token}`;
 
                 await sendEmail({
                   email: user.email,
@@ -192,7 +200,7 @@ exports.registerUser = async (req, res) => {
 
               return res.status(200).json({
                 status: httpStatusText.SUCCESS,
-                data: { title: "Reset code sent to email" },
+                data: { title: "email verification link sent to your email, please check your inbox." },
               });
 
               // return res.status(200).json({
@@ -224,9 +232,10 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+  
   try {
     const user = await User.findOne({ where: { email } });
-
+   console.log("user exist",password)
     if (!user) {
       return res.status(404).json({
         status: httpStatusText.FAIL,
@@ -235,8 +244,11 @@ exports.loginUser = async (req, res) => {
     }
 
     // Compaire hash(login pass) to hash (db user password hash)
+ 
     const correctPassword = await bcrypt.compare(password, user.password);
     if (!correctPassword) {
+      console.log("incorpass",correctPassword)
+
       return res.status(404).json({
         status: httpStatusText.FAIL,
         data: { title: "incorrect email or password" },
@@ -261,7 +273,7 @@ exports.loginUser = async (req, res) => {
     // Send the token to the client
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { user: user, token },
+      data: { title:"logged in successfully",user: user, token },
     });
   } catch (error) {
     return res
@@ -461,3 +473,5 @@ exports.resetPassword = async (req, res) => {
     });
   }
 };
+
+

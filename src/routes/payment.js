@@ -1,9 +1,13 @@
 // routes/payments.js
 const express = require('express');
 const authenticateToken = require('../middleware/authenticateToken');
-const paymentsController = require('../controllers/paymentController');
+const paymentController = require('../controllers/paymentController');
+const auth = require('../controllers/authController');
 
 const router = express.Router();
+
+// router.post('/createPayment', paymentController.createPayment); 
+router.post('/checkout-session',auth.protect,paymentController.checkoutSession)
 /*
 router.get('/', authenticateToken, paymentsController.getAllPayments);  // Fetch all payments
 router.get('/:id', authenticateToken, paymentsController.getPayment);  // Fetch a specific payment

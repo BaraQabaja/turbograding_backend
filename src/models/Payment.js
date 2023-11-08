@@ -1,33 +1,50 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('./database');
+const { DataTypes } = require("sequelize");
+const sequelize = require("./database");
 
-const Payment = sequelize.define('Payment', {
-    subscriptionId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'subscriptions', // 'subscriptions' refers to the table name
-            key: 'id',
-        },
-        onDelete: 'CASCADE',
+const Payment = sequelize.define(
+  "Payment",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
     amount: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
     },
     paymentDate: {
-        type: DataTypes.DATE,
-        allowNull: false,
+      type: DataTypes.DATE,
+      allowNull: false,
     },
     // Payment status (e.g., pending, completed, failed).
     status: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    taxPrice:{
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
-    }
-}, {
+    },
+    totalPrice:{
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+    },
+    paymentMethodType:{
+        type: DataTypes.STRING,
+        values: ['cart ', 'cash '],
+        defaultValue:'cash',
+        allowNull: false,
+    },
+
+  },
+  {
     // Other model options go here
     createdAt: false, // disable createdAt
-    updatedAt: false // disable updatedAt
-});
-
+    updatedAt: false, // disable updatedAt
+  }
+);
+// Payment.associate = (models) => {
+//   Payment.belongsTo(models.Subscription, { foreignKey: "subscriptionId" });
+// };
 module.exports = Payment;
