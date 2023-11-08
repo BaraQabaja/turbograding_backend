@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const sequelize = require("./database");
 
 const User = sequelize.define(
-  "users",
+  "User",
   {
     // Model attributes are defined here
     id: {
@@ -51,10 +51,13 @@ const User = sequelize.define(
     }, //Bara
     verifiedEmail: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     role: {
       type: DataTypes.STRING, //(e.g., admin, educator, student).
       allowNull: false,
+      values: ["admin ", "educator ", "student"],
+      defaultValue: "student",
     },
   },
   {
@@ -64,15 +67,20 @@ const User = sequelize.define(
   }
 );
 
+// User.associate = (models) => {
+//   console.log("in the user relations")
+//   User.hasMany(models.Subscription, { foreignKey: "userId" });
+// };
+
 //The User.beforeCreate hook hashes the password before a new user is created.
-User.beforeCreate(async (user, options) => {
-  const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(user.password, salt);
-});
+// User.beforeCreate(async (user, options) => {
+//   const salt = await bcrypt.genSalt(10);
+//   user.password = await bcrypt.hash(user.password, salt);
+// });
 
 //The validPassword function is an instance method added to the User model. It uses bcrypt.compare to check whether the given password matches the hashed password for the user.
-User.prototype.validPassword = async function (password) {
-  return await bcrypt.compare(password, this.password);
-};
+// User.prototype.validPassword = async function (password) {
+//   return await bcrypt.compare(password, this.password);
+// };
 
 module.exports = User;

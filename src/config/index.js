@@ -26,6 +26,9 @@ module.exports = {
   https_options:{
     key: fs.readFileSync(__dirname +  "/ssl_key/server.key"),
     cert: fs.readFileSync(__dirname + "/ssl_key/server.crt")
+  },
+  payment_stripe:{
+    stripe_secret:process.env.STRIPE_SECRET
   }
 };
 
