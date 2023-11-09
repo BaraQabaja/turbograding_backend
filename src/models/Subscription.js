@@ -29,12 +29,12 @@ const Subscription = sequelize.define('Subscription', {
     updatedAt: false // disable updatedAt
 });
 
-Subscription.associate = models => {
-    Subscription.belongsTo(models.User, { foreignKey: 'userId' });
-    Subscription.belongsTo(models.Plan, { foreignKey: 'planId' });
-    Subscription.hasMany(models.Payment, { foreignKey: 'subscriptionId' });
+// Subscription.associate = models => {
+//     Subscription.belongsTo(models.User, { foreignKey: 'userId' });
+//     Subscription.belongsTo(models.Plan, { foreignKey: 'planId' });
+//     Subscription.hasMany(models.Payment, { foreignKey: 'subscriptionId' });
 
-  };
+//   };
 
 
 

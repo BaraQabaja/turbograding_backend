@@ -1,24 +1,43 @@
-const Subscription = require('../models/Subscription');
+const Subscription = require("../models/Subscription");
+const config = require("../config");
 
-module.exports = {
-  async createSubscription(req, res) {
-    const { userId, planId, startDate, endDate } = req.body;
-    try {
-      const subscription = await Subscription.create({ userId, planId, startDate, endDate });
-      return res.status(201).json(subscription);
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
-    }
-  },
+//httpStatus key words
+const httpStatusText = require("../utils/httpStatusText");
 
-  async getSubscriptions(req, res) {
-    try {
-      const subscriptions = await Subscription.findAll();
-      return res.status(200).json(subscriptions);
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
-    }
-  },
+// @desc    Create user subscription logic
+// @route   POST /api/subscription/create-subscription
+// @access  admin
+exports.createSubscription = async (req, res) => {
+  const { userId, planId, startDate, status } = req.body;
+  try {
+    const subscription = await Subscription.create({
+      userId,
+      planId,
+      startDate,
+      endDate,
+    });
+    return res.status(201).json(subscription);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 
-  // Add other controller methods as needed
+// @desc    Get user subscription logic - subscription related to a spicific user
+// @route   GET /api/subscription/get-subscription/:userId
+// @access  admin
+exports.getUserSubscription = async (req, res) => {
+  const userId = req.params.userId; // Get the plan ID from URL parameters
+  try {
+    const userSubscription = await Subscription.findOne({ where: { userId } });
+
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: { title: "user found.", userSubscription },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: { title: error.message || "user subscription not found." },
+    });
+  }
 };
