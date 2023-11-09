@@ -16,7 +16,7 @@ const jwt = require("jsonwebtoken");
 //for thired party login
 const passport = require("passport");
 const passportJWT = require("passport-jwt");
-
+const compression=require('compression')
 const dotenv = require("dotenv");
 dotenv.config({ path: "config.env" });
 
@@ -57,6 +57,7 @@ let jwtOptions = {
 
 //! Middleware
 app.use(cors());
+app.use(compression());// Compress all responses
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
