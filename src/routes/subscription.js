@@ -4,6 +4,12 @@ const authenticateToken = require('../middleware/authenticateToken');
 const subscriptionsController = require('../controllers/subscriptionController');
 
 const router = express.Router();
+
+
+router.post('/create-subscription', subscriptionsController.createSubscription);  // Create a new subscription
+
+router.get('get-subscription/:userId', subscriptionsController.getUserSubscription);  // get user subscription
+
 /*
 router.get('/', authenticateToken, subscriptionsController.getAllSubscriptions);  // Fetch all subscriptions
 router.get('/:id', authenticateToken, subscriptionsController.getSubscription);  // Fetch a specific subscription

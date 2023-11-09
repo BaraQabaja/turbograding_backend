@@ -37,6 +37,11 @@ const Plan = sequelize.define(
       type: DataTypes.INTEGER, // Number of assignments can be grad
       allowNull: false,
     },
+    priceId:{//plan link -including plan price and plan desc ...- in stripe
+      type: DataTypes.STRING,
+      allowNull: false,
+
+    }
   },
   {
     // Other model options go here
