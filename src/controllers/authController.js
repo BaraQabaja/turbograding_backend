@@ -27,33 +27,56 @@ exports.protect = async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
-  } else {
-    res.send("please send a token to verify you");
-  }
+  } 
+  // else {
+  //      return res.status(404).json({
+  //       status: httpStatusText.FAIL,
+  //       data: { title: "please send a token to verify you" },
+  //     });
+  // }
+
+  console.log("token",token)
   if (!token) {
     return next(
       res.send("You are not login, Please login to get access this route")
+
+      // return res.status(404).json({
+      //   status: httpStatusText.FAIL,
+      //   data: { title: "You are not login, Please login to get access this route" },
+      // });
     );
   }
 
   // 2) Verify token (no change happens, expired token)
-  jwt.verify(token, process.env.JWT_SECRET_KEY, (error, decoded) => {
+  jwt.verify(token, config.auth.accessToken, (error, decoded) => {
     if (error) {
-      res.send("Token is invalid");
+    
+      return res.status(404).json({
+        status: httpStatusText.FAIL,
+        data: { title: "Token is invalid" },
+      });
     }
   });
   // If verification succeeds
-  decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+  decoded = jwt.verify(token, config.auth.accessToken);
   // 3) Check if user exists
   const currentUser = await User.findByPk(decoded.userId);
   if (!currentUser) {
-    res.send("The user that belong to this token does no longer exist");
+   
+    return res.status(404).json({
+      status: httpStatusText.FAIL,
+      data: { title: "The user that belong to this token does no longer exist" },
+    });
+    
   }
 
   if (currentUser.logoutAt) {
     const logoutAt = parseInt(currentUser.logoutAt.getTime() / 1000, 10);
     if (logoutAt > decoded.iat) {
-      return res.send("you recently logout. please login again ..");
+      return res.status(404).json({
+        status: httpStatusText.FAIL,
+        data: { title: "you recently logout. please login again .." },
+      });
     }
   }
 
@@ -111,7 +134,7 @@ exports.registerUser = async (req, res) => {
   const confirmPassword = req.body.confirmPassword;
   const email = req.body.email;
   const firstName = req.body.firstName;
-  const lastName=req.body.lastName
+  const lastName = req.body.lastName;
   console.log("signup", email, password);
   //check if the password and confirm password is matched or not
   if (password !== confirmPassword) {
@@ -161,8 +184,8 @@ exports.registerUser = async (req, res) => {
       if (hashPassword) {
         //create new user with the given data
         User.create({
-          firstName:firstName,
-          lastName:lastName,
+          firstName: firstName,
+          lastName: lastName,
           email: email,
           password: hashPassword,
           verifiedEmail: false,
@@ -179,8 +202,10 @@ exports.registerUser = async (req, res) => {
               await user.save();
               try {
                 //${req.protocole}://${req.get('host')}/orders
-                console.log(`${req.protocole}://${req.get('host')}/verify/${token}`)
-                const verificationLink = `http://http://localhost:3000//verify/${token}`;//! for now keep it like this, when you want to deploy the app you should change it to be   const verificationLink = `${req.protocole}://${req.get('host')}/verify/${token}`;
+                console.log(
+                  `${req.protocole}://${req.get("host")}/verify/${token}`
+                );
+                const verificationLink = `http://http://localhost:3000//verify/${token}`; //! for now keep it like this, when you want to deploy the app you should change it to be   const verificationLink = `${req.protocole}://${req.get('host')}/verify/${token}`;
 
                 await sendEmail({
                   email: user.email,
@@ -200,7 +225,10 @@ exports.registerUser = async (req, res) => {
 
               return res.status(200).json({
                 status: httpStatusText.SUCCESS,
-                data: { title: "email verification link sent to your email, please check your inbox." },
+                data: {
+                  title:
+                    "email verification link sent to your email, please check your inbox.",
+                },
               });
 
               // return res.status(200).json({
@@ -232,10 +260,10 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  
+
   try {
     const user = await User.findOne({ where: { email } });
-   console.log("user exist",password)
+    console.log("user exist", password);
     if (!user) {
       return res.status(404).json({
         status: httpStatusText.FAIL,
@@ -244,10 +272,10 @@ exports.loginUser = async (req, res) => {
     }
 
     // Compaire hash(login pass) to hash (db user password hash)
- 
+
     const correctPassword = await bcrypt.compare(password, user.password);
     if (!correctPassword) {
-      console.log("incorpass",correctPassword)
+      console.log("incorpass", correctPassword);
 
       return res.status(404).json({
         status: httpStatusText.FAIL,
@@ -273,7 +301,8 @@ exports.loginUser = async (req, res) => {
     // Send the token to the client
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title:"logged in successfully",user: user, token },
+      data: { title: "logged in successfully", user: user },
+      token,
     });
   } catch (error) {
     return res
@@ -473,5 +502,3 @@ exports.resetPassword = async (req, res) => {
     });
   }
 };
-
-

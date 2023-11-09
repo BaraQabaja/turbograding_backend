@@ -81,25 +81,39 @@ exports.checkoutSession = async (req, res) => {
   const planPrice = selectedPlan.price;
 
   // 3) Payment Logic (Create strip checkout session)
-  const userFullName=`${req.user.firstName} ${req.user.lastName}`
+  console.log(req.user.email);
+  const userFullName = `${req.user.firstName} ${req.user.lastName}`;
   const session = await stripe.checkout.sessions.create({
-    line_item:[{
-      name:userFullName,
-      amount:planPrice * 100,
-      currency:'cad'
-    }],
-    mode: 'subscription',
-    success_url: `${req.protocole}://${req.get('host')}/payment-done-successfully`,//instead of typing the domain address statically and make problems when deploying the app on real servers so we use dynamic domains.
-    cancel_url: `${req.protocole}://${req.get('host')}/payment-failed`,
+    line_items: [
+      {
+        price: "price_1OATzTJrs5sOVzzzBRkydkj3",
+        // price_data: {
+
+        //   currency: "usd",
+        //   product_data:{
+        //     name:"basic",
+        //   },
+        //   unit_amount: planPrice * 100,
+        // },
+        quantity: 1,
+      },
+    ],
+    mode: "subscription",
+    success_url: `${req.protocol}://${req.get('host')}/success`, //Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains success_url:`${req.protocol}://${req.get('host')}/success`.
+    cancel_url: `${req.protocol}://${req.get('host')}/dashboard`,// Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains cancel_url:`${req.protocol}://${req.get('host')}/dashboard`.
     // customer_email:req.user.email,
     // client_reference_id:req.params.id,
-
-  })
+    customer_email: req.user.email,
+  });
 
   // 4) Send session to response
-  res.json({status:httpStatusText.SUCCESS,data:{
-    title:'',session:session
-  }})
+  res.json({
+    status: httpStatusText.SUCCESS,
+    data: {
+      title: "",
+      session: session,
+    },
+  });
 };
 
 // @desc
