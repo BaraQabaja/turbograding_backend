@@ -120,7 +120,7 @@ SubscriptionModal.belongsTo(PlanModal, { foreignKey: 'planId' });
 SubscriptionModal.hasMany(PaymentModal, { foreignKey: 'subscriptionId' });
 
 const PORT = process.env.PORT || 5000; //port number
-const HOST = process.env.HOST || "127.0.0.1"; //host domain
+const HOST = '0.0.0.0';
 app.all("*", (req, res, next) => {
   res.status(400).send(`Can't find this route: ${req.originalUrl}`);
 });
@@ -129,7 +129,7 @@ sequelize
   .sync({ forse: true })
   .then(() => {
     console.log("DB Sync Done Successfully!");
-    app.listen(PORT, () => {
+    app.listen(process.env.PORT || 5000, HOST,() => {
       console.log(`Server is listening on ${PORT}`);
     });
   })
