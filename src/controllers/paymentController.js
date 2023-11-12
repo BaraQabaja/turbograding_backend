@@ -142,7 +142,7 @@ exports.webhookCheckout = async (req, res) => {
   // Otherwise use the basic event deserialized with JSON.parse
   if (endpointSecret) {
     // Get the signature sent by Stripe
-    const signature = request.headers['stripe-signature'];
+    const signature = req.headers['stripe-signature'];
     try {
       event = stripe.webhooks.constructEvent(
         res.body,
