@@ -11,12 +11,13 @@ const axios = require("axios");
 const cors = require("cors");
 const morgan = require("morgan");
 const bodyparser = require("body-parser");
+const {webhookCheckout}=require('./src/controllers/paymentController')
 //const { Configuration, OpenAIApi } = require("openai");
 const jwt = require("jsonwebtoken");
 //for thired party login
 const passport = require("passport");
 const passportJWT = require("passport-jwt");
-const compression=require('compression')
+const compression = require("compression");
 const dotenv = require("dotenv");
 dotenv.config({ path: "config.env" });
 
@@ -55,9 +56,14 @@ let jwtOptions = {
 // });
 // passport.use(strategy);
 
+//! Checkout webhook  (stripe related)
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" },webhookCheckout)
+);
 //! Middleware
 app.use(cors());
-app.use(compression());// Compress all responses
+app.use(compression()); // Compress all responses
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
@@ -115,21 +121,22 @@ PaymentModal.belongsTo(SubscriptionModal, { foreignKey: "subscriptionId" });
 PlanModal.hasMany(SubscriptionModal, { foreignKey: "planId" });
 
 // Subscription Relations
-SubscriptionModal.belongsTo(UserModal, { foreignKey: 'userId' });
-SubscriptionModal.belongsTo(PlanModal, { foreignKey: 'planId' });
-SubscriptionModal.hasMany(PaymentModal, { foreignKey: 'subscriptionId' });
+SubscriptionModal.belongsTo(UserModal, { foreignKey: "userId" });
+SubscriptionModal.belongsTo(PlanModal, { foreignKey: "planId" });
+SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
 
 const PORT = process.env.PORT || 5000; //port number
-const HOST = '0.0.0.0';
+
 app.all("*", (req, res, next) => {
   res.status(400).send(`Can't find this route: ${req.originalUrl}`);
 });
-//process
+//! On Production
+const HOSTProduction = "0.0.0.0"; //production
 sequelize
   .sync({ forse: true })
   .then(() => {
     console.log("DB Sync Done Successfully!");
-    app.listen(process.env.PORT || 5000, HOST,() => {
+    app.listen(process.env.PORT || 5000, HOSTProduction, () => {
       console.log(`Server is listening on ${PORT}`);
     });
   })
@@ -137,8 +144,19 @@ sequelize
     console.log(`Failed to Sync with DB: ${err.message}`);
   });
 
-
-  /**
+// On Development
+// sequelize
+//   .sync({ forse: true })
+//   .then(() => {
+//     console.log("DB Sync Done Successfully!");
+//     app.listen(PORT, process.env.HOST, () => {
+//       console.log(`Server is listening on http://${ process.env.HOST}:${PORT}`);
+//     });
+//   })
+//   .catch((err) => {
+//     console.log(`Failed to Sync with DB: ${err.message}`);
+//   });
+/**
    
 sequelize
   .sync({ forse: true })

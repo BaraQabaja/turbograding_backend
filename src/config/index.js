@@ -28,7 +28,8 @@ module.exports = {
     cert: fs.readFileSync(__dirname + "/ssl_key/server.crt")
   },
   payment_stripe:{
-    stripe_secret:process.env.STRIPE_SECRET
+    stripe_secret:process.env.STRIPE_SECRET,
+    signing_secret:process.env.SIGNING_SECRET
   }
 };
 
