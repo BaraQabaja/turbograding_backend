@@ -62,8 +62,7 @@ app.use(bodyparser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 //! environment setup
-const PORT = process.env.PORT || 5000; //port number
-const HOST = process.env.HOST || "127.0.0.1"; //host domain
+
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
   console.log(`mode: ${process.env.NODE_ENV}`);
@@ -120,23 +119,41 @@ SubscriptionModal.belongsTo(UserModal, { foreignKey: 'userId' });
 SubscriptionModal.belongsTo(PlanModal, { foreignKey: 'planId' });
 SubscriptionModal.hasMany(PaymentModal, { foreignKey: 'subscriptionId' });
 
-
+const PORT = process.env.PORT || 5000; //port number
+const HOST = process.env.HOST || "127.0.0.1"; //host domain
 app.all("*", (req, res, next) => {
   res.status(400).send(`Can't find this route: ${req.originalUrl}`);
 });
-
+//process
 sequelize
   .sync({ forse: true })
   .then(() => {
     console.log("DB Sync Done Successfully!");
-    app.listen(PORT, HOST, () => {
-      console.log(`Server is listening on http://${HOST}:${PORT}`);
+    app.listen(PORT, () => {
+      console.log(`Server is listening on ${PORT}`);
     });
   })
   .catch((err) => {
     console.log(`Failed to Sync with DB: ${err.message}`);
   });
 
+
+  /**
+   
+sequelize
+  .sync({ forse: true })
+  .then(() => {
+    console.log("DB Sync Done Successfully!");
+    app.listen(process.env.PORT, process.env.HOST, () => {
+      console.log(`Server is listening on http://${ process.env.HOST}:${process.env.PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log(`Failed to Sync with DB: ${err.message}`);
+  });
+
+
+   */
 // listen on ports HTTP_PORT and HTTPS_PORT.
 // db.sync().then(() => {
 //     http.createServer(app).listen(config.app.http_port, () => { console.log("Express http server listening"); });
