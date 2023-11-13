@@ -81,7 +81,7 @@ console.log(planType,planDuration)
   // const planPrice = selectedPlan.price;
 
   // 3) Payment Logic (Create strip checkout session)
-  // console.log(req.user.email);
+  console.log(req.user.email);
   // const userFullName = `${req.user.firstName} ${req.user.lastName}`;
   try {
     const session = await stripe.checkout.sessions.create({
