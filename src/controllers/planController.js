@@ -9,16 +9,18 @@ const httpStatusText = require("../utils/httpStatusText");
 // @route   POST /api/plan/create-plan
 // @access  admin
 exports.createPlan = async (req, res) => {
-  const { name, description, price, duration, questions, assignments, priceId } =
+  const { name, description, price,currency, duration, questions, assignments,exams, priceId } =
     req.body;
   try {
     const plan = await Plan.create({
       name,
       description,
       price,
+      currency,
       duration,
       questions,
       assignments,
+      exams,
       priceId,
     });
 

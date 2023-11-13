@@ -8,13 +8,15 @@ const httpStatusText = require("../utils/httpStatusText");
 // @route   POST /api/subscription/create-subscription
 // @access  admin
 exports.createSubscription = async (req, res) => {
-  const { userId, planId, startDate, status } = req.body;
+  const { userId, planId, startDate, status,stripeCustomerId } = req.body;
   try {
     const subscription = await Subscription.create({
       userId,
       planId,
       startDate,
       endDate,
+      status,
+      stripeCustomerId,
     });
     return res.status(201).json(subscription);
   } catch (error) {
