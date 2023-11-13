@@ -20,7 +20,7 @@ const passportJWT = require("passport-jwt");
 const compression = require("compression");
 const dotenv = require("dotenv");
 dotenv.config({ path: "config.env" });
-
+const auth = require('./src/controllers/authController');
 //! (Security) rate limiting middleware for all operations
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -58,7 +58,7 @@ let jwtOptions = {
 
 //! Checkout webhook  (stripe related)
 app.post(
-  "/webhook",
+  "/webhook",auth.protect,
   express.raw({ type: "application/json" }),webhookCheckout
 );
 //! Middleware

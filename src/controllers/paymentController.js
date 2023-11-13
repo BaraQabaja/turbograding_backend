@@ -173,7 +173,7 @@ exports.getPayments = async (req, res) => {
 // @access
 exports.webhookCheckout = async (req, res) => {
   const plans = {
-    basic: "price_1OATzTJrs5sOVzzzBRkydkj3",
+    basic: "price_1OBuQAJrs5sOVzzzI0PfPND3",
   };
   let event = res.body;
   // Replace this endpoint secret with your endpoint's unique secret
@@ -204,19 +204,20 @@ exports.webhookCheckout = async (req, res) => {
     case "customer.subscription.created":
       const customerSubscriptionCreated = event.data.object;
       // Then define and call a function to handle the event customer.subscription.created
-      console.log("subscription created Bara", event.data.object.plan.id);
-      const planId = event.data.object.plan.id;
-      const planPeriod = event.data.object.plan.interval;
       const userId = req.user.id;
-      const subscriptionStart = event.data.object.current_period_start;
-      const subscriptionEnd = event.data.object.current_period_end;
-      console.log(
-        planId,
-        planPeriod,
-        userId,
-        subscriptionStart,
-        subscriptionEnd
-      );
+      console.log("subscription created Bara",userId);
+      // const planId = event.data.object.plan.id;
+      // const planPeriod = event.data.object.plan.interval;
+    
+      // const subscriptionStart = event.data.object.current_period_start;
+      // const subscriptionEnd = event.data.object.current_period_end;
+      // console.log(
+      //   planId,
+      //   planPeriod,
+      //   userId,
+      //   subscriptionStart,
+      //   subscriptionEnd
+      // );
       //event.data.object.client_reference_id
 
       break;
