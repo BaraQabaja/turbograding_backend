@@ -7,7 +7,7 @@ const auth = require('../controllers/authController');
 const router = express.Router();
 
 // router.post('/createPayment', paymentController.createPayment); 
-router.post('/checkout-session',paymentController.checkoutSession)
+router.post('/checkout-session',auth.protect,paymentController.checkoutSession)
 /*
 router.get('/', authenticateToken, paymentsController.getAllPayments);  // Fetch all payments
 router.get('/:id', authenticateToken, paymentsController.getPayment);  // Fetch a specific payment
