@@ -3,7 +3,7 @@ const Plan = require("../models/Plan");
 const validator = require("validator");
 const config = require("../config");
 const stripe = require("stripe")(config.payment_stripe.stripe_secret);
-
+const Subscription = require("./models/subscription");
 //httpStatus key words
 const httpStatusText = require("../utils/httpStatusText");
 
@@ -99,8 +99,8 @@ exports.checkoutSession = async (req, res) => {
       },
     ],
     mode: "subscription",
-    success_url: `${req.protocol}://${req.get('host')}/success`, //Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains success_url:`${req.protocol}://${req.get('host')}/success`.
-    cancel_url: `${req.protocol}://${req.get('host')}/dashboard`,// Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains cancel_url:`${req.protocol}://${req.get('host')}/dashboard`.
+    success_url: `${req.protocol}://${req.get("host")}/success`, //Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains success_url:`${req.protocol}://${req.get('host')}/success`.
+    cancel_url: `${req.protocol}://${req.get("host")}/dashboard`, // Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains cancel_url:`${req.protocol}://${req.get('host')}/dashboard`.
     // customer_email:req.user.email,
     // client_reference_id:req.params.id,
     customer_email: req.user.email,
@@ -128,10 +128,46 @@ exports.getPayments = async (req, res) => {
   }
 };
 
-// @desc  
+
+// const createSubscription=async(session)=>{
+
+// const {planId,planPeriod,subscriptionStart,subscriptionEnd}=session
+
+//   if (planId == plans.basic) {
+//     if (planPeriod == "month") {
+//       try {
+//         const subscription = await Subscription.create({
+//           userId,
+//           planId,
+//           subscriptionStart,
+//           subscriptionEnd,
+//         });
+//         return res.json({
+//           status: httpStatusText.SUCCESS,
+//           data: {
+//             title: "subscription created successfully.",
+//             subscription,
+//           },
+//         });
+//       } catch (error) {
+//         return res.status(500).json({ status: httpStatusText.ERROR,
+//           data: {
+//             title: error.message||"something went wrong, please try again.",
+            
+//           },});
+//       }
+//     }
+//   }
+// }
+
+
+// @desc
 // @route
 // @access
 exports.webhookCheckout = async (req, res) => {
+  const plans = {
+    basic: "price_1OATzTJrs5sOVzzzBRkydkj3",
+  };
   let event = res.body;
   // Replace this endpoint secret with your endpoint's unique secret
   // If you are testing with the CLI, find the secret by running 'stripe listen'
@@ -142,7 +178,7 @@ exports.webhookCheckout = async (req, res) => {
   // Otherwise use the basic event deserialized with JSON.parse
   if (endpointSecret) {
     // Get the signature sent by Stripe
-    const signature = req.headers['stripe-signature'];
+    const signature = req.headers["stripe-signature"];
     try {
       event = stripe.webhooks.constructEvent(
         req.body,
@@ -158,27 +194,35 @@ exports.webhookCheckout = async (req, res) => {
   let status;
   // Handle the event
   switch (event.type) {
-    case 'customer.subscription.created':
+    case "customer.subscription.created":
       const customerSubscriptionCreated = event.data.object;
       // Then define and call a function to handle the event customer.subscription.created
-      console.log('subscription created Bara')
+      console.log("subscription created Bara", event.data.object.plan.id);
+      const planId = event.data.object.plan.id;
+      const planPeriod = event.data.object.plan.interval;
+      const userId = req.user.id;
+      const subscriptionStart = event.data.object.current_period_start;
+      const subscriptionEnd = event.data.object.current_period_end;
+console.log(planId,planPeriod,userId,subscriptionStart,subscriptionEnd,)
+//event.data.object.client_reference_id
+     
       break;
-    case 'customer.subscription.deleted':
+    case "customer.subscription.deleted":
       const customerSubscriptionDeleted = event.data.object;
       // Then define and call a function to handle the event customer.subscription.deleted
-      console.log('subscription expired Bara')
+      console.log("subscription expired Bara");
 
       break;
-    case 'customer.subscription.trial_will_end':
+    case "customer.subscription.trial_will_end":
       const customerSubscriptionTrialWillEnd = event.data.object;
       // Then define and call a function to handle the event customer.subscription.trial_will_end
-      console.log('subscription trial end Bara')
+      console.log("subscription trial end Bara");
 
       break;
-    case 'customer.subscription.updated':
+    case "customer.subscription.updated":
       const customerSubscriptionUpdated = event.data.object;
       // Then define and call a function to handle the event customer.subscription.updated
-      console.log('subscription updated end Bara')
+      console.log("subscription updated end Bara");
 
       break;
     // ... handle other event types

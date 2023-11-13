@@ -1,33 +1,42 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('./database');
+const { DataTypes } = require("sequelize");
+const sequelize = require("./database");
 
-
-const Subscription = sequelize.define('Subscription', {
+const Subscription = sequelize.define(
+  "Subscription",
+  {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        allowNull: false,
-        primaryKey: true
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
     },
     startDate: {
-        type: DataTypes.DATE,
-        allowNull: false,
+      type: DataTypes.DATE,
+      allowNull: false,
     },
     endDate: {
-        type: DataTypes.DATE,
-        allowNull: false,
+      type: DataTypes.DATE,
+      allowNull: false,
     },
-    // Current status of the subscription (e.g., active, cancelled).
+    // Current status of the subscription (e.g., active, inactive).
     status: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    }
+      type: DataTypes.STRING,
+      allowNull: false,
+      values: ['active', 'inactive'],
+      defaultValue:'inactive',
 
-}, {
+    },
+    stripeCustomerId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+  },
+  {
     // Other model options go here
     createdAt: false, // disable createdAt
-    updatedAt: false // disable updatedAt
-});
+    updatedAt: false, // disable updatedAt
+  }
+);
 
 // Subscription.associate = models => {
 //     Subscription.belongsTo(models.User, { foreignKey: 'userId' });
@@ -35,7 +44,5 @@ const Subscription = sequelize.define('Subscription', {
 //     Subscription.hasMany(models.Payment, { foreignKey: 'subscriptionId' });
 
 //   };
-
-
 
 module.exports = Subscription;

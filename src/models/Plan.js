@@ -13,9 +13,8 @@ const Plan = sequelize.define(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      values: ['basic ', 'premium '],  //ex: Basic, Silver, Gold, Premium, Starter, Professional, Enterprise, Family, Student, Business
-      defaultValue:'basic',
-
+      values: ["basic","premium", "pro"], //ex: Basic, Silver, Gold, Premium, Starter, Professional, Enterprise, Family, Student, Business
+      defaultValue: "basic",//basic plan is *free* plan
     },
     description: {
       type: DataTypes.TEXT,
@@ -23,6 +22,10 @@ const Plan = sequelize.define(
     },
     price: {
       type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    currency: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     duration: {
@@ -33,15 +36,19 @@ const Plan = sequelize.define(
       type: DataTypes.INTEGER, // Number of questions can be grad
       allowNull: false,
     },
-    assignments: {
-      type: DataTypes.INTEGER, // Number of assignments can be grad
+    exams: {
+      type: DataTypes.INTEGER, // Number of exams can be graded
       allowNull: false,
     },
-    priceId:{//plan link -including plan price and plan desc ...- in stripe
+    assignments: {
+      type: DataTypes.INTEGER, // Number of assignments can be graded
+      allowNull: false,
+    },
+    priceId: {
+      //plan link -including plan price and plan desc ...- in stripe
       type: DataTypes.STRING,
       allowNull: false,
-
-    }
+    },
   },
   {
     // Other model options go here

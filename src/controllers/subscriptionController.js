@@ -41,3 +41,30 @@ exports.getUserSubscription = async (req, res) => {
     });
   }
 };
+
+// @desc    Get all subscriptions logic
+// @route   GET /api/subscription/get-all-subscriptions
+// @access  admin
+exports.getAllSubscriptions = async (req, res) => {
+  try {
+    const subscriptions = await Subscription.findAll();
+    if (!subscriptions) {
+      return res.status(400).json({
+        status: httpStatusText.FAIL,
+        data: { title: "no subscriptions yet" },
+      });
+    }
+
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: { title: "all subscriptions", subscriptions },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: {
+        title: error.message || "something went wrong, please try again.",
+      },
+    });
+  }
+};
