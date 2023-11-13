@@ -87,7 +87,7 @@ exports.checkoutSession = async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
-          price: "price_1OATzTJrs5sOVzzzBRkydkj3",
+          price: "price_1OBuQAJrs5sOVzzzI0PfPND3",
           // price_data: {
 
           //   currency: "usd",
