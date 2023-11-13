@@ -3,7 +3,7 @@ const Plan = require("../models/Plan");
 const validator = require("validator");
 const config = require("../config");
 const stripe = require("stripe")(config.payment_stripe.stripe_secret);
-const Subscription = require("./models/subscription");
+const Subscription = require("../models/Subscription");
 //httpStatus key words
 const httpStatusText = require("../utils/httpStatusText");
 
