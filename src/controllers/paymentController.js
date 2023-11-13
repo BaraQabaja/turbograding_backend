@@ -55,7 +55,7 @@ exports.checkoutSession = async (req, res) => {
   const planType = req.body.planType;
   const planDuration = req.body.planDuration;
   const validPlanTypes = ["pro", "premium"];
-  const validPlanDurations = [1, 12];
+  const validPlanDurations = [30, 365];
 
   //****Validation****//
   if (
@@ -81,8 +81,8 @@ exports.checkoutSession = async (req, res) => {
   // const planPrice = selectedPlan.price;
 
   // 3) Payment Logic (Create strip checkout session)
-  console.log(req.user.email);
-  const userFullName = `${req.user.firstName} ${req.user.lastName}`;
+  // console.log(req.user.email);
+  // const userFullName = `${req.user.firstName} ${req.user.lastName}`;
   try {
     const session = await stripe.checkout.sessions.create({
       line_items: [
