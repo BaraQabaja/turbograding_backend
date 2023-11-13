@@ -65,7 +65,7 @@ console.log(planType,planDuration)
     )
   ) {
     return res.json({
-      statsu: httpStatusText.FAIL,
+      status: httpStatusText.FAIL,
       data: { title: "invalid inputs, please try again." },
     });
   }
@@ -108,10 +108,10 @@ console.log(planType,planDuration)
     });
 
     // 4) Send session to response
-    res.json({
+    return res.json({
       status: httpStatusText.SUCCESS,
       data: {
-        title: "",
+        title: "session created successfully.",
         session: session,
       },
     });
