@@ -54,7 +54,7 @@ exports.checkoutSession = async (req, res) => {
   // 1) Get Plan Type and Duration (1 month or 12 month)
   const planType = req.body.planType;
   const planDuration = req.body.planDuration;
-  const validPlanTypes = ["basic", "premium"];
+  const validPlanTypes = ["pro", "premium"];
   const validPlanDurations = [1, 12];
 
   //****Validation****//
@@ -72,48 +72,57 @@ exports.checkoutSession = async (req, res) => {
   //********/
 
   // 2) Get Plan Price depending on Plan Type and Duration
-  const selectedPlan = await Plan.findOne({
-    where: {
-      name: planType,
-      duration: planDuration,
-    },
-  });
-  const planPrice = selectedPlan.price;
+  // const selectedPlan = await Plan.findOne({
+  //   where: {
+  //     name: planType,
+  //     duration: planDuration,
+  //   },
+  // });
+  // const planPrice = selectedPlan.price;
 
   // 3) Payment Logic (Create strip checkout session)
   console.log(req.user.email);
   const userFullName = `${req.user.firstName} ${req.user.lastName}`;
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        price: "price_1OATzTJrs5sOVzzzBRkydkj3",
-        // price_data: {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          price: "price_1OATzTJrs5sOVzzzBRkydkj3",
+          // price_data: {
 
-        //   currency: "usd",
-        //   product_data:{
-        //     name:"basic",
-        //   },
-        //   unit_amount: planPrice * 100,
-        // },
-        quantity: 1,
+          //   currency: "usd",
+          //   product_data:{
+          //     name:"basic",
+          //   },
+          //   unit_amount: planPrice * 100,
+          // },
+          quantity: 1,
+        },
+      ],
+      mode: "subscription",
+      success_url: `${req.protocol}://${req.get("host")}/success`, //Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains success_url:`${req.protocol}://${req.get('host')}/success`.
+      cancel_url: `${req.protocol}://${req.get("host")}/dashboard`, // Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains cancel_url:`${req.protocol}://${req.get('host')}/dashboard`.
+      // customer_email:req.user.email,
+      // client_reference_id:req.params.id,
+      customer_email: req.user.email,
+    });
+
+    // 4) Send session to response
+    res.json({
+      status: httpStatusText.SUCCESS,
+      data: {
+        title: "",
+        session: session,
       },
-    ],
-    mode: "subscription",
-    success_url: `${req.protocol}://${req.get("host")}/success`, //Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains success_url:`${req.protocol}://${req.get('host')}/success`.
-    cancel_url: `${req.protocol}://${req.get("host")}/dashboard`, // Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains cancel_url:`${req.protocol}://${req.get('host')}/dashboard`.
-    // customer_email:req.user.email,
-    // client_reference_id:req.params.id,
-    customer_email: req.user.email,
-  });
-
-  // 4) Send session to response
-  res.json({
-    status: httpStatusText.SUCCESS,
-    data: {
-      title: "",
-      session: session,
-    },
-  });
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: {
+        title: error.message || "something went wrong, please try again.",
+      },
+    });
+  }
 };
 
 // @desc
@@ -127,7 +136,6 @@ exports.getPayments = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-
 
 // const createSubscription=async(session)=>{
 
@@ -153,13 +161,12 @@ exports.getPayments = async (req, res) => {
 //         return res.status(500).json({ status: httpStatusText.ERROR,
 //           data: {
 //             title: error.message||"something went wrong, please try again.",
-            
+
 //           },});
 //       }
 //     }
 //   }
 // }
-
 
 // @desc
 // @route
@@ -203,9 +210,15 @@ exports.webhookCheckout = async (req, res) => {
       const userId = req.user.id;
       const subscriptionStart = event.data.object.current_period_start;
       const subscriptionEnd = event.data.object.current_period_end;
-console.log(planId,planPeriod,userId,subscriptionStart,subscriptionEnd,)
-//event.data.object.client_reference_id
-     
+      console.log(
+        planId,
+        planPeriod,
+        userId,
+        subscriptionStart,
+        subscriptionEnd
+      );
+      //event.data.object.client_reference_id
+
       break;
     case "customer.subscription.deleted":
       const customerSubscriptionDeleted = event.data.object;
