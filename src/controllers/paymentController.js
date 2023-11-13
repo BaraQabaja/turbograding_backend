@@ -56,7 +56,7 @@ exports.checkoutSession = async (req, res) => {
   const planDuration = req.body.planDuration;
   const validPlanTypes = ["pro", "premium"];
   const validPlanDurations = [30, 365];
-
+console.log(planType,planDuration)
   //****Validation****//
   if (
     !(
