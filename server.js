@@ -58,7 +58,7 @@ let jwtOptions = {
 
 //! Checkout webhook  (stripe related)
 app.post(
-  "/webhook",auth.protect,
+  "/webhook",
   express.raw({ type: "application/json" }),webhookCheckout
 );
 //! Middleware

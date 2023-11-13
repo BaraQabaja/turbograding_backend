@@ -204,8 +204,8 @@ exports.webhookCheckout = async (req, res) => {
     case "customer.subscription.created":
       const customerSubscriptionCreated = event.data.object;
       // Then define and call a function to handle the event customer.subscription.created
-      const userr = req.user;
-      console.log(userr)
+      // const userr = req.user;
+      // console.log(userr)
       console.log("subscription created Bara");
       // const planId = event.data.object.plan.id;
       // const planPeriod = event.data.object.plan.interval;
