@@ -221,7 +221,7 @@ exports.webhookCheckout = async (req, res) => {
       // Then define and call a function to handle the event customer.subscription.created
       // const userr = req.user;
       // console.log(userr)
-      const userEmail = paymentIntent.metadata.user_email;
+      const userEmail = customerSubscriptionCreated.metadata.user_email;
 
       const subscriptionStart =
         customerSubscriptionCreated.current_period_start;
