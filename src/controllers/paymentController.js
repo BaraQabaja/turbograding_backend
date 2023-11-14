@@ -72,17 +72,25 @@ exports.checkoutSession = async (req, res) => {
   //********/
 
   // 2) Get Plan Price depending on Plan Type and Duration
+
   const selectedPlan = await Plan.findOne({
     where: {
       name: planType,
       duration: planDuration,
     },
   });
+  if (!selectedPlan) {
+    return res.status(400).json({
+      status: httpStatusText.FAIL,
+      data: { title: "Selected plan not found." },
+    });
+  }
   const planPriceId = selectedPlan.priceId;
 
   // 3) Create a customer in Stripe and store user email in metadata
   const userEmail = req.user.email;
   try {
+    console.log("customer email passed to stripe customers",userEmail)
     const customer = await stripe.customers.create({
       email: userEmail,
       // payment_method: paymentMethodId,
@@ -106,14 +114,6 @@ exports.checkoutSession = async (req, res) => {
       line_items: [
         {
           price: planPriceId,
-          // price_data: {
-
-          //   currency: "usd",
-          //   product_data:{
-          //     name:"basic",
-          //   },
-          //   unit_amount: planPrice * 100,
-          // },
           quantity: 1,
         },
       ],
@@ -218,27 +218,14 @@ exports.webhookCheckout = async (req, res) => {
   switch (event.type) {
     case "customer.subscription.created":
       const customerSubscriptionCreated = event.data.object;
-      // Then define and call a function to handle the event customer.subscription.created
-      // const userr = req.user;
-      // console.log(userr)
       const userEmail = customerSubscriptionCreated.metadata.user_email;
-
       const subscriptionStart =
         customerSubscriptionCreated.current_period_start;
       const subscriptionEnd = customerSubscriptionCreated.current_period_end;
-      console.log("data", subscriptionStart, subscriptionEnd);
-      console.log("subscription created Bara",userEmail);
-      // const planId = event.data.object.plan.id;
-      // const planPeriod = event.data.object.plan.interval;
 
-      // console.log(
-      //   planId,
-      //   planPeriod,
-      //   userId,
-      //   subscriptionStart,
-      //   subscriptionEnd
-      // );
-      //event.data.object.client_reference_id
+      console.log("Subscription created for user:", userEmail);
+      console.log("Subscription start:", subscriptionStart);
+      console.log("Subscription end:", subscriptionEnd);
 
       break;
     case "customer.subscription.deleted":
