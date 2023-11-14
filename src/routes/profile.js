@@ -13,7 +13,7 @@ router.put('/update-username',auth.protect, profileController.updateUsername);  
 router.put('/update-bio',auth.protect, profileController.updateBio);  // update user bio 
 
 
-router.get('/get-personal-info',auth.protect, profileController.getPersonalInformations);  // get user profile info 
+router.get('/get-personal-info',auth.protect, profileController.getPersonalInformations);  // get user profile inf
 
 
 module.exports = router;
