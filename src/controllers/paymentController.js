@@ -92,6 +92,8 @@ exports.checkoutSession = async (req, res) => {
   try {
     console.log("customer email passed to stripe customers",userEmail)
     const customer = await stripe.customers.create({
+      id: 'cus_P0Mk8Qidvk6VKZ',
+      object: 'customer',
       email: userEmail,
       // payment_method: paymentMethodId,
       metadata: {
