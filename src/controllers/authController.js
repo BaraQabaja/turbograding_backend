@@ -3,7 +3,7 @@ const config = require("../config");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const RefreshToken = require("../models/RefreshToken");
-const { Op } = require("sequelize");
+const { Op, DATE } = require("sequelize");
 const validator = require("validator");
 
 //send email function
@@ -189,6 +189,7 @@ exports.registerUser = async (req, res) => {
           email: email,
           password: hashPassword,
           verifiedEmail: false,
+          joinDate:Date.now(),
         })
           .then(async (user) => {
             if (user) {

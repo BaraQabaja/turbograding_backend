@@ -34,6 +34,9 @@ const User = sequelize.define(
       requaired: true, //Bara
       len: [8, 50], //Bara
     }, //Bara
+    passwordChangedAt:{
+      type: DataTypes.DATE,
+    },
     logoutAt: {
       type: DataTypes.DATE,
     }, //Bara
@@ -52,6 +55,27 @@ const User = sequelize.define(
     verifiedEmail: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },//Bara optional
+    phone_number: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },//Bara optional
+    country:{
+      type:DataTypes.STRING,
+      allowNull: true
+    },//Bara optional
+    city:{
+      type:DataTypes.STRING,
+      allowNull: true
+    },//anything about the user, optional
+    about:{
+      type:DataTypes.STRING,
+      allowNull:true,
+    },//Bara 
+    joinDate:{
+      type: DataTypes.DATE,
+      allowNull: false
+
     },
     role: {
       type: DataTypes.STRING, //(e.g., admin, educator, student).
