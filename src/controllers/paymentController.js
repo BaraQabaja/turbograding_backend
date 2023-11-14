@@ -94,9 +94,9 @@ exports.checkoutSession = async (req, res) => {
     const customer = await stripe.customers.create({
       email: userEmail,
       // payment_method: paymentMethodId,
-      metadata: {
-        user_email: userEmail,
-      },
+      // metadata: {
+      //   user_email: userEmail,
+      // },
     });
     console.log("Stripe Customer:", customer);
 

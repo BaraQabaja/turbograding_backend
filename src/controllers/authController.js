@@ -497,7 +497,7 @@ exports.resetPassword = async (req, res) => {
       data: { title: "Password changed successfully" },
     });
   } catch (error) {
-    return res.status(400).json({
+    return res.status(500).json({
       status: httpStatusText.ERROR,
       data: { title: "Something went wrong, please try again." },
     });
