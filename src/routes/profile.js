@@ -14,3 +14,6 @@ router.put('/update-bio',auth.protect, profileController.updateBio);  // update 
 
 
 router.get('/get-personal-info',auth.protect, profileController.getPersonalInformations);  // get user profile info 
+
+
+module.exports = router;
