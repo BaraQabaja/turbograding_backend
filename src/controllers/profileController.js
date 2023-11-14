@@ -99,7 +99,7 @@ exports.updateUsername = async (req, res, next) => {
 // @desc     Update bio
 // @route    PUT /api/profile/update-bio
 // @access   protected/user
-exports.updateUserBio = async (req, res, next) => {
+exports.updateBio = async (req, res, next) => {
 
     try{
         const newBio = req.body.newBio;
