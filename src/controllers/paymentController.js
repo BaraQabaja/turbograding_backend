@@ -98,7 +98,11 @@ exports.checkoutSession = async (req, res) => {
         user_email: userEmail,
       },
     });
+    console.log("Stripe Customer:", customer);
+
   } catch (error) {
+    console.error("Error creating Stripe customer:", error.message);
+
     res.status(500).json({
       status: httpStatusText.ERROR,
       data: {
