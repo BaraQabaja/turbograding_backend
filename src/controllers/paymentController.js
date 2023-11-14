@@ -222,7 +222,7 @@ exports.webhookCheckout = async (req, res) => {
       const subscriptionStart =
         customerSubscriptionCreated.current_period_start;
       const subscriptionEnd = customerSubscriptionCreated.current_period_end;
-
+console.log(event)
       console.log("Subscription created for user:", userEmail);
       console.log("Subscription start:", subscriptionStart);
       console.log("Subscription end:", subscriptionEnd);
