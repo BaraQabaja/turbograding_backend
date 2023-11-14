@@ -54,9 +54,9 @@ exports.checkoutSession = async (req, res) => {
   // 1) Get Plan Type and Duration (1 month or 12 month)
   const planType = req.body.planType;
   const planDuration = req.body.planDuration;
-  const validPlanTypes = ["pro", "premium"];
+  const validPlanTypes = ["professional", "premium"];
   const validPlanDurations = [30, 365];
-console.log(planType,planDuration)
+  console.log(planType, planDuration);
   //****Validation****//
   if (
     !(
@@ -72,22 +72,40 @@ console.log(planType,planDuration)
   //********/
 
   // 2) Get Plan Price depending on Plan Type and Duration
-  // const selectedPlan = await Plan.findOne({
-  //   where: {
-  //     name: planType,
-  //     duration: planDuration,
-  //   },
-  // });
-  // const planPrice = selectedPlan.price;
+  const selectedPlan = await Plan.findOne({
+    where: {
+      name: planType,
+      duration: planDuration,
+    },
+  });
+  const planPriceId = selectedPlan.priceId;
 
-  // 3) Payment Logic (Create strip checkout session)
-  console.log(req.user.email);
+  // 3) Create a customer in Stripe and store user email in metadata
+  const userEmail = req.user.email;
+  try {
+    const customer = await stripe.customers.create({
+      email: userEmail,
+      // payment_method: paymentMethodId,
+      metadata: {
+        user_email: userEmail,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: {
+        title: error.message || "create stripe customer error.",
+      },
+    });
+  }
+
+  // 4) Payment Logic (Create strip checkout session)
   // const userFullName = `${req.user.firstName} ${req.user.lastName}`;
   try {
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
-          price: "price_1OBuQAJrs5sOVzzzI0PfPND3",
+          price: planPriceId,
           // price_data: {
 
           //   currency: "usd",
@@ -107,7 +125,7 @@ console.log(planType,planDuration)
       customer_email: req.user.email,
     });
 
-    // 4) Send session to response
+    // 5) Send session to response
     return res.json({
       status: httpStatusText.SUCCESS,
       data: {
@@ -172,9 +190,6 @@ exports.getPayments = async (req, res) => {
 // @route
 // @access
 exports.webhookCheckout = async (req, res) => {
-  const plans = {
-    basic: "price_1OBuQAJrs5sOVzzzI0PfPND3",
-  };
   let event = res.body;
   // Replace this endpoint secret with your endpoint's unique secret
   // If you are testing with the CLI, find the secret by running 'stripe listen'
@@ -206,14 +221,15 @@ exports.webhookCheckout = async (req, res) => {
       // Then define and call a function to handle the event customer.subscription.created
       // const userr = req.user;
       // console.log(userr)
-      const subscriptionStart = customerSubscriptionCreated.current_period_start;
+      const userEmail = paymentIntent.metadata.user_email;
+
+      const subscriptionStart =
+        customerSubscriptionCreated.current_period_start;
       const subscriptionEnd = customerSubscriptionCreated.current_period_end;
-      console.log("data",subscriptionStart,subscriptionEnd);
-      console.log("subscription created Bara");
+      console.log("data", subscriptionStart, subscriptionEnd);
+      console.log("subscription created Bara",userEmail);
       // const planId = event.data.object.plan.id;
       // const planPeriod = event.data.object.plan.interval;
-    
-    
 
       // console.log(
       //   planId,

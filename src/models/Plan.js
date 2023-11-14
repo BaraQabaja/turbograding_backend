@@ -13,7 +13,7 @@ const Plan = sequelize.define(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      values: ["basic","premium", "pro"], //ex: Basic, Silver, Gold, Premium, Starter, Professional, Enterprise, Family, Student, Business
+      values: ["basic","premium", "professional"], //ex: Basic, Silver, Gold, Premium, Starter, Professional, Enterprise, Family, Student, Business
       defaultValue: "basic",//basic plan is *free* plan
     },
     description: {

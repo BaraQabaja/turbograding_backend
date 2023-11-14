@@ -11,6 +11,8 @@ router.post('/create-plan', plansController.createPlan);  // Create a new plan
 
 
 router.delete('/delete-plan/:id', plansController.deletePlan);  // Delete a plan
+
+router.delete('/update-plan/:id', plansController.updatePlan);  // update a plan
 /*
 
 router.get('/:id', authenticateToken, plansController.getPlan);  // Fetch a specific plan
