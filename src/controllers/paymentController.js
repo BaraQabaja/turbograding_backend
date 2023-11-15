@@ -166,14 +166,7 @@ const createSubscription = async (
   });
   if (!user) {
     console.log("something went wrong, stripe customer id not valid.");
-    return res.status(400).json({
-      status: httpStatusText.FAIL,
-      data: {
-        title: "something went wrong, please try again.",
-      },
-    });
   }
-
   // 2) find plan - from function parameters
 
   // 3) create subscription for the user
@@ -185,21 +178,10 @@ const createSubscription = async (
       endDate: subscriptionEnd,
     });
     //status attribute value will be set authomaticaly in Subscription modal depending on subscriptionStart and subscriptionEnd
-    return res.json({
-      status: httpStatusText.SUCCESS,
-      data: {
-        title: "subscription created successfully.",
-        subscription,
-      },
-    });
+
+    console.log("subscription created successfully.", subscription);
   } catch (error) {
-    console.log(error.message)
-    return res.status(500).json({
-      status: httpStatusText.ERROR,
-      data: {
-        title: "Something went wrong while creating subscription, please try again.",
-      },
-    });
+    console.log(error.message);
   }
 };
 
@@ -247,6 +229,7 @@ exports.webhookCheckout = async (req, res) => {
         subscriptionStart,
         subscriptionEnd
       );
+
       break;
     case "customer.subscription.deleted":
       const customerSubscriptionDeleted = event.data.object;
