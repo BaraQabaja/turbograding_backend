@@ -224,12 +224,9 @@ exports.webhookCheckout = async (req, res) => {
   // Handle the event
   switch (event.type) {
     case "customer.subscription.created":
-      const session = await stripe.checkout.sessions.retrieve(event.data.object.id);
-      if (session.payment_status === "paid") {
-        const userEmail = session.customer_email;
-        const planPriceId = session.display_items[0].price.id;
-        console.log("userEmail",userEmail)
-      }
+      const session = await stripe
+      console.log("stripe ====> ",session)
+    
 //       const userEmail = session.customer_email;
 // console.log("got it ",session)
 //       const customerSubscriptionCreated = event.data.object;
