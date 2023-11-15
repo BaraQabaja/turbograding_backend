@@ -151,7 +151,7 @@ const createSubscription = async (
   subscriptionStart,
   subscriptionEnd
 ) => {
-  console.log("createSubscription function", user, planId);
+  console.log("createSubscription function", stripeCustomerId, planId);
 
   // const subscriptions = await stripe.subscriptions.list({
   //   customer: user.stripeCustomerId,
