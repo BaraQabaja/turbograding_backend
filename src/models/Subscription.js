@@ -25,11 +25,8 @@ const Subscription = sequelize.define(
       values: ['active', 'inactive'],
       defaultValue:'inactive',
 
-    },
-    stripeCustomerId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
+    }
+    
   },
   {
     // Other model options go here

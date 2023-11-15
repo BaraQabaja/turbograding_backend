@@ -4,7 +4,7 @@ const validator = require("validator");
 const config = require("../config");
 const stripe = require("stripe")(config.payment_stripe.stripe_secret);
 const User = require("../models/User");
-
+const Plan = require("../models/Plan");
 const Subscription = require("../models/Subscription");
 //httpStatus key words
 const httpStatusText = require("../utils/httpStatusText");
@@ -143,47 +143,65 @@ exports.getPayments = async (req, res) => {
   }
 };
 
-const createSubscription = async (user,planId) => {
-console.log("createSubscription function",user,planId)
+// @desc    create subscription this function used in webhook function
+// @route
+// @access  webhook function
+const createSubscription = async (
+  stripeCustomerId,
+  planId,
+  subscriptionStart,
+  subscriptionEnd
+) => {
+  console.log("createSubscription function", user, planId);
 
-const subscriptions = await stripe.subscriptions.list(
-  {
-    customer: user.stripeCustomerId,
-    status: "all",
-    expand: ["data.default_payment_method"],
+  // const subscriptions = await stripe.subscriptions.list({
+  //   customer: user.stripeCustomerId,
+  //   status: "all",
+  //   expand: ["data.default_payment_method"],
+  // });
+  // console.log("user subscriptions ===> ", subscriptions.data[0].plan.nickname);
+
+  // 1) find user
+  const user = await User.findOne({
+    where: { stripeCustomerId: stripeCustomerId },
+  });
+  if (!user) {
+    console.log("something went wrong, stripe customer id not valid.");
+    return res.status(400).json({
+      status: httpStatusText.FAIL,
+      data: {
+        title: "something went wrong, please try again.",
+      },
+    });
   }
-);
 
-console.log("user subscriptions ===> ",subscriptions.data[0].plan.nickname)
+  // 2) find plan - from function parameters
 
-  // const { planId, planPeriod, subscriptionStart, subscriptionEnd } = user;
-
-  // if (planId == plans.basic) {
-  //   if (planPeriod == "month") {
-  //     try {
-  //       const subscription = await Subscription.create({
-  //         userId,
-  //         planId,
-  //         subscriptionStart,
-  //         subscriptionEnd,
-  //       });
-  //       return res.json({
-  //         status: httpStatusText.SUCCESS,
-  //         data: {
-  //           title: "subscription created successfully.",
-  //           subscription,
-  //         },
-  //       });
-  //     } catch (error) {
-  //       return res.status(500).json({
-  //         status: httpStatusText.ERROR,
-  //         data: {
-  //           title: error.message || "something went wrong, please try again.",
-  //         },
-  //       });
-  //     }
-  //   }
-  // }
+  // 3) create subscription for the user
+  try {
+    const subscription = await Subscription.create({
+      userId: user.id,
+      planId: planId,
+      startDate: subscriptionStart,
+      endDate: subscriptionEnd,
+    });
+    //status attribute value will be set authomaticaly in Subscription modal depending on subscriptionStart and subscriptionEnd
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: {
+        title: "subscription created successfully.",
+        subscription,
+      },
+    });
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: {
+        title: "Something went wrong while creating subscription, please try again.",
+      },
+    });
+  }
 };
 
 // @desc
@@ -218,23 +236,18 @@ exports.webhookCheckout = async (req, res) => {
   switch (event.type) {
     case "customer.subscription.created":
       const customerSubscriptionCreated = event.data.object;
-      const subscriptionStart = customerSubscriptionCreated.current_period_start;
-      const subscriptionEnd = customerSubscriptionCreated.current_period_end;
+      const planId = customerSubscriptionCreated.plan.id;
       const stripeCustomerId = customerSubscriptionCreated.customer;
-      const planId=customerSubscriptionCreated.plan.id
-      const user = await User.findOne({
-        where: { stripeCustomerId: stripeCustomerId },
-      });
-      if (!user) {
-        console.log("something went wrong, stripe customer id not valid.");
-        return res.status(400).json({
-          status: httpStatusText.FAIL,
-          data: {
-            title: "something went wrong, please try again.",
-          },
-        });
-      }
-      createSubscription(user,planId)
+      const subscriptionStart =
+        customerSubscriptionCreated.current_period_start;
+      const subscriptionEnd = customerSubscriptionCreated.current_period_end;
+
+      createSubscription(
+        stripeCustomerId,
+        planId,
+        subscriptionStart,
+        subscriptionEnd
+      );
       break;
     case "customer.subscription.deleted":
       const customerSubscriptionDeleted = event.data.object;
