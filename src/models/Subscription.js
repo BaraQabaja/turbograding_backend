@@ -45,7 +45,7 @@ const Subscription = sequelize.define(
     //   },
     // },
     // Other model options go here
-    createdAt: false, // disable createdAt
+    createdAt: true, // disable createdAt
     updatedAt: false, // disable updatedAt
   },
 
