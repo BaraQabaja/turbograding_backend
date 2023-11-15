@@ -22,10 +22,10 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "config.env" });
 const auth = require('./src/controllers/authController');
 //! (Security) rate limiting middleware for all operations
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100, // limit each IP to 100 requests per windowMs
+// });
 
 //! Diclirations
 const app = express();
@@ -67,6 +67,10 @@ app.use(compression()); // Compress all responses
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
+
+require('./src/utils/subscriptionScheduler');// Include the subscription scheduler code performed every day at 0.0 am to make sure that the user subscription endDate is expired or not based on that he will update the subscription status to inactive or he will leave it active as it is. 
+
+
 //! environment setup
 
 if (process.env.NODE_ENV === "development") {
@@ -95,7 +99,7 @@ const profileRoutes = require("./src/routes/profile");
 //! Middlewares
 app.use(express.static("public"));
 //apply requests limiter as a middleware, to limit the incomming requests rate
-app.use("/api", limiter);
+// app.use("/api", limiter);
 
 //! Routes
 // app.use('/api/users', usersRoutes);

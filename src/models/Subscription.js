@@ -25,17 +25,30 @@ const Subscription = sequelize.define(
       values: ['active', 'inactive'],
       defaultValue:'inactive',
 
-    },
-    stripeCustomerId: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
+    }
+    
   },
   {
+    // hooks: {
+    //   beforeCreate: (subscription, options) => {
+    //     // Calculate the endDate based on your logic
+    //     const endDate = new Date(subscription.startDate);
+    //     endDate.setMonth(endDate.getMonth() + 1); // For example, add one month
+    //     subscription.endDate = endDate;
+
+    //     // Set the initial status based on the endDate
+    //     subscription.status = endDate > new Date() ? 'active' : 'inactive';
+    //   },
+    //   beforeUpdate: (subscription, options) => {
+    //     // Update the status based on the endDate
+    //     subscription.status = subscription.endDate > new Date() ? 'active' : 'inactive';
+    //   },
+    // },
     // Other model options go here
-    createdAt: false, // disable createdAt
+    createdAt: true, // disable createdAt
     updatedAt: false, // disable updatedAt
-  }
+  },
+
 );
 
 // Subscription.associate = models => {

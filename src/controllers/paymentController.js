@@ -3,11 +3,19 @@ const Plan = require("../models/Plan");
 const validator = require("validator");
 const config = require("../config");
 const stripe = require("stripe")(config.payment_stripe.stripe_secret);
+const User = require("../models/User");
 const Subscription = require("../models/Subscription");
 //httpStatus key words
 const httpStatusText = require("../utils/httpStatusText");
 
-// @desc     create payment order
+
+
+
+
+
+
+
+// @desc     create payment order *NOT USED YET
 // @route    POST api/payment/createPayment
 // @access   protected/User
 exports.createPayment = async (req, res) => {
@@ -44,19 +52,18 @@ exports.createPayment = async (req, res) => {
   // 3) Payment Logic
 };
 
-// @desc    get checkout session from strip and send it as a response
+// @desc    get checkout session link from strip and send it as a response and then forword user to stripe payment page.
 // @route   POST /api/payment/checkout-session
 // @access  protected/user
 exports.checkoutSession = async (req, res) => {
   // app settings
   const taxPrice = 0;
-  // console.log(req.user.id)
   // 1) Get Plan Type and Duration (1 month or 12 month)
   const planType = req.body.planType;
   const planDuration = req.body.planDuration;
   const validPlanTypes = ["professional", "premium"];
   const validPlanDurations = [30, 365];
-  console.log(planType, planDuration);
+  // console.log(planType, planDuration);
   //****Validation****//
   if (
     !(
@@ -87,33 +94,16 @@ exports.checkoutSession = async (req, res) => {
   }
   const planPriceId = selectedPlan.priceId;
 
-  // 3) Create a customer in Stripe and store user email in metadata
-  const userEmail = req.user.email;
-  try {
-    console.log("customer email passed to stripe customers",userEmail)
-    const customer = await stripe.customers.create({
-      email: userEmail,
-      // payment_method: paymentMethodId,
-      // metadata: {
-      //   user_email: userEmail,
-      // },
-    });
-    console.log("Stripe Customer:", customer);
-
-  } catch (error) {
-    console.error("Error creating Stripe customer:", error.message);
-
-    res.status(500).json({
-      status: httpStatusText.ERROR,
-      data: {
-        title: error.message || "create stripe customer error.",
-      },
-    });
-  }
-
-  // 4) Payment Logic (Create strip checkout session)
+  // 3) Payment Logic (Create strip checkout session)
   // const userFullName = `${req.user.firstName} ${req.user.lastName}`;
   try {
+    const userEmail = req.user.email;
+    const user = await User.findOne({
+      where: {
+        email: userEmail,
+      },
+    });
+
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
@@ -122,23 +112,23 @@ exports.checkoutSession = async (req, res) => {
         },
       ],
       mode: "subscription",
+      payment_method_types: ["card"],
+      //free trial
+      // subscription_data:{
+      //  trial_period_days:30
+      // },
       success_url: `${req.protocol}://${req.get("host")}/success`, //Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains success_url:`${req.protocol}://${req.get('host')}/success`.
-      cancel_url: `${req.protocol}://${req.get("host")}/dashboard`, // Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains cancel_url:`${req.protocol}://${req.get('host')}/dashboard`.
+      cancel_url: `${req.protocol}://${req.get("host")}/failed`, // Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains cancel_url:`${req.protocol}://${req.get('host')}/dashboard`.
       // customer_email:req.user.email,
       // client_reference_id:req.params.id,
-      customer_email: req.user.email,
+      // customer_email: req.user.email,
+      customer: user.stripeCustomerId,
     });
 
-    // 5) Send session to response
-    return res.json({
-      status: httpStatusText.SUCCESS,
-      data: {
-        title: "session created successfully.",
-        session: session,
-      },
-    });
+    // 4) Send session to response
+    return res.json(session);
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       status: httpStatusText.ERROR,
       data: {
         title: error.message || "something went wrong, please try again.",
@@ -147,7 +137,7 @@ exports.checkoutSession = async (req, res) => {
   }
 };
 
-// @desc
+// @desc     *NOT USED YET
 // @route
 // @access
 exports.getPayments = async (req, res) => {
@@ -159,40 +149,64 @@ exports.getPayments = async (req, res) => {
   }
 };
 
-// const createSubscription=async(session)=>{
+// @desc    create subscription this function used in webhook function
+// @route   No Route
+// @access  webhook function
+const createSubscription = async (
+  stripeCustomerId,
+  planId,
+  subscriptionStart,
+  subscriptionEnd
+) => {
+  console.log("createSubscription function", stripeCustomerId, planId);
 
-// const {planId,planPeriod,subscriptionStart,subscriptionEnd}=session
+  // const subscriptions = await stripe.subscriptions.list({
+  //   customer: user.stripeCustomerId,
+  //   status: "all",
+  //   expand: ["data.default_payment_method"],
+  // });
+  // console.log("user subscriptions ===> ", subscriptions.data[0].plan.nickname);
 
-//   if (planId == plans.basic) {
-//     if (planPeriod == "month") {
-//       try {
-//         const subscription = await Subscription.create({
-//           userId,
-//           planId,
-//           subscriptionStart,
-//           subscriptionEnd,
-//         });
-//         return res.json({
-//           status: httpStatusText.SUCCESS,
-//           data: {
-//             title: "subscription created successfully.",
-//             subscription,
-//           },
-//         });
-//       } catch (error) {
-//         return res.status(500).json({ status: httpStatusText.ERROR,
-//           data: {
-//             title: error.message||"something went wrong, please try again.",
+  // 1) find user
+  const user = await User.findOne({
+    where: { stripeCustomerId: stripeCustomerId },
+  });
+  if (!user) {
+    console.log("something went wrong, stripe customer id not valid.");
+  }
+  // 2) find plan - from function parameters
+  const plan = await Plan.findOne({
+    where: { priceId: planId },
+  });
+  const planIdOriginal = plan.id; // variable called planIdOriginal is the id attribute in Plan modal but the varible called planId is the attribute named priceId in Plan modal.
 
-//           },});
-//       }
-//     }
-//   }
-// }
+  // 3) create subscription for the user
 
-// @desc
-// @route
-// @access
+  const subscriptionStart_ms = subscriptionStart * 1000; //convert from seconds to milliseconds
+  const subscriptionEnd_ms = subscriptionEnd * 1000; //convert from seconds to milliseconds
+  console.log(
+    "date manipulations ===> ",
+    new Date(subscriptionStart_ms),
+    new Date(subscriptionEnd_ms)
+  );
+  try {
+    const subscription = await Subscription.create({
+      userId: user.id,
+      planId: planIdOriginal,
+      startDate: new Date(subscriptionStart_ms),
+      endDate: new Date(subscriptionEnd_ms),
+      status:"active"
+    });
+
+    console.log("subscription created successfully.", subscription);
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// @desc    event listener needed by developer to listen to events after the user enter payment data in stripe payment page.
+// @route   /webhook
+// @access  stripe
 exports.webhookCheckout = async (req, res) => {
   let event = res.body;
   // Replace this endpoint secret with your endpoint's unique secret
@@ -222,14 +236,18 @@ exports.webhookCheckout = async (req, res) => {
   switch (event.type) {
     case "customer.subscription.created":
       const customerSubscriptionCreated = event.data.object;
-      const userEmail = customerSubscriptionCreated.metadata.user_email;
+      const planId = customerSubscriptionCreated.plan.id;
+      const stripeCustomerId = customerSubscriptionCreated.customer;
       const subscriptionStart =
         customerSubscriptionCreated.current_period_start;
       const subscriptionEnd = customerSubscriptionCreated.current_period_end;
-console.log(event)
-      console.log("Subscription created for user:", userEmail);
-      console.log("Subscription start:", subscriptionStart);
-      console.log("Subscription end:", subscriptionEnd);
+
+      createSubscription(
+        stripeCustomerId,
+        planId,
+        subscriptionStart,
+        subscriptionEnd
+      );
 
       break;
     case "customer.subscription.deleted":
