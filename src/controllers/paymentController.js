@@ -15,7 +15,7 @@ const httpStatusText = require("../utils/httpStatusText");
 
 
 
-// @desc     create payment order
+// @desc     create payment order *NOT USED YET
 // @route    POST api/payment/createPayment
 // @access   protected/User
 exports.createPayment = async (req, res) => {
@@ -52,7 +52,7 @@ exports.createPayment = async (req, res) => {
   // 3) Payment Logic
 };
 
-// @desc    get checkout session from strip and send it as a response
+// @desc    get checkout session link from strip and send it as a response and then forword user to stripe payment page.
 // @route   POST /api/payment/checkout-session
 // @access  protected/user
 exports.checkoutSession = async (req, res) => {
@@ -137,7 +137,7 @@ exports.checkoutSession = async (req, res) => {
   }
 };
 
-// @desc
+// @desc     *NOT USED YET
 // @route
 // @access
 exports.getPayments = async (req, res) => {
@@ -150,7 +150,7 @@ exports.getPayments = async (req, res) => {
 };
 
 // @desc    create subscription this function used in webhook function
-// @route
+// @route   No Route
 // @access  webhook function
 const createSubscription = async (
   stripeCustomerId,
@@ -204,9 +204,9 @@ const createSubscription = async (
   }
 };
 
-// @desc
-// @route
-// @access
+// @desc    event listener needed by developer to listen to events after the user enter payment data in stripe payment page.
+// @route   /webhook
+// @access  stripe
 exports.webhookCheckout = async (req, res) => {
   let event = res.body;
   // Replace this endpoint secret with your endpoint's unique secret
