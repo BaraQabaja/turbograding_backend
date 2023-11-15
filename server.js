@@ -22,10 +22,10 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "config.env" });
 const auth = require('./src/controllers/authController');
 //! (Security) rate limiting middleware for all operations
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100, // limit each IP to 100 requests per windowMs
+// });
 
 //! Diclirations
 const app = express();
@@ -95,7 +95,7 @@ const profileRoutes = require("./src/routes/profile");
 //! Middlewares
 app.use(express.static("public"));
 //apply requests limiter as a middleware, to limit the incomming requests rate
-app.use("/api", limiter);
+// app.use("/api", limiter);
 
 //! Routes
 // app.use('/api/users', usersRoutes);

@@ -225,17 +225,22 @@ exports.webhookCheckout = async (req, res) => {
   switch (event.type) {
     case "customer.subscription.created":
       const session = await stripe.checkout.sessions.retrieve(event.data.object.id);
-      const userEmail = session.customer_email;
-console.log("got it ",session)
-      const customerSubscriptionCreated = event.data.object;
-      // const userEmail = customerSubscriptionCreated.metadata.user_email;
-      const subscriptionStart =
-        customerSubscriptionCreated.current_period_start;
-      const subscriptionEnd = customerSubscriptionCreated.current_period_end;
-console.log(event)
-      console.log("Subscription created for user:", userEmail);
-      console.log("Subscription start:", subscriptionStart);
-      console.log("Subscription end:", subscriptionEnd);
+      if (session.payment_status === "paid") {
+        const userEmail = session.customer_email;
+        const planPriceId = session.display_items[0].price.id;
+        console.log("userEmail",userEmail)
+      }
+//       const userEmail = session.customer_email;
+// console.log("got it ",session)
+//       const customerSubscriptionCreated = event.data.object;
+//       // const userEmail = customerSubscriptionCreated.metadata.user_email;
+//       const subscriptionStart =
+//         customerSubscriptionCreated.current_period_start;
+//       const subscriptionEnd = customerSubscriptionCreated.current_period_end;
+// console.log(event)
+//       console.log("Subscription created for user:", userEmail);
+//       console.log("Subscription start:", subscriptionStart);
+//       console.log("Subscription end:", subscriptionEnd);
 
       break;
     case "customer.subscription.deleted":
