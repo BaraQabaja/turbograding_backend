@@ -88,27 +88,27 @@ exports.checkoutSession = async (req, res) => {
 
   // 3) Create a customer in Stripe and store user email in metadata
   const userEmail = req.user.email;
-  try {
-    console.log("customer email passed to stripe customers",userEmail)
-    const customer = await stripe.customers.create({
-      email: userEmail,
-      // payment_method: paymentMethodId,
-      // metadata: {
-      //   user_email: userEmail,
-      // },
-    });
-    console.log("Stripe Customer:", customer);
+  // try {
+  //   console.log("customer email passed to stripe customers",userEmail)
+  //   const customer = await stripe.customers.create({
+  //     email: userEmail,
+  //     // payment_method: paymentMethodId,
+  //     // metadata: {
+  //     //   user_email: userEmail,
+  //     // },
+  //   });
+  //   console.log("Stripe Customer:", customer);
 
-  } catch (error) {
-    console.error("Error creating Stripe customer:", error.message);
+  // } catch (error) {
+  //   console.error("Error creating Stripe customer:", error.message);
 
-    res.status(500).json({
-      status: httpStatusText.ERROR,
-      data: {
-        title: error.message || "create stripe customer error.",
-      },
-    });
-  }
+  //   res.status(500).json({
+  //     status: httpStatusText.ERROR,
+  //     data: {
+  //       title: error.message || "create stripe customer error.",
+  //     },
+  //   });
+  // }
 
   // 4) Payment Logic (Create strip checkout session)
   // const userFullName = `${req.user.firstName} ${req.user.lastName}`;
