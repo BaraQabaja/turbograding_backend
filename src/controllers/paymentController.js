@@ -154,7 +154,7 @@ const subscriptions = await stripe.subscriptions.list(
   }
 );
 
-console.log("user subscriptions ===> ",subscriptions)
+console.log("user subscriptions ===> ",subscriptions.data[0].plan.nickname)
 
   // const { planId, planPeriod, subscriptionStart, subscriptionEnd } = user;
 
