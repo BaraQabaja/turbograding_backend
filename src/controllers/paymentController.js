@@ -4,7 +4,6 @@ const validator = require("validator");
 const config = require("../config");
 const stripe = require("stripe")(config.payment_stripe.stripe_secret);
 const User = require("../models/User");
-const Plan = require("../models/Plan");
 const Subscription = require("../models/Subscription");
 //httpStatus key words
 const httpStatusText = require("../utils/httpStatusText");
