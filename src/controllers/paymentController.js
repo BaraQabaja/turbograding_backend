@@ -8,6 +8,13 @@ const Subscription = require("../models/Subscription");
 //httpStatus key words
 const httpStatusText = require("../utils/httpStatusText");
 
+
+
+
+
+
+
+
 // @desc     create payment order
 // @route    POST api/payment/createPayment
 // @access   protected/User
@@ -168,16 +175,28 @@ const createSubscription = async (
     console.log("something went wrong, stripe customer id not valid.");
   }
   // 2) find plan - from function parameters
+  const plan = await Plan.findOne({
+    where: { priceId: planId },
+  });
+  const planIdOriginal = plan.id; // variable called planIdOriginal is the id attribute in Plan modal but the varible called planId is the attribute named priceId in Plan modal.
 
   // 3) create subscription for the user
+
+  const subscriptionStart_ms = subscriptionStart * 1000; //convert from seconds to milliseconds
+  const subscriptionEnd_ms = subscriptionEnd * 1000; //convert from seconds to milliseconds
+  console.log(
+    "date manipulations ===> ",
+    new Date(subscriptionStart_ms),
+    new Date(subscriptionEnd_ms)
+  );
   try {
     const subscription = await Subscription.create({
       userId: user.id,
-      planId: planId,
-      startDate: subscriptionStart,
-      endDate: subscriptionEnd,
+      planId: planIdOriginal,
+      startDate: new Date(subscriptionStart_ms),
+      endDate: new Date(subscriptionEnd_ms),
+      status:"active"
     });
-    //status attribute value will be set authomaticaly in Subscription modal depending on subscriptionStart and subscriptionEnd
 
     console.log("subscription created successfully.", subscription);
   } catch (error) {

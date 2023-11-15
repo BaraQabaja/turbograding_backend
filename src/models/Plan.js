@@ -55,6 +55,7 @@ const Plan = sequelize.define(
     createdAt: false, // disable createdAt
     updatedAt: false, // disable updatedAt
   }
+  
 );
 
 // Plan.associate = (models) => {
