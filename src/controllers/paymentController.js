@@ -50,7 +50,6 @@ exports.createPayment = async (req, res) => {
 exports.checkoutSession = async (req, res) => {
   // app settings
   const taxPrice = 0;
-  // console.log(req.user.id)
   // 1) Get Plan Type and Duration (1 month or 12 month)
   const planType = req.body.planType;
   const planDuration = req.body.planDuration;
@@ -122,8 +121,12 @@ exports.checkoutSession = async (req, res) => {
         },
       ],
       mode: "subscription",
-      success_url: `${req.protocol}://${req.get("host")}/success`, //Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains success_url:`${req.protocol}://${req.get('host')}/success`.
-      cancel_url: `${req.protocol}://${req.get("host")}/dashboard`, // Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains cancel_url:`${req.protocol}://${req.get('host')}/dashboard`.
+      //free trial
+      // subscription_data:{
+      //  trial_period_days:30
+      // },
+      success_url: `${req.protocol}://${req.get("host")}/success?session_id={CHECKOUT_SESSION_ID}`, //Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains success_url:`${req.protocol}://${req.get('host')}/success`.
+      cancel_url: `${req.protocol}://${req.get("host")}/failed`, // Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains cancel_url:`${req.protocol}://${req.get('host')}/dashboard`.
       // customer_email:req.user.email,
       // client_reference_id:req.params.id,
       customer_email: req.user.email,
@@ -221,8 +224,11 @@ exports.webhookCheckout = async (req, res) => {
   // Handle the event
   switch (event.type) {
     case "customer.subscription.created":
+      const session = await stripe.checkout.sessions.retrieve(event.data.object.id);
+      const userEmail = session.customer_email;
+console.log("got it ",session)
       const customerSubscriptionCreated = event.data.object;
-      const userEmail = customerSubscriptionCreated.metadata.user_email;
+      // const userEmail = customerSubscriptionCreated.metadata.user_email;
       const subscriptionStart =
         customerSubscriptionCreated.current_period_start;
       const subscriptionEnd = customerSubscriptionCreated.current_period_end;
