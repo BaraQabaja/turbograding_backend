@@ -143,20 +143,8 @@ exports.getPayments = async (req, res) => {
   }
 };
 
-const createSubscription = async (user,planId) => {
-console.log("createSubscription function",user,planId)
-
-// const subscriptions = await stripe.subscriptions.list(
-//   {
-//     customer: user.stripeCustomerId,
-//     status: "all",
-//     expand: ["data.default_payment_method"],
-//   },
-//   {
-//     apiKey: process.env.STRIPE_SECRET_KEY,
-//   }
-// );
-
+const createSubscription = async (user) => {
+  
   // const { planId, planPeriod, subscriptionStart, subscriptionEnd } = user;
 
   // if (planId == plans.basic) {

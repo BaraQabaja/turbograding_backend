@@ -144,7 +144,7 @@ exports.getPayments = async (req, res) => {
 };
 
 const createSubscription = async (user,planId) => {
-console.log("createSubscription function",user,planId)
+console.log("createSubscription function")
 
 // const subscriptions = await stripe.subscriptions.list(
 //   {

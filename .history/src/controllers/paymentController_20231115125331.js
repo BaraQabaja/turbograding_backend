@@ -143,48 +143,35 @@ exports.getPayments = async (req, res) => {
   }
 };
 
-const createSubscription = async (user,planId) => {
-console.log("createSubscription function",user,planId)
+const createSubscription = async (user) => {
+  const { planId, planPeriod, subscriptionStart, subscriptionEnd } = user;
 
-// const subscriptions = await stripe.subscriptions.list(
-//   {
-//     customer: user.stripeCustomerId,
-//     status: "all",
-//     expand: ["data.default_payment_method"],
-//   },
-//   {
-//     apiKey: process.env.STRIPE_SECRET_KEY,
-//   }
-// );
-
-  // const { planId, planPeriod, subscriptionStart, subscriptionEnd } = user;
-
-  // if (planId == plans.basic) {
-  //   if (planPeriod == "month") {
-  //     try {
-  //       const subscription = await Subscription.create({
-  //         userId,
-  //         planId,
-  //         subscriptionStart,
-  //         subscriptionEnd,
-  //       });
-  //       return res.json({
-  //         status: httpStatusText.SUCCESS,
-  //         data: {
-  //           title: "subscription created successfully.",
-  //           subscription,
-  //         },
-  //       });
-  //     } catch (error) {
-  //       return res.status(500).json({
-  //         status: httpStatusText.ERROR,
-  //         data: {
-  //           title: error.message || "something went wrong, please try again.",
-  //         },
-  //       });
-  //     }
-  //   }
-  // }
+  if (planId == plans.basic) {
+    if (planPeriod == "month") {
+      try {
+        const subscription = await Subscription.create({
+          userId,
+          planId,
+          subscriptionStart,
+          subscriptionEnd,
+        });
+        return res.json({
+          status: httpStatusText.SUCCESS,
+          data: {
+            title: "subscription created successfully.",
+            subscription,
+          },
+        });
+      } catch (error) {
+        return res.status(500).json({
+          status: httpStatusText.ERROR,
+          data: {
+            title: error.message || "something went wrong, please try again.",
+          },
+        });
+      }
+    }
+  }
 };
 
 // @desc

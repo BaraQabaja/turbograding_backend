@@ -143,49 +143,39 @@ exports.getPayments = async (req, res) => {
   }
 };
 
-const createSubscription = async (user,planId) => {
-console.log("createSubscription function",user,planId)
+// const createSubscription=async(session)=>{
 
-// const subscriptions = await stripe.subscriptions.list(
-//   {
-//     customer: user.stripeCustomerId,
-//     status: "all",
-//     expand: ["data.default_payment_method"],
-//   },
-//   {
-//     apiKey: process.env.STRIPE_SECRET_KEY,
+// const {planId,planPeriod,subscriptionStart,subscriptionEnd}=session
+
+//   if (planId == plans.basic) {
+//     if (planPeriod == "month") {
+//       try {
+//         const subscription = await Subscription.create({
+//           userId,
+//           planId,
+//           subscriptionStart,
+//           subscriptionEnd,
+//         });
+//         return res.json({
+//           status: httpStatusText.SUCCESS,
+//           data: {
+//             title: "subscription created successfully.",
+//             subscription,
+//           },
+//         });
+//       } catch (error) {
+//         return res.status(500).json({ status: httpStatusText.ERROR,
+//           data: {
+//             title: error.message||"something went wrong, please try again.",
+
+//           },});
+//       }
+//     }
 //   }
-// );
+// }
 
-  // const { planId, planPeriod, subscriptionStart, subscriptionEnd } = user;
 
-  // if (planId == plans.basic) {
-  //   if (planPeriod == "month") {
-  //     try {
-  //       const subscription = await Subscription.create({
-  //         userId,
-  //         planId,
-  //         subscriptionStart,
-  //         subscriptionEnd,
-  //       });
-  //       return res.json({
-  //         status: httpStatusText.SUCCESS,
-  //         data: {
-  //           title: "subscription created successfully.",
-  //           subscription,
-  //         },
-  //       });
-  //     } catch (error) {
-  //       return res.status(500).json({
-  //         status: httpStatusText.ERROR,
-  //         data: {
-  //           title: error.message || "something went wrong, please try again.",
-  //         },
-  //       });
-  //     }
-  //   }
-  // }
-};
+
 
 // @desc
 // @route
@@ -218,24 +208,21 @@ exports.webhookCheckout = async (req, res) => {
   // Handle the event
   switch (event.type) {
     case "customer.subscription.created":
-      const customerSubscriptionCreated = event.data.object;
-      const subscriptionStart = customerSubscriptionCreated.current_period_start;
-      const subscriptionEnd = customerSubscriptionCreated.current_period_end;
-      const stripeCustomerId = customerSubscriptionCreated.customer;
-      const planId=customerSubscriptionCreated.plan.id
-      const user = await User.findOne({
-        where: { stripeCustomerId: stripeCustomerId },
-      });
-      if (!user) {
-        console.log("something went wrong, stripe customer id not valid.");
-        return res.status(400).json({
-          status: httpStatusText.FAIL,
-          data: {
-            title: "something went wrong, please try again.",
-          },
-        });
-      }
-      createSubscription(user,planId)
+      const customerSubscriptionCreated=event.data.object
+      const stripeCustomerId=
+console.log("customerSubscriptionCreated",customerSubscriptionCreated)
+      //       const userEmail = session.customer_email;
+      // console.log("got it ",session)
+      //       const customerSubscriptionCreated = event.data.object;
+      //       // const userEmail = customerSubscriptionCreated.metadata.user_email;
+      //       const subscriptionStart =
+      //         customerSubscriptionCreated.current_period_start;
+      //       const subscriptionEnd = customerSubscriptionCreated.current_period_end;
+      // console.log(event)
+      //       console.log("Subscription created for user:", userEmail);
+      //       console.log("Subscription start:", subscriptionStart);
+      //       console.log("Subscription end:", subscriptionEnd);
+
       break;
     case "customer.subscription.deleted":
       const customerSubscriptionDeleted = event.data.object;
