@@ -82,12 +82,10 @@ const User = sequelize.define(
       allowNull: false,
       values: ["admin ", "educator ", "student"],
       defaultValue: "student",
-    },
-    stripeCustomerId:{//user id in stripe, stripe give each customer a unique id
+    },//
+    stripeCustomerId:{
       type:DataTypes.STRING,
       allowNull:false,
-      unique: true
-
     }
   },
   {

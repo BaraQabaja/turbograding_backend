@@ -27,7 +27,7 @@ exports.protect = async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
-  }
+  } 
   // else {
   //      return res.status(404).json({
   //       status: httpStatusText.FAIL,
@@ -35,7 +35,7 @@ exports.protect = async (req, res, next) => {
   //     });
   // }
 
-  console.log("token", token);
+  console.log("token",token)
   if (!token) {
     return next(
       res.send("You are not login, Please login to get access this route")
@@ -50,6 +50,7 @@ exports.protect = async (req, res, next) => {
   // 2) Verify token (no change happens, expired token)
   jwt.verify(token, config.auth.accessToken, (error, decoded) => {
     if (error) {
+    
       return res.status(404).json({
         status: httpStatusText.FAIL,
         data: { title: "Token is invalid" },
@@ -61,12 +62,12 @@ exports.protect = async (req, res, next) => {
   // 3) Check if user exists
   const currentUser = await User.findByPk(decoded.userId);
   if (!currentUser) {
+   
     return res.status(404).json({
       status: httpStatusText.FAIL,
-      data: {
-        title: "The user that belong to this token does no longer exist",
-      },
+      data: { title: "The user that belong to this token does no longer exist" },
     });
+    
   }
 
   if (currentUser.logoutAt) {
@@ -177,11 +178,14 @@ exports.registerUser = async (req, res) => {
     });
   }
 
-  const customer = await stripe.customers.create({
-    email,
-  });
 
-  console.log("customer id ==> ", customer.id);
+  const customer = await stripe.customers.create(
+    {
+      email,
+    }
+  );
+
+console.log("customer id ==> ",customer.id)
   bcrypt
     .hash(password, 12)
     .then((hashPassword) => {
@@ -193,7 +197,7 @@ exports.registerUser = async (req, res) => {
           email: email,
           password: hashPassword,
           verifiedEmail: false,
-          joinDate: Date.now(),
+          joinDate:Date.now(),
           stripeCustomerId: customer.id,
         })
           .then(async (user) => {
@@ -234,7 +238,7 @@ exports.registerUser = async (req, res) => {
                 data: {
                   title:
                     "email verification link sent to your email, please check your inbox.",
-                  stripeCustomerId: customer.id,
+                    
                 },
               });
 

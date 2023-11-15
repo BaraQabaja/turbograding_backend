@@ -209,7 +209,7 @@ exports.webhookCheckout = async (req, res) => {
   switch (event.type) {
     case "customer.subscription.created":
       const customerSubscriptionCreated=event.data.object
-console.log("customerSubscriptionCreated",customerSubscriptionCreated)
+console.log
       //       const userEmail = session.customer_email;
       // console.log("got it ",session)
       //       const customerSubscriptionCreated = event.data.object;

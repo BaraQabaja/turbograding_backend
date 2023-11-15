@@ -174,9 +174,6 @@ exports.getPayments = async (req, res) => {
 //   }
 // }
 
-
-
-
 // @desc
 // @route
 // @access
@@ -208,8 +205,9 @@ exports.webhookCheckout = async (req, res) => {
   // Handle the event
   switch (event.type) {
     case "customer.subscription.created":
-      const customerSubscriptionCreated=event.data.object
-console.log("customerSubscriptionCreated",customerSubscriptionCreated)
+      const session = await stripe;
+      console.log("stripe ====> ", session);
+
       //       const userEmail = session.customer_email;
       // console.log("got it ",session)
       //       const customerSubscriptionCreated = event.data.object;

@@ -88,16 +88,19 @@ exports.checkoutSession = async (req, res) => {
   }
   const planPriceId = selectedPlan.priceId;
 
+
+
+  const userEmail=req.user.email
+  const user = await User.findOne({
+    where: {
+      email: userEmail, // Assuming userEmail is the variable containing the email address
+    },
+  });
+
+
   // 3) Payment Logic (Create strip checkout session)
   // const userFullName = `${req.user.firstName} ${req.user.lastName}`;
   try {
-    const userEmail = req.user.email;
-    const user = await User.findOne({
-      where: {
-        email: userEmail,
-      },
-    });
-
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
@@ -106,7 +109,6 @@ exports.checkoutSession = async (req, res) => {
         },
       ],
       mode: "subscription",
-      payment_method_types: ["card"],
       //free trial
       // subscription_data:{
       //  trial_period_days:30
@@ -122,7 +124,7 @@ exports.checkoutSession = async (req, res) => {
     // 4) Send session to response
     return res.json(session);
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       status: httpStatusText.ERROR,
       data: {
         title: error.message || "something went wrong, please try again.",
@@ -174,9 +176,6 @@ exports.getPayments = async (req, res) => {
 //   }
 // }
 
-
-
-
 // @desc
 // @route
 // @access
@@ -208,19 +207,20 @@ exports.webhookCheckout = async (req, res) => {
   // Handle the event
   switch (event.type) {
     case "customer.subscription.created":
-      const customerSubscriptionCreated=event.data.object
-console.log("customerSubscriptionCreated",customerSubscriptionCreated)
-      //       const userEmail = session.customer_email;
-      // console.log("got it ",session)
-      //       const customerSubscriptionCreated = event.data.object;
-      //       // const userEmail = customerSubscriptionCreated.metadata.user_email;
-      //       const subscriptionStart =
-      //         customerSubscriptionCreated.current_period_start;
-      //       const subscriptionEnd = customerSubscriptionCreated.current_period_end;
-      // console.log(event)
-      //       console.log("Subscription created for user:", userEmail);
-      //       console.log("Subscription start:", subscriptionStart);
-      //       console.log("Subscription end:", subscriptionEnd);
+      const session = await stripe
+      console.log("stripe ====> ",session)
+    
+//       const userEmail = session.customer_email;
+// console.log("got it ",session)
+//       const customerSubscriptionCreated = event.data.object;
+//       // const userEmail = customerSubscriptionCreated.metadata.user_email;
+//       const subscriptionStart =
+//         customerSubscriptionCreated.current_period_start;
+//       const subscriptionEnd = customerSubscriptionCreated.current_period_end;
+// console.log(event)
+//       console.log("Subscription created for user:", userEmail);
+//       console.log("Subscription start:", subscriptionStart);
+//       console.log("Subscription end:", subscriptionEnd);
 
       break;
     case "customer.subscription.deleted":
