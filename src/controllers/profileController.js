@@ -158,7 +158,7 @@ exports.getPersonalInformations = async (req, res) => {
      subscriptionStartDate = new Date(subscriptionStartDate);
      subscriptionStartDate = subscriptionStartDate.toISOString().slice(0, 10);
 
-    const subscriptionEndDate = latestSubscription.endDate;
+    let subscriptionEndDate = latestSubscription.endDate;
     subscriptionEndDate = new Date(subscriptionEndDate);
     subscriptionEndDate = subscriptionEndDate.toISOString().slice(0, 10);
 
