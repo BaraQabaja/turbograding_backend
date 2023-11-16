@@ -181,6 +181,8 @@ const createSubscription = async (
   });
   const planIdOriginal = plan.id; // variable called planIdOriginal is the id attribute in Plan modal but the varible called planId is the attribute named priceId in Plan modal.
 
+
+
   // 3) create subscription for the user
 
   const subscriptionStart_ms = subscriptionStart * 1000; //convert from seconds to milliseconds
@@ -197,6 +199,9 @@ const createSubscription = async (
       startDate: new Date(subscriptionStart_ms),
       endDate: new Date(subscriptionEnd_ms),
       status: "active",
+      remainingQuestions:plan.questions,
+      remainingExams:plan.exams,
+      remainingAssignments:plan.assignments
     });
 
     console.log("subscription created successfully.", subscription);

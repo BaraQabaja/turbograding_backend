@@ -118,7 +118,7 @@ exports.updateBio = async (req, res, next) => {
 
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Bio updated successfully." },
+      data: { title: "Bio updated successfully.", bio: bio },
     });
   } catch (error) {
     console.error("Error updating Bio:", error.message);
@@ -141,7 +141,7 @@ exports.getPersonalInformations = async (req, res) => {
     const user = await User.findByPk(userId);
     // needed data from user object
     let userJoinDate = user.createdAt;
-    userJoinDate = new Date(userJoinDate);//to convert from 2023-11-16T11:34:44.077Z to 2023-11-16
+    userJoinDate = new Date(userJoinDate); //to convert from 2023-11-16T11:34:44.077Z to 2023-11-16
     userJoinDate = userJoinDate.toISOString().slice(0, 10);
     const userBio = user.about;
     const userFirstName = user.firstName;
@@ -156,12 +156,16 @@ exports.getPersonalInformations = async (req, res) => {
     // needed data from subscription object
     const subscriptionStatus = latestSubscription.status;
     let subscriptionStartDate = latestSubscription.startDate;
-     subscriptionStartDate = new Date(subscriptionStartDate);
-     subscriptionStartDate = subscriptionStartDate.toISOString().slice(0, 10);
+    subscriptionStartDate = new Date(subscriptionStartDate);
+    subscriptionStartDate = subscriptionStartDate.toISOString().slice(0, 10);
 
     let subscriptionEndDate = latestSubscription.endDate;
     subscriptionEndDate = new Date(subscriptionEndDate);
     subscriptionEndDate = subscriptionEndDate.toISOString().slice(0, 10);
+
+    const remaining_questions = latestSubscription.remainingQuestions;
+    const remaining_exams = latestSubscription.remainingExams;
+    const remaining_assignments = latestSubscription.remainingAssignments;
 
     const subscriptionPlanId = latestSubscription.planId;
 
@@ -171,7 +175,7 @@ exports.getPersonalInformations = async (req, res) => {
     const planName = plan.name;
     const planNumberOfExamsLimit = plan.exams;
     const planNumberOfQuestionsLimit = plan.questions;
-
+    const planNumberOfAssignmentsLimit=plan.assignments
     return res.json({
       status: httpStatusText.SUCCESS,
       data: {
@@ -188,6 +192,10 @@ exports.getPersonalInformations = async (req, res) => {
           planName,
           planNumberOfExamsLimit,
           planNumberOfQuestionsLimit,
+          planNumberOfAssignmentsLimit,
+          remaining_questions,
+          remaining_exams,
+          remaining_assignments
         },
       },
     });
