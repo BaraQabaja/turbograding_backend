@@ -140,7 +140,9 @@ exports.getPersonalInformations = async (req, res) => {
     const userId = req.user.id;
     const user = await User.findByPk(userId);
     // needed data from user object
-    const userJoinDate = user.createdAt;
+    let userJoinDate = user.createdAt;
+    userJoinDate = new Date(userJoinDate);//to convert from 2023-11-16T11:34:44.077Z to 2023-11-16
+    userJoinDate = userJoinDate.toISOString().slice(0, 10);
     const userBio = user.about;
     const userFirstName = user.firstName;
     const userLastName = user.lastName;
@@ -154,7 +156,6 @@ exports.getPersonalInformations = async (req, res) => {
     // needed data from subscription object
     const subscriptionStatus = latestSubscription.status;
     let subscriptionStartDate = latestSubscription.startDate;
-
      subscriptionStartDate = new Date(subscriptionStartDate);
      subscriptionStartDate = subscriptionStartDate.toISOString().slice(0, 10);
 
