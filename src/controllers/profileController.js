@@ -153,7 +153,7 @@ exports.getPersonalInformations = async (req, res) => {
     });
     // needed data from subscription object
     const subscriptionStatus = latestSubscription.status;
-    const subscriptionStartDate = latestSubscription.startDate;
+    let subscriptionStartDate = latestSubscription.startDate;
 
      subscriptionStartDate = new Date(subscriptionStartDate);
      subscriptionStartDate = subscriptionStartDate.toISOString().slice(0, 10);
