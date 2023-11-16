@@ -154,7 +154,12 @@ exports.getPersonalInformations = async (req, res) => {
     // needed data from subscription object
     const subscriptionStatus = latestSubscription.status;
     const subscriptionStartDate = latestSubscription.startDate;
-    subscriptionStartDate=subscriptionStartDate.slice(0, 10)
+    
+    const dateString = "2023-12-16T11:36:43.000Z";
+    const dateObject = new Date(subscriptionStartDate);
+    const formattedDate = dateObject.toISOString().slice(0, 10);
+
+
     const subscriptionEndDate = latestSubscription.endDate;
     const subscriptionPlanId = latestSubscription.planId;
 
@@ -175,7 +180,7 @@ exports.getPersonalInformations = async (req, res) => {
           userJoinDate,
           userBio,
           userEmail,
-          subscriptionStatus,
+          formattedDate,
           subscriptionStartDate,
           subscriptionEndDate,
           planName,
