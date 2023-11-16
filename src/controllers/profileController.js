@@ -159,6 +159,9 @@ exports.getPersonalInformations = async (req, res) => {
      subscriptionStartDate = subscriptionStartDate.toISOString().slice(0, 10);
 
     const subscriptionEndDate = latestSubscription.endDate;
+    subscriptionEndDate = new Date(subscriptionEndDate);
+    subscriptionEndDate = subscriptionEndDate.toISOString().slice(0, 10);
+
     const subscriptionPlanId = latestSubscription.planId;
 
     // 3) find user plan via planId
