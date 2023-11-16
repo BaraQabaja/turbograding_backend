@@ -2,6 +2,7 @@ const config = require('../config');
 
 const Sequelize = require('sequelize');
 
+//! on Development
 // const sequelize = new Sequelize(
 //     config.db.database,
 //     config.db.username,
@@ -11,11 +12,11 @@ const Sequelize = require('sequelize');
 //         dialect: 'postgres',
 //         port: 5432, //should be remove
 //         dialectOptions: {
-//             ssl: { rejectUnauthorized: false }
+//             // ssl: { rejectUnauthorized: false }
 //         } //should be remove
 //     });
 
-
+//! on production
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',

@@ -150,7 +150,7 @@ sequelize
     console.log(`Failed to Sync with DB: ${err.message}`);
   });
 
-// On Development
+//On Development
 // sequelize
 //   .sync({ forse: true })
 //   .then(() => {
