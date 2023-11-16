@@ -153,8 +153,9 @@ exports.getPersonalInformations = async (req, res) => {
     });
     // needed data from subscription object
     const subscriptionStatus = latestSubscription.status;
-    const subscriptionStartDate = latestSubscription.startDate.slice(0, 10);
-    const subscriptionEndDate = latestSubscription.endDate.slice(0, 10);
+    const subscriptionStartDate = latestSubscription.startDate;
+    subscriptionStartDate=subscriptionStartDate.slice(0, 10)
+    const subscriptionEndDate = latestSubscription.endDate;
     const subscriptionPlanId = latestSubscription.planId;
 
     // 3) find user plan via planId
