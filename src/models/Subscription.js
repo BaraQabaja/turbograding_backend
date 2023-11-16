@@ -25,7 +25,19 @@ const Subscription = sequelize.define(
       values: ['active', 'inactive'],
       defaultValue:'inactive',
 
-    }
+    },
+    remainingQuestions: {
+      type: DataTypes.INTEGER, // Number of questions can be grad
+      allowNull: false,
+    },
+    remainingExams: {
+      type: DataTypes.INTEGER, // Number of exams can be graded
+      allowNull: false,
+    },
+    remainingAssignments: {
+      type: DataTypes.INTEGER, // Number of assignments can be graded
+      allowNull: false,
+    },
     
   },
   {

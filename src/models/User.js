@@ -72,11 +72,7 @@ const User = sequelize.define(
       type:DataTypes.STRING,
       allowNull:true,
     },//Bara 
-    joinDate:{
-      type: DataTypes.DATE,
-      allowNull: false
 
-    },
     role: {
       type: DataTypes.STRING, //(e.g., admin, educator, student).
       allowNull: false,
@@ -92,7 +88,7 @@ const User = sequelize.define(
   },
   {
     // Other model options go here
-    createdAt: false, // disable createdAt
+    createdAt: true, // disable createdAt
     updatedAt: false, // disable updatedAt
   }
 );

@@ -8,13 +8,6 @@ const Subscription = require("../models/Subscription");
 //httpStatus key words
 const httpStatusText = require("../utils/httpStatusText");
 
-
-
-
-
-
-
-
 // @desc     create payment order *NOT USED YET
 // @route    POST api/payment/createPayment
 // @access   protected/User
@@ -63,6 +56,8 @@ exports.checkoutSession = async (req, res) => {
   const planDuration = req.body.planDuration;
   const validPlanTypes = ["professional", "premium"];
   const validPlanDurations = [30, 365];
+  console.log("checkoutSession inputs ", planType, planDuration);
+
   // console.log(planType, planDuration);
   //****Validation****//
   if (
@@ -71,7 +66,7 @@ exports.checkoutSession = async (req, res) => {
       validPlanDurations.includes(planDuration)
     )
   ) {
-    return res.json({
+    return res.status(404).json({
       status: httpStatusText.FAIL,
       data: { title: "invalid inputs, please try again." },
     });
@@ -126,7 +121,13 @@ exports.checkoutSession = async (req, res) => {
     });
 
     // 4) Send session to response
-    return res.json(session);
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: {
+        title: "Checkout session.",
+      },
+      session,
+    });
   } catch (error) {
     return res.status(500).json({
       status: httpStatusText.ERROR,
@@ -180,6 +181,8 @@ const createSubscription = async (
   });
   const planIdOriginal = plan.id; // variable called planIdOriginal is the id attribute in Plan modal but the varible called planId is the attribute named priceId in Plan modal.
 
+
+
   // 3) create subscription for the user
 
   const subscriptionStart_ms = subscriptionStart * 1000; //convert from seconds to milliseconds
@@ -195,7 +198,10 @@ const createSubscription = async (
       planId: planIdOriginal,
       startDate: new Date(subscriptionStart_ms),
       endDate: new Date(subscriptionEnd_ms),
-      status:"active"
+      status: "active",
+      remainingQuestions:plan.questions,
+      remainingExams:plan.exams,
+      remainingAssignments:plan.assignments
     });
 
     console.log("subscription created successfully.", subscription);
@@ -208,6 +214,7 @@ const createSubscription = async (
 // @route   /webhook
 // @access  stripe
 exports.webhookCheckout = async (req, res) => {
+  console.log("webhook start")
   let event = res.body;
   // Replace this endpoint secret with your endpoint's unique secret
   // If you are testing with the CLI, find the secret by running 'stripe listen'
