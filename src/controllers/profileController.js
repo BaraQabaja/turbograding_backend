@@ -154,11 +154,9 @@ exports.getPersonalInformations = async (req, res) => {
     // needed data from subscription object
     const subscriptionStatus = latestSubscription.status;
     const subscriptionStartDate = latestSubscription.startDate;
-    
-    const dateString = "2023-12-16T11:36:43.000Z";
-    const dateObject = new Date(subscriptionStartDate);
-    const formattedDate = dateObject.toISOString().slice(0, 10);
 
+     subscriptionStartDate = new Date(subscriptionStartDate);
+     subscriptionStartDate = subscriptionStartDate.toISOString().slice(0, 10);
 
     const subscriptionEndDate = latestSubscription.endDate;
     const subscriptionPlanId = latestSubscription.planId;
@@ -167,8 +165,8 @@ exports.getPersonalInformations = async (req, res) => {
     const plan = await Plan.findByPk(subscriptionPlanId);
     //  needed data from plan object
     const planName = plan.name;
-    const planNumberOfExamsLimit=plan.exams
-    const planNumberOfQuestionsLimit=plan.questions
+    const planNumberOfExamsLimit = plan.exams;
+    const planNumberOfQuestionsLimit = plan.questions;
 
     return res.json({
       status: httpStatusText.SUCCESS,
@@ -180,7 +178,6 @@ exports.getPersonalInformations = async (req, res) => {
           userJoinDate,
           userBio,
           userEmail,
-          formattedDate,
           subscriptionStartDate,
           subscriptionEndDate,
           planName,
