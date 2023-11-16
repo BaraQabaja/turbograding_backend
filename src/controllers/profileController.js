@@ -184,6 +184,7 @@ exports.getPersonalInformations = async (req, res) => {
           userEmail,
           subscriptionStartDate,
           subscriptionEndDate,
+          subscriptionStatus,
           planName,
           planNumberOfExamsLimit,
           planNumberOfQuestionsLimit,
