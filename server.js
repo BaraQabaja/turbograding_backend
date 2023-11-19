@@ -31,6 +31,24 @@ var xss = require("xss");// to prevent xss attach - related to sql injection att
 
 //! Diclirations
 const app = express();
+// Specify allowed origins
+const allowedOrigins = [
+  'http://localhost:3000', // Add your frontend URL
+  // 'https://yourproductionfrontendurl.com', // Add your production frontend URL
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+// Enable CORS with specific options
+app.use(cors(corsOptions));
 
 /*const configuration = new Configuration({
     apiKey: config.api.gpt_key,
