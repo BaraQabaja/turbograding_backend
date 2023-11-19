@@ -148,8 +148,8 @@ exports.getPersonalInformations = async (req, res) => {
     const userFirstName = user.firstName;
     const userLastName = user.lastName;
     const userEmail = user.email;
-    const userImg=user.img
-    console.log("userimg",userImg)
+    const userImg = user.img;
+    console.log("userimg", userImg);
     // 2) latest user subscription via userId - the latest will be determined based on createdAt attribute
     const latestSubscription = await Subscription.findOne({
       where: { userId },
@@ -177,7 +177,7 @@ exports.getPersonalInformations = async (req, res) => {
     const planName = plan.name;
     const planNumberOfExamsLimit = plan.exams;
     const planNumberOfQuestionsLimit = plan.questions;
-    const planNumberOfAssignmentsLimit=plan.assignments
+    const planNumberOfAssignmentsLimit = plan.assignments;
     return res.json({
       status: httpStatusText.SUCCESS,
       data: {
@@ -198,7 +198,7 @@ exports.getPersonalInformations = async (req, res) => {
           planNumberOfAssignmentsLimit,
           remaining_questions,
           remaining_exams,
-          remaining_assignments
+          remaining_assignments,
         },
       },
     });
@@ -213,33 +213,79 @@ exports.getPersonalInformations = async (req, res) => {
   }
 };
 
-
 // @desc     Get all user subscritpions
 // @route    GET /api/profile/get-user-subscriptions
 // @access   protected/user
 exports.userSubscriptionLog = async (req, res, next) => {
-  const userId = req.user.id; 
-  try {
-    const userSubscription = await Subscription.findAll({ where: { userId } });
+  // try {
+  //   const userSubscription = await Subscription.findAll({ where: { userId } });
 
+  // return res.json({
+  //   status: httpStatusText.SUCCESS,
+  //   data: { title: "user found.", userSubscription },
+  // });
+  // } catch (error) {
+  //   return res.status(500).json({
+  //     status: httpStatusText.ERROR,
+  //     data: { title: error.message || "user subscription not found." },
+  //   });
+  // }
+  // const stripeId=req.user.stripeCustomerId
+  // console.log("user stripe id ===> ",stripeId)
+  //  const subscriptions = await stripe.subscriptions.list({
+  //     customer: stripeId,
+  //     status: "all",
+  //     expand: ["data.default_payment_method"],
+  //   });
+  //   console.log("user subscriptions ===> ", subscriptions.data[0].plan);
+
+  const userId = req.user.id;
+
+  try {
+    const userSubscriptions = await User.findByPk(userId, {
+      include: [
+        {
+          model: Subscription,
+          include: [
+            {
+              model: Plan,
+              attributes: ["name", "currency", "price"],
+            },
+          ],
+          attributes: ["startDate"],
+        },
+      ],
+    });
+
+    if (!userSubscriptions) {
+      // User not found
+      return res.status(404).json({
+        status: httpStatusText.FAIL,
+        data: { title: "user not found." },
+      });
+    }
+
+    // Extract relevant data
+    const subscriptionsData = userSubscriptions.Subscriptions.map(
+      (subscription) => ({
+        startDate: subscription.startDate,
+        plan: {
+          name: subscription.Plan.name,
+          currency: subscription.Plan.currency,
+          price: subscription.Plan.price,
+        },
+      })
+    );
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "user found.", userSubscription },
+      data: { title: "subscriptions found.", subscriptionsData },
     });
   } catch (error) {
+    console.log(error.message)
     return res.status(500).json({
       status: httpStatusText.ERROR,
-      data: { title: error.message || "user subscription not found." },
+      data: { title: "Error fetching user subscriptions" },
     });
+   
   }
-// const stripeId=req.user.stripeCustomerId
-// console.log("user stripe id ===> ",stripeId)
-//  const subscriptions = await stripe.subscriptions.list({
-//     customer: stripeId,
-//     status: "all",
-//     expand: ["data.default_payment_method"],
-//   });
-//   console.log("user subscriptions ===> ", subscriptions.data[0].plan);
-
-
 };
