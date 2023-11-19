@@ -95,6 +95,8 @@ app.use(passport.initialize());
 
 require('./src/utils/subscriptionScheduler');// Include the subscription scheduler code performed every day at 0.0 am to make sure that the user subscription endDate is expired or not based on that he will update the subscription status to inactive or he will leave it active as it is. 
 
+require('./src/utils/basicSubscriptionScheduler');// Include the basic subscription scheduler code performed begin of the month to update remainingQuestions, remainingExams and remainingAssignments 
+
 
 //! environment setup
 
