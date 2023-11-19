@@ -17,6 +17,8 @@ const httpStatusText = require("../utils/httpStatusText");
 
 //models
 const User = require("../models/User");
+const Plan = require("../models/Plan");
+const Subscription = require("../models/Subscription");
 
 // @desc    Protect logic (verify token issue) authinticaion middleware
 exports.protect = async (req, res, next) => {
@@ -136,9 +138,6 @@ exports.registerUser = async (req, res) => {
   const lastName = req.body.lastName;
   console.log("signup", email, password);
 
-
-
-
   //check if the password and confirm password is matched or not
   if (password !== confirmPassword) {
     return res.status(404).json({
@@ -146,15 +145,14 @@ exports.registerUser = async (req, res) => {
       data: { title: "password and confirmation password must be the same" },
     });
   }
- //check if the user email not valid or not valid (email syntax check) - prev sql injection
- const isValid = await validator.isEmail(email);
- if (!isValid) {
-   return res.status(404).json({
-     status: httpStatusText.FAIL,
-     data: { title: "you entered invalid email" },
-   });
- }
-
+  //check if the user email not valid or not valid (email syntax check) - prev sql injection
+  const isValid = await validator.isEmail(email);
+  if (!isValid) {
+    return res.status(404).json({
+      status: httpStatusText.FAIL,
+      data: { title: "you entered invalid email" },
+    });
+  }
 
   //check if the user email is in the db or not
   const isExistEmail = await User.findOne({
@@ -173,8 +171,6 @@ exports.registerUser = async (req, res) => {
     });
   }
 
- 
-
   //check password length
   if (password.length < 8) {
     return res.status(404).json({
@@ -188,7 +184,7 @@ exports.registerUser = async (req, res) => {
   });
 
   console.log("customer id ==> ", customer.id);
-  console.log("user in")
+  console.log("user in");
 
   bcrypt
     .hash(password, 12)
@@ -206,7 +202,7 @@ exports.registerUser = async (req, res) => {
         })
           .then(async (user) => {
             if (user) {
-              console.log("user out",user)
+              console.log("user out", user);
               //verify
               const randomCode = crypto.randomBytes(20).toString("hex");
 
@@ -237,6 +233,37 @@ exports.registerUser = async (req, res) => {
                   data: { title: "email not sent", message: error.message },
                 });
               }
+              // Create basic subscription for the user
+              // 1) Find plan - from function parameters
+              const plan = await Plan.findOne({
+                where: { name: "basic" },
+              });
+              const planId = plan.id;
+              // 2) Create sub
+              const subscriptionEnd_ms = 99999999999 * 1000;
+              //convert from seconds to milliseconds
+              const subscriptionStart_ms = 100 * 1000;
+              //convert from seconds to milliseconds
+              try {
+                const subscription = await Subscription.create({
+                  userId: user.id,
+                  planId: planId,
+                  startDate: new Date(subscriptionStart_ms),
+                  endDate: new Date(subscriptionEnd_ms),
+                  status: "active",
+                  remainingQuestions: plan.questions,
+                  remainingExams: plan.exams,
+                  remainingAssignments: plan.assignments,
+                });
+
+                console.log("subscription created successfully.", subscription);
+              } catch (error) {
+                console.log(error.message);
+                return res.status(500).json({
+                  status: httpStatusText.FAIL,
+                  data: { title: "registration failed" },
+                });
+              }
 
               return res.status(200).json({
                 status: httpStatusText.SUCCESS,
@@ -259,7 +286,9 @@ exports.registerUser = async (req, res) => {
             }
           })
           .catch((err) => {
-            return res.status(500).send(err || "Something went wrong in the db");
+            return res
+              .status(500)
+              .send(err || "Something went wrong in the db");
           });
       } else {
         return res.send("something went wrong in returning hash password");
@@ -277,14 +306,14 @@ exports.loginUser = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-//***Email validation - prev sql injection***
-const isValid = await validator.isEmail(email);
-if (!isValid) {
-  return res.status(404).json({
-    status: httpStatusText.FAIL,
-    data: { title: "you entered invalid email" },
-  });
-}
+  //***Email validation - prev sql injection***
+  const isValid = await validator.isEmail(email);
+  if (!isValid) {
+    return res.status(404).json({
+      status: httpStatusText.FAIL,
+      data: { title: "you entered invalid email" },
+    });
+  }
 
   try {
     const user = await User.findOne({ where: { email } });

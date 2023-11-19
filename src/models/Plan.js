@@ -45,7 +45,7 @@ const Plan = sequelize.define(
       allowNull: false,
     },
     priceId: {
-      //plan link -including plan price and plan desc ...- in stripe
+      //plan link - including plan price and plan desc ...- in stripe
       type: DataTypes.STRING,
       allowNull: false,
     },
