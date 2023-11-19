@@ -26,17 +26,10 @@ const UserActivities = sequelize.define(
     }
   },
   {
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW
-    },
+    createdAt:true,
   
     // Add updatedAt if you want to track the update time
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
+    updatedAt:true,
   }
   
 );
