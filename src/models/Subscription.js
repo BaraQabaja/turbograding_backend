@@ -27,7 +27,7 @@ const Subscription = sequelize.define(
 
     },
     remainingQuestions: {
-      type: DataTypes.INTEGER, // Number of questions can be grad
+      type: DataTypes.INTEGER, // Number of questions can be graded
       allowNull: false,
     },
     remainingExams: {

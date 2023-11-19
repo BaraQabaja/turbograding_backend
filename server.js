@@ -21,6 +21,8 @@ const compression = require("compression");
 const dotenv = require("dotenv");
 dotenv.config({ path: "config.env" });
 const auth = require('./src/controllers/authController');
+var xss = require("xss");// to prevent xss attach - related to sql injection attack
+
 //! (Security) rate limiting middleware for all operations
 // const limiter = rateLimit({
 //   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -34,6 +36,10 @@ const app = express();
     apiKey: config.api.gpt_key,
 });*/
 //const openai = new OpenAIApi(configuration);
+
+// xss attack prevention 
+app.use(xss())
+
 
 let ExtractJwt = passportJWT.ExtractJwt;
 let JwtStrategy = passportJWT.Strategy;
@@ -56,11 +62,7 @@ let jwtOptions = {
 // });
 // passport.use(strategy);
 
-//! Checkout webhook  (stripe related)
-app.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),webhookCheckout
-);
+
 //! Middleware
 app.use(cors());
 app.use(compression()); // Compress all responses
@@ -101,6 +103,12 @@ app.use(express.static("public"));
 //apply requests limiter as a middleware, to limit the incomming requests rate
 // app.use("/api", limiter);
 
+//! Checkout webhook  (stripe related)
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),webhookCheckout
+);
+
 //! Routes
 // app.use('/api/users', usersRoutes);
 app.use("/api/auth", authRoutes);
@@ -114,7 +122,11 @@ const UserModal = require("./src/models/User");
 const PaymentModal = require("./src/models/Payment");
 const PlanModal = require("./src/models/Plan");
 const SubscriptionModal = require("./src/models/Subscription");
-
+const UserActivitiesModal=require("./src/models/userActivities")
+// references: {
+//   model: 'users',
+//   key: 'id'
+// }
 //! Tables Relations
 // User Relations
 UserModal.hasMany(SubscriptionModal, { foreignKey: "userId" });
@@ -130,6 +142,7 @@ PlanModal.hasMany(SubscriptionModal, { foreignKey: "planId" });
 SubscriptionModal.belongsTo(UserModal, { foreignKey: "userId" });
 SubscriptionModal.belongsTo(PlanModal, { foreignKey: "planId" });
 SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
+UserActivitiesModal.belongsTo(UserModal, { foreignKey: "userId" });
 
 const PORT = process.env.PORT || 5000; //port number
 

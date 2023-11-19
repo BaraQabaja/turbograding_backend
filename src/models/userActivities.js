@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("./database");
 
 const UserActivities = sequelize.define(
-  "userActivities",
+  "UserActivities",
   {
     id: {
         type: DataTypes.INTEGER,
@@ -11,16 +11,13 @@ const UserActivities = sequelize.define(
     },
     userId: {
         type: DataTypes.INTEGER,
-        references: {
-            model: 'users',
-            key: 'id'
-        }
+      
     },
     activityType: {
         type: DataTypes.STRING,
         allowNull: false,
-        values: ["basic","premium", "professional"], //
-        defaultValue: "basic",//
+        values: ["exam","assignment", "question"], 
+        defaultValue: "question",
     },
     timestamp: {
         type: DataTypes.DATE,
@@ -29,9 +26,18 @@ const UserActivities = sequelize.define(
     }
   },
   {
-    // Other model options go here
-    createdAt: false, // disable createdAt
-    updatedAt: false, // disable updatedAt
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: sequelize.literal('CURRENT_TIMESTAMP'), // This sets the default value to the current timestamp
+    },
+  
+    // Add updatedAt if you want to track the update time
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), // This updates the timestamp on every update
+    },
   }
   
 );

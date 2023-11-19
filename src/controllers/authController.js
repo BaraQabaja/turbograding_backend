@@ -135,6 +135,10 @@ exports.registerUser = async (req, res) => {
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   console.log("signup", email, password);
+
+
+
+
   //check if the password and confirm password is matched or not
   if (password !== confirmPassword) {
     return res.status(404).json({
@@ -142,6 +146,15 @@ exports.registerUser = async (req, res) => {
       data: { title: "password and confirmation password must be the same" },
     });
   }
+ //check if the user email not valid or not valid (email syntax check) - prev sql injection
+ const isValid = await validator.isEmail(email);
+ if (!isValid) {
+   return res.status(404).json({
+     status: httpStatusText.FAIL,
+     data: { title: "you entered invalid email" },
+   });
+ }
+
 
   //check if the user email is in the db or not
   const isExistEmail = await User.findOne({
@@ -160,14 +173,7 @@ exports.registerUser = async (req, res) => {
     });
   }
 
-  //check if the user email not valid or not valid (email syntax check)
-  const isValid = await validator.isEmail(email);
-  if (!isValid) {
-    return res.status(404).json({
-      status: httpStatusText.FAIL,
-      data: { title: "you entered invalid email" },
-    });
-  }
+ 
 
   //check password length
   if (password.length < 8) {
@@ -267,6 +273,15 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+
+//***Email validation - prev sql injection***
+const isValid = await validator.isEmail(email);
+if (!isValid) {
+  return res.status(404).json({
+    status: httpStatusText.FAIL,
+    data: { title: "you entered invalid email" },
+  });
+}
 
   try {
     const user = await User.findOne({ where: { email } });
@@ -455,7 +470,7 @@ exports.resetPassword = async (req, res) => {
     });
   }
 
-  //check if the user email not valid or not valid (email syntax check)
+  //check if the user email not valid or not valid (email syntax check) - prev sql injection
   const isValid = await validator.isEmail(email);
   if (!isValid) {
     return res.status(404).json({
