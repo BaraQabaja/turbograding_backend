@@ -218,28 +218,28 @@ exports.getPersonalInformations = async (req, res) => {
 // @route    GET /api/profile/get-user-subscriptions
 // @access   protected/user
 exports.userSubscriptionLog = async (req, res, next) => {
-  // const userId = req.user.id; // Get the plan ID from URL parameters
-  // try {
-  //   const userSubscription = await Subscription.findAll({ where: { userId } });
+  const userId = req.user.id; 
+  try {
+    const userSubscription = await Subscription.findAll({ where: { userId } });
 
-  //   return res.json({
-  //     status: httpStatusText.SUCCESS,
-  //     data: { title: "user found.", userSubscription },
-  //   });
-  // } catch (error) {
-  //   return res.status(500).json({
-  //     status: httpStatusText.ERROR,
-  //     data: { title: error.message || "user subscription not found." },
-  //   });
-  // }
-const stripeId=req.user.stripeCustomerId
-console.log("user stripe id ===> ",stripeId)
- const subscriptions = await stripe.subscriptions.list({
-    customer: stripeId,
-    status: "all",
-    expand: ["data.default_payment_method"],
-  });
-  console.log("user subscriptions ===> ", subscriptions.data[0].plan);
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: { title: "user found.", userSubscription },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: { title: error.message || "user subscription not found." },
+    });
+  }
+// const stripeId=req.user.stripeCustomerId
+// console.log("user stripe id ===> ",stripeId)
+//  const subscriptions = await stripe.subscriptions.list({
+//     customer: stripeId,
+//     status: "all",
+//     expand: ["data.default_payment_method"],
+//   });
+//   console.log("user subscriptions ===> ", subscriptions.data[0].plan);
 
 
 };
