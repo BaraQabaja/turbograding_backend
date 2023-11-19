@@ -33,7 +33,7 @@ var xss = require("xss");// to prevent xss attach - related to sql injection att
 const app = express();
 // Specify allowed origins
 const allowedOrigins = [
-  'http://localhost:3000', // Add your frontend URL
+  'http://localhost:3000/*','http://localhost:3000', // Add your frontend URL
   // 'https://yourproductionfrontendurl.com', // Add your production frontend URL
 ];
 
