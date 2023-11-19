@@ -29,14 +29,13 @@ const UserActivities = sequelize.define(
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP'), // This sets the default value to the current timestamp
+      defaultValue: DataTypes.NOW
     },
   
     // Add updatedAt if you want to track the update time
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), // This updates the timestamp on every update
     },
   }
   
