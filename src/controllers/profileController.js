@@ -269,6 +269,7 @@ exports.userSubscriptionLog = async (req, res, next) => {
     const subscriptionsData = userSubscriptions.Subscriptions.map(
       (subscription) => ({
         startDate: subscription.startDate,
+        endDate:subscription.endDate,
         plan: {
           name: subscription.Plan.name,
           currency: subscription.Plan.currency,
