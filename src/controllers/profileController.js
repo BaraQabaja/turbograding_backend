@@ -200,7 +200,7 @@ exports.getPersonalInformations = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error finding user data :", error.message);
+    console.error("Error finding user data:", error.message);
     return res.status(500).json({
       status: httpStatusText.ERROR,
       data: {
