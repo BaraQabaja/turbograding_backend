@@ -252,7 +252,7 @@ exports.userSubscriptionLog = async (req, res, next) => {
               attributes: ["name", "currency", "price"],
             },
           ],
-          attributes: ["startDate"],
+          attributes: ["startDate","endDate"],
         },
       ],
     });
