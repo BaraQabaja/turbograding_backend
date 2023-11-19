@@ -148,6 +148,7 @@ exports.getPersonalInformations = async (req, res) => {
     const userLastName = user.lastName;
     const userEmail = user.email;
     const userImg=user.img
+    console.loe("userimg",userImg)
     // 2) latest user subscription via userId - the latest will be determined based on createdAt attribute
     const latestSubscription = await Subscription.findOne({
       where: { userId },
