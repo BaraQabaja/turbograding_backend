@@ -61,6 +61,7 @@ let jwtOptions = {
 //     }
 // });
 // passport.use(strategy);
+app.use(cors());
 
 //! Checkout webhook  (stripe related)
 app.post(
@@ -69,7 +70,6 @@ app.post(
 );
 
 //! Middleware
-app.use(cors());
 app.use(compression()); // Compress all responses
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(passport.initialize());
