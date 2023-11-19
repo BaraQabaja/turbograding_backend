@@ -62,6 +62,11 @@ let jwtOptions = {
 // });
 // passport.use(strategy);
 
+//! Checkout webhook  (stripe related)
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),webhookCheckout
+);
 
 //! Middleware
 app.use(cors());
@@ -103,11 +108,6 @@ app.use(express.static("public"));
 //apply requests limiter as a middleware, to limit the incomming requests rate
 // app.use("/api", limiter);
 
-//! Checkout webhook  (stripe related)
-app.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),webhookCheckout
-);
 
 //! Routes
 // app.use('/api/users', usersRoutes);

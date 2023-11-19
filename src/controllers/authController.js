@@ -188,6 +188,8 @@ exports.registerUser = async (req, res) => {
   });
 
   console.log("customer id ==> ", customer.id);
+  console.log("user in")
+
   bcrypt
     .hash(password, 12)
     .then((hashPassword) => {
@@ -204,6 +206,7 @@ exports.registerUser = async (req, res) => {
         })
           .then(async (user) => {
             if (user) {
+              console.log("user out",user)
               //verify
               const randomCode = crypto.randomBytes(20).toString("hex");
 
@@ -256,14 +259,14 @@ exports.registerUser = async (req, res) => {
             }
           })
           .catch((err) => {
-            res.status(500).send(err || "Something went wrong in the db");
+            return res.status(500).send(err || "Something went wrong in the db");
           });
       } else {
-        res.send("something went wrong in returning hash password");
+        return res.send("something went wrong in returning hash password");
       }
     })
     .catch((err) => {
-      res.status(500).send(err || "Something went wrong");
+      return res.status(500).send(err || "Something went wrong");
     });
 };
 
