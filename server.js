@@ -38,7 +38,7 @@ const app = express();
 //const openai = new OpenAIApi(configuration);
 
 // xss attack prevention 
-app.use(xss())
+// app.use(xss())
 
 
 let ExtractJwt = passportJWT.ExtractJwt;
