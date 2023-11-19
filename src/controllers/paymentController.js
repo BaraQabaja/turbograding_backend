@@ -159,14 +159,13 @@ const createSubscription = async (
   subscriptionStart,
   subscriptionEnd
 ) => {
-  console.log("createSubscription function", stripeCustomerId, planId);
 
   // const subscriptions = await stripe.subscriptions.list({
   //   customer: user.stripeCustomerId,
   //   status: "all",
   //   expand: ["data.default_payment_method"],
   // });
-  // console.log("user subscriptions ===> ", subscriptions.data[0].plan.nickname);
+  // console.log("user subscriptions ===> ", subscriptions.data[0].plan);
 
   // 1) find user
   const user = await User.findOne({

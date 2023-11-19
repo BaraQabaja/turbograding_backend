@@ -15,5 +15,5 @@ router.put('/update-bio',auth.protect, profileController.updateBio);  // update 
 
 router.get('/get-personal-info',auth.protect, profileController.getPersonalInformations);  // get user profile inf
 
-
+router.get('/get-user-subscriptions',auth.protect, profileController.userSubscriptionLog);  // get user Subscription Log 
 module.exports = router;
