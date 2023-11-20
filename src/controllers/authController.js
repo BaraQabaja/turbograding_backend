@@ -41,9 +41,10 @@ exports.protect = async (req, res, next) => {
   if (!token) {
     return res.status(404).json({
       status: httpStatusText.FAIL,
-      data: { title: "You are not login, Please login to get access this route" },
+      data: {
+        title: "You are not login, Please login to get access this route",
+      },
     });
-    
   }
 
   // 2) Verify token (no change happens, expired token)
@@ -73,7 +74,7 @@ exports.protect = async (req, res, next) => {
     if (logoutAt > decoded.iat) {
       return res.status(404).json({
         status: httpStatusText.FAIL,
-        data: { title: "you recently logout. please login again .." },
+        data: { title: "you recently logout. please login again." },
       });
     }
   }
@@ -103,36 +104,31 @@ exports.emailVerification = async (req, res) => {
 
 // @desc    Logout logic
 // @route   POST /api/auth/logout
-// @access  Public
+// @access  private/user
 exports.logoutUser = async (req, res) => {
-  User.findByPk(req.user.id)
-    .then(async (user) => {
-      if (user) {
-        user.logoutAt = Date.now(); //change the logoutAt attripute to be Date.now() so that allow you to check the time that the user logedout so if he entered to any unotharized page and send a request or do any thing he will be forworded to login page, i will use this property in protect function
-        await user.save();
-      }
-    })
-    .then((result) => {
-      console.log("logout result ===> ",result)
-      if (result) {
-        return res.status(200).json({
-          status: httpStatusText.SUCCESS,
-          data: { title: "You logout successfully." },
-        });
-      } else{
-        return res.status(400).json({
-          status: httpStatusText.FAIL,
-          data: { title: "something went wrong, please try again" },
-        });
-      } 
-    })
-    .catch((error) => {
-      console.log("logout error : ",error.message)
-      return res.status(500).json({
-        status: httpStatusText.ERROR,
-        data: { title: "something went wrong, please try again" },
+  console.log("i am in logout user controller");
+  try {
+    const user = await User.findByPk(req.user.id);
+
+    if (user) {
+      user.logoutAt = Date.now(); //change the logoutAt attripute to be Date.now() so that allow you to check the time that the user logedout so if he entered to any unotharized page and send a request or do any thing he will be forworded to login page, i will use this property in protect function
+      await user.save();
+      return res.status(200).json({
+        status: httpStatusText.SUCCESS,
+        data: { title: "You logout successfully." },
       });
+    }
+    return res.status(400).json({
+      status: httpStatusText.FAIL,
+      data: { title: "something went wrong, please try again" },
     });
+  } catch (error) {
+    console.log("logout error : ", error.message);
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: { title: "something went wrong, please try again" },
+    });
+  }
 };
 
 // @desc    Register user logic, create new user
@@ -315,7 +311,7 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-console.log("email prev xss attack ====> ",email)
+  console.log("email prev xss attack ====> ", email);
   //***Email validation - prev sql injection***
   const isValid = await validator.isEmail(email);
   if (!isValid) {
