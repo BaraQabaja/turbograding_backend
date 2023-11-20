@@ -62,22 +62,35 @@ exports.updatePassword = async (req, res, next) => {
 // @access   protected/user
 exports.updateUsername = async (req, res, next) => {
   try {
-    const newUsername = req.body.newUsername;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
 
-    const isValidUsername = /^[a-zA-Z0-9_]+$/.test(newUsername);
-    if (!isValidUsername) {
+    const isValidFirstName = /^[a-zA-Z0-9_]+$/.test(firstName);
+    const isValidLastName = /^[a-zA-Z0-9_]+$/.test(lastName);
+    if (!isValidFirstName) {
       return res.status(400).json({
         status: httpStatusText.FAIL,
         data: {
           title:
-            "Invalid username. Username can only contain letters, numbers, and underscores.",
+            "Invalid First Name. names can only contain letters, numbers, and underscores.",
+        },
+      });
+    }
+    if (!isValidLastName) {
+      return res.status(400).json({
+        status: httpStatusText.FAIL,
+        data: {
+          title:
+            "Invalid Last Name. names can only contain letters, numbers, and underscores.",
         },
       });
     }
 
     const userId = req.user.id;
     const user = await User.findByPk(userId);
-    user.username = newUsername;
+    user.firstName = firstName;
+    user.lastName = lastName;
+
     await user.save();
 
     return res.json({
