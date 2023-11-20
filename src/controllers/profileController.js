@@ -135,7 +135,7 @@ exports.updateBio = async (req, res, next) => {
       data: { title: "Bio updated successfully.", newBio: newBio },
     });
   } catch (error) {
-    console.error("Error updating Bio:", error.message);
+    console.log("Error updating Bio:", error.message);
     return res.status(500).json({
       status: httpStatusText.ERROR,
       data: {

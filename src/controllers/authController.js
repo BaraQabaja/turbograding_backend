@@ -223,7 +223,7 @@ exports.registerUser = async (req, res) => {
                 console.log(
                   `${req.protocole}://${req.get("host")}/verify/${token}`
                 );
-                const verificationLink = `http://http://localhost:3000//verify/${token}`; //! for now keep it like this, when you want to deploy the app you should change it to be   const verificationLink = `${req.protocole}://${req.get('host')}/verify/${token}`;
+                const verificationLink = `http://localhost:3000/verify/${token}`; //! for now keep it like this, when you want to deploy the app you should change it to be   const verificationLink = `${req.protocole}://${req.get('host')}/verify/${token}`;
 
                 await sendEmail({
                   email: user.email,
