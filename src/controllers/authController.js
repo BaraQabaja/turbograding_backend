@@ -405,9 +405,8 @@ exports.forgotPassword = async (req, res) => {
   user.passwordResetExpire = Date.now() + 10 * 60 * 1000;
   user.passwordResetVerified = false;
   await user.save(); // await to save the user changes
-}catch(error){
-  console.log(error.message)
-}
+
+
   //3) Send the reset code via email
   // const content=`Hi ${user.username}, We received a request to reset the password `
   const text = `<!DOCTYPE html>
@@ -427,28 +426,31 @@ exports.forgotPassword = async (req, res) => {
     </div>
 </body>
 </html>`;
-  try {
+  
     await sendEmail({
       email: user.email,
       subject: "Your password reset code (valid for 10 min)",
       content: text,
     });
-  } catch (error) {
+   
     user.passwordResetCode = null;
     user.passwordResetExpire = null;
     user.passwordResetVerified = null;
     await user.save();
-
     return res.json({
-      status: httpStatusText.ERROR,
-      data: { title: "email not sent", message: error.message },
+      status: httpStatusText.SUCCESS,
+      data: { title: "Reset code sent to your email. Check your inbox." },
     });
-  }
+  }catch(error){
+      console.log("error in forget pass ===> ",error.message)
+      return res.json({
+        status: httpStatusText.ERROR,
+        data: { title: "email not sent", message: error.message },
+      });
+    }
+  
 
-  return res.json({
-    status: httpStatusText.SUCCESS,
-    data: { title: "Reset code sent to your email. Check your inbox." },
-  });
+  
 };
 
 // @desc    Verify the code sent to your email - 2nd step in forget password process
