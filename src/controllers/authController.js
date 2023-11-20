@@ -382,12 +382,14 @@ exports.loginUser = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   //1) Get user by email
   try{
-  const id = req.body.id;
-  const user = await User.findByPk(id);
+  const email = req.body.email;
+  const user = await User.findOne({where:{
+    email:email
+  }});
   if (!user) {
     return res.json({
       status: httpStatusText.FAIL,
-      data: { title: "there is no user with that email", email: user.email },
+      data: { title: "there is no user with that email", email:email },
     });
   }
 
@@ -419,7 +421,7 @@ exports.forgotPassword = async (req, res) => {
 <body>
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2>Password Reset Request</h2>
-        <p>Hello, ${user.username}</p>
+        <p>Hello, ${user.firstName} ${user.lastName}</p>
         <p>We have received a request to reset your password. Your password reset code is:</p>
         <p style="background-color: #f4f4f4; padding: 10px; font-size: 20px;">${resetCode}</p>
         <p>If you didn't request a password reset, please ignore this email or contact our support team.</p>
