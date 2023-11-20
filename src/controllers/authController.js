@@ -22,6 +22,7 @@ const Subscription = require("../models/Subscription");
 
 // @desc    Protect logic (verify token issue) authinticaion middleware
 exports.protect = async (req, res, next) => {
+  console.log("i am in protect function")
   //Check if token sent with req or not
   let token;
   if (
