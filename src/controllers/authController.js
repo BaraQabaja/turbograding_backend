@@ -113,6 +113,7 @@ exports.logoutUser = async (req, res) => {
       }
     })
     .then((result) => {
+      console.log("logout result ===> ",result)
       if (result) {
         return res.status(200).json({
           status: httpStatusText.SUCCESS,
