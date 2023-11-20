@@ -56,7 +56,7 @@ exports.protect = async (req, res, next) => {
   } catch (error) {
     return res.status(404).json({
       status: httpStatusText.FAIL,
-      data: { title: "Token is invalid" },
+      data: { title: "Token is invalid, please login." },
     });
   }
   // 3) Check if user exists
