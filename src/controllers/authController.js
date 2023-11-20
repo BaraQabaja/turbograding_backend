@@ -399,9 +399,9 @@ exports.forgotPassword = async (req, res) => {
     .createHash("sha256")
     .update(resetCode)
     .digest("hex");
-    console.log("reset code ===> ")
 
   // Save hashedResetCode into db
+  console.log("generated reset code ===> ",hashedResetCode)
   user.passwordResetCode = hashedResetCode;
 
   // Add expiration time for reset code (10 min)
@@ -438,15 +438,17 @@ exports.forgotPassword = async (req, res) => {
       content: text,
     });
    
-    user.passwordResetCode = null;
-    user.passwordResetExpire = null;
-    user.passwordResetVerified = null;
-    await user.save();
+    
     return res.json({
       status: httpStatusText.SUCCESS,
       data: { title: "Reset code sent to your email. Check your inbox." },
     });
   }catch(error){
+    user.passwordResetCode = null;
+    user.passwordResetExpire = null;
+    user.passwordResetVerified = null;
+    await user.save();
+
       console.log("error in forget pass ===> ",error.message)
       return res.json({
         status: httpStatusText.ERROR,
