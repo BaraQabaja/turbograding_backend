@@ -381,6 +381,7 @@ exports.loginUser = async (req, res) => {
 // @access  Public
 exports.forgotPassword = async (req, res) => {
   //1) Get user by email
+  try{
   const email = req.body.email;
   const user = await User.findByPk(email);
   if (!user) {
@@ -404,7 +405,9 @@ exports.forgotPassword = async (req, res) => {
   user.passwordResetExpire = Date.now() + 10 * 60 * 1000;
   user.passwordResetVerified = false;
   await user.save(); // await to save the user changes
-
+}catch(error){
+  console.log(error.message)
+}
   //3) Send the reset code via email
   // const content=`Hi ${user.username}, We received a request to reset the password `
   const text = `<!DOCTYPE html>
