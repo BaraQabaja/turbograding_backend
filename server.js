@@ -58,6 +58,7 @@ app.use(cors(corsOptions));
 //! xss attack prevention 
 // Middleware to sanitize all incoming request data
 app.use((req, res, next) => {
+  console.log("entered the xss middleware ===> ",req.body)
   for (const key in req.body) {
     if (Object.hasOwnProperty.call(req.body, key)) {
       console.log("req.body[key] before ====> ",req.body[key])
