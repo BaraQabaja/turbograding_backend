@@ -60,7 +60,10 @@ app.use(cors(corsOptions));
 app.use((req, res, next) => {
   for (const key in req.body) {
     if (Object.hasOwnProperty.call(req.body, key)) {
+      console.log("req.body[key] before ====> ",req.body[key])
       req.body[key] = xss(req.body[key]);
+      console.log("req.body[key] after ====> ",req.body[key])
+
     }
   }
   next();
