@@ -461,7 +461,7 @@ exports.forgotPassword = async (req, res) => {
 // @access  Public
 exports.verifyPasswordResetCode = async (req, res, next) => {
   try{
-
+console.log('i am in verifyPasswordResetCode',req.body.resetCode)
   
   // 1) Get user based on reset code
   const hashedResetCode = crypto
