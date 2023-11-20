@@ -305,7 +305,7 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-
+console.log("email prev xss attack",email)
   //***Email validation - prev sql injection***
   const isValid = await validator.isEmail(email);
   if (!isValid) {
