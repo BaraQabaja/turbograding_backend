@@ -22,7 +22,7 @@ const Subscription = require("../models/Subscription");
 
 // @desc    Protect logic (verify token issue) authinticaion middleware
 exports.protect = async (req, res, next) => {
-  console.log("i am in protect function")
+  console.log("i am in protect function");
   //Check if token sent with req or not
   let token;
   if (
@@ -49,16 +49,16 @@ exports.protect = async (req, res, next) => {
   }
 
   // 2) Verify token (no change happens, expired token)
-  jwt.verify(token, config.auth.accessToken, (error, decoded) => {
-    if (error) {
-      return res.status(404).json({
-        status: httpStatusText.FAIL,
-        data: { title: "Token is invalid" },
-      });
-    }
-  });
-  // If verification succeeds
-  decoded = jwt.verify(token, config.auth.accessToken);
+  // Verify token
+  let decoded;
+  try {
+    decoded = jwt.verify(token, config.auth.accessToken);
+  } catch (error) {
+    return res.status(404).json({
+      status: httpStatusText.FAIL,
+      data: { title: "Token is invalid" },
+    });
+  }
   // 3) Check if user exists
   const currentUser = await User.findByPk(decoded.userId);
   if (!currentUser) {
