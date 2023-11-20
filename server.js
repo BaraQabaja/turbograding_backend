@@ -24,10 +24,10 @@ const auth = require('./src/controllers/authController');
 var xss = require("xss");// to prevent xss attach - related to sql injection attack
 
 //! (Security) rate limiting middleware for all operations
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 100, // limit each IP to 100 requests per windowMs
-// });
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+});
 
 //! Diclirations
 const app = express();
@@ -55,8 +55,16 @@ app.use(cors(corsOptions));
 });*/
 //const openai = new OpenAIApi(configuration);
 
-// xss attack prevention 
-// app.use(xss())
+//! xss attack prevention 
+// Middleware to sanitize all incoming request data
+app.use((req, res, next) => {
+  for (const key in req.body) {
+    if (Object.hasOwnProperty.call(req.body, key)) {
+      req.body[key] = xss(req.body[key]);
+    }
+  }
+  next();
+});
 
 
 let ExtractJwt = passportJWT.ExtractJwt;
@@ -79,7 +87,6 @@ let jwtOptions = {
 //     }
 // });
 // passport.use(strategy);
-app.use(cors());
 
 //! Checkout webhook  (stripe related)
 app.post(
