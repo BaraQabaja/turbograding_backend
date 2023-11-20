@@ -55,20 +55,7 @@ app.use(cors(corsOptions));
 });*/
 //const openai = new OpenAIApi(configuration);
 
-//! xss attack prevention 
-// Middleware to sanitize all incoming request data
-app.use((req, res, next) => {
-  console.log("entered the xss middleware ===> ",req.body)
-  for (const key in req.body) {
-    if (Object.hasOwnProperty.call(req.body, key)) {
-      console.log("req.body[key] before ====> ",req.body[key])
-      req.body[key] = xss(req.body[key]);
-      console.log("req.body[key] after ====> ",req.body[key])
 
-    }
-  }
-  next();
-});
 
 
 let ExtractJwt = passportJWT.ExtractJwt;
@@ -119,6 +106,24 @@ if (process.env.NODE_ENV === "development") {
 //! Increase payload limit to 10MB
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
+
+
+//! xss attack prevention 
+// Middleware to sanitize all incoming request data
+app.use((req, res, next) => {
+  console.log("entered the xss middleware ===> ",req.body)
+  for (const key in req.body) {
+    if (Object.hasOwnProperty.call(req.body, key)) {
+      console.log("req.body[key] before ====> ",req.body[key])
+      req.body[key] = xss(req.body[key]);
+      console.log("req.body[key] after ====> ",req.body[key])
+
+    }
+  }
+  next();
+});
+
+
 
 //! GPT fucntion
 // const gptFunctions = require('./src/middleware/gpt');
