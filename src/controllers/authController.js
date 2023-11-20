@@ -39,14 +39,11 @@ exports.protect = async (req, res, next) => {
 
   console.log("token", token);
   if (!token) {
-    return next(
-      res.send("You are not login, Please login to get access this route")
-
-      // return res.status(404).json({
-      //   status: httpStatusText.FAIL,
-      //   data: { title: "You are not login, Please login to get access this route" },
-      // });
-    );
+    return res.status(404).json({
+      status: httpStatusText.FAIL,
+      data: { title: "You are not login, Please login to get access this route" },
+    });
+    
   }
 
   // 2) Verify token (no change happens, expired token)
