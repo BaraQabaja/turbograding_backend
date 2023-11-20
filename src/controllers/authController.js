@@ -382,12 +382,12 @@ exports.loginUser = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   //1) Get user by email
   try{
-  const email = req.body.email;
-  const user = await User.findByPk(email);
+  const id = req.body.id;
+  const user = await User.findByPk(id);
   if (!user) {
     return res.json({
       status: httpStatusText.FAIL,
-      data: { title: "there is no user with that email", email: email },
+      data: { title: "there is no user with that email", email: user.email },
     });
   }
 
@@ -397,6 +397,7 @@ exports.forgotPassword = async (req, res) => {
     .createHash("sha256")
     .update(resetCode)
     .digest("hex");
+    console.log("reset code ===> ")
 
   // Save hashedResetCode into db
   user.passwordResetCode = hashedResetCode;
@@ -426,7 +427,7 @@ exports.forgotPassword = async (req, res) => {
     </div>
 </body>
 </html>`;
-  
+  console.log("email sent ..........")
     await sendEmail({
       email: user.email,
       subject: "Your password reset code (valid for 10 min)",
@@ -445,7 +446,7 @@ exports.forgotPassword = async (req, res) => {
       console.log("error in forget pass ===> ",error.message)
       return res.json({
         status: httpStatusText.ERROR,
-        data: { title: "email not sent", message: error.message },
+        data: { title: "Email not sent"},
       });
     }
   
@@ -457,6 +458,9 @@ exports.forgotPassword = async (req, res) => {
 // @route   POST /api/verifyPasswordResetCode
 // @access  Public
 exports.verifyPasswordResetCode = async (req, res, next) => {
+  try{
+
+  
   // 1) Get user based on reset code
   const hashedResetCode = crypto
     .createHash("sha256")
@@ -486,12 +490,20 @@ exports.verifyPasswordResetCode = async (req, res, next) => {
     status: httpStatusText.SUCCESS,
     data: { title: "reset code verified" },
   });
+}catch(error){
+    console.log("error in verifyPasswordResetCode ====> ",error.message)
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: { title: "error in verify Password Reset Code" },
+    });
+}
 };
 
 // @desc    Reset password - 3ed step in forget passwrod process
 // @route   PUT /api/auth/reset-password
 // @access  Public
 exports.resetPassword = async (req, res) => {
+  try {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
@@ -546,7 +558,7 @@ exports.resetPassword = async (req, res) => {
     });
   }
   // Reset the password
-  try {
+  
     // - Encrypt the new password
 
     const encryptPassword = await bcrypt.hash(req.body.password, 12);
