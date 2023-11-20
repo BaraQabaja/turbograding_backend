@@ -105,20 +105,32 @@ exports.emailVerification = async (req, res) => {
 // @route   POST /api/auth/logout
 // @access  Public
 exports.logoutUser = async (req, res) => {
-  User.findByPk(req.user.email)
+  User.findByPk(req.user.id)
     .then(async (user) => {
       if (user) {
         user.logoutAt = Date.now(); //change the logoutAt attripute to be Date.now() so that allow you to check the time that the user logedout so if he entered to any unotharized page and send a request or do any thing he will be forworded to login page, i will use this property in protect function
-        return await user.save();
+        await user.save();
       }
     })
     .then((result) => {
       if (result) {
-        res.send("you logout");
-      } else res.send("something went wrong, please login again");
+        return res.status(200).json({
+          status: httpStatusText.SUCCESS,
+          data: { title: "You logout successfully." },
+        });
+      } else{
+        return res.status(400).json({
+          status: httpStatusText.FAIL,
+          data: { title: "something went wrong, please try again" },
+        });
+      } 
     })
-    .catch((err) => {
-      res.status(500).send(err.message);
+    .catch((error) => {
+      console.log("logout error : ",error.message)
+      return res.status(500).json({
+        status: httpStatusText.ERROR,
+        data: { title: "something went wrong, please try again" },
+      });
     });
 };
 

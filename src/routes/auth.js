@@ -19,7 +19,7 @@ router.post('/forgot-password', authController.forgotPassword);  // Forgot passw
 router.post('/verifyPasswordResetCode', authController.verifyPasswordResetCode);  // verify password reset code that was sent to email - 2nd step in forget password process
 router.post('/reset-password', authController.resetPassword);  // Reset password route - 3ed step in forget password process
 
-router.post('/logout', authController.logoutUser);
+router.post('/logout',authController.protect,authController.logoutUser);// Logout route
 
 // Express route to handle verification
 router.get("/verify/:token",authController.emailVerification );//email verification
