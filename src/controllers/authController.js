@@ -381,7 +381,7 @@ exports.loginUser = async (req, res) => {
 // @access  Public
 exports.forgotPassword = async (req, res) => {
   //1) Get user by email
-  try{
+ 
   const email = req.body.email;
   const user = await User.findOne({where:{
     email:email
@@ -430,6 +430,8 @@ exports.forgotPassword = async (req, res) => {
 </body>
 </html>`;
   console.log("email sent ..........")
+
+  try{
     await sendEmail({
       email: user.email,
       subject: "Your password reset code (valid for 10 min)",
