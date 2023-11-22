@@ -34,7 +34,7 @@ const app = express();
 // Specify allowed origins
 const allowedOrigins = [
   'http://localhost:3000/*','http://localhost:3000',
-  'chrome://extensions/*'
+  'chrome-extension:\/\/*'
   // Add your frontend URL
   // 'https://yourproductionfrontendurl.com', // Add your production frontend URL
 ];
