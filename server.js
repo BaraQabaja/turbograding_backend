@@ -34,7 +34,7 @@ const app = express();
 // Specify allowed origins
 const allowedOrigins = [
   'http://localhost:3000/*','http://localhost:3000',
-  'chrome-extension:\/\/*'
+  'chrome-extension:\/\/pfgjachlphejjkgnenknlbhncljapfia'
   // Add your frontend URL
   // 'https://yourproductionfrontendurl.com', // Add your production frontend URL
 ];
@@ -42,7 +42,7 @@ const allowedOrigins = [
 const corsOptions = {
   origin: function (origin, callback) {
     console.log("cors origin ===> ",origin)
-    console.log("allowedOrigins chrome extention ===> ",allowedOrigins[2])
+    console.log("allowedOrigins chrome extention ===> ",allowedOrigins)
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
