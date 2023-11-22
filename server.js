@@ -33,7 +33,9 @@ const limiter = rateLimit({
 const app = express();
 // Specify allowed origins
 const allowedOrigins = [
-  'http://localhost:3000/*','http://localhost:3000', // Add your frontend URL
+  'http://localhost:3000/*','http://localhost:3000',
+  'chrome://extensions/*'
+  // Add your frontend URL
   // 'https://yourproductionfrontendurl.com', // Add your production frontend URL
 ];
 
