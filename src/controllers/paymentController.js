@@ -61,10 +61,9 @@ exports.checkoutSession = async (req, res) => {
   // console.log(planType, planDuration);
   //****Validation****//
   if (
-    !(
-      validPlanTypes.includes(planType) &&
-      validPlanDurations.includes(planDuration)
-    )
+    !validPlanTypes.includes(planType) ||
+      !validPlanDurations.includes(planDuration)
+    
   ) {
     return res.status(404).json({
       status: httpStatusText.FAIL,
