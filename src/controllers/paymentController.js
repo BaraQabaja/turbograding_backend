@@ -18,15 +18,15 @@ exports.createPayment = async (req, res) => {
   // 1) Get Plan Type and Duration (1 month or 12 month)
   const planType = req.body.planType;
   const planDuration = req.body.planDuration;
-  const validPlanTypes = ["basic", "premium","professional"];
+  const validPlanTypes = ["basic", "premium", "professional"];
   const validPlanDurations = [30, 365];
-console.log("i am in create payment function ===> ")
-console.log(planType,planDuration)
+  console.log("i am in create payment function ===> ");
+  console.log(planType, planDuration);
 
   //****Validation****//
   if (
-    !validPlanTypes.includes(planType) || !validPlanDurations.includes(planDuration)
-    
+    !validPlanTypes.includes(planType) ||
+    !validPlanDurations.includes(planDuration)
   ) {
     return res.json({
       statsu: httpStatusText.FAIL,
@@ -57,13 +57,17 @@ exports.checkoutSession = async (req, res) => {
   const validPlanTypes = ["professional", "premium"];
   const validPlanDurations = [30, 365];
   console.log("checkoutSession inputs ", planType, planDuration);
-
+  console.log(
+    !validPlanTypes.includes(planType) ||
+      !validPlanDurations.includes(planDuration)
+  );
+  console.log( !validPlanTypes.includes(planType))
+  console.log( !validPlanDurations.includes(planDuration))
   // console.log(planType, planDuration);
   //****Validation****//
   if (
     !validPlanTypes.includes(planType) ||
-      !validPlanDurations.includes(planDuration)
-    
+    !validPlanDurations.includes(planDuration)
   ) {
     return res.status(404).json({
       status: httpStatusText.FAIL,
@@ -158,7 +162,6 @@ const createSubscription = async (
   subscriptionStart,
   subscriptionEnd
 ) => {
-
   // const subscriptions = await stripe.subscriptions.list({
   //   customer: user.stripeCustomerId,
   //   status: "all",
@@ -179,8 +182,6 @@ const createSubscription = async (
   });
   const planIdOriginal = plan.id; // variable called planIdOriginal is the id attribute in Plan modal but the varible called planId is the attribute named priceId in Plan modal.
 
-
-
   // 3) create subscription for the user
 
   const subscriptionStart_ms = subscriptionStart * 1000; //convert from seconds to milliseconds
@@ -197,9 +198,9 @@ const createSubscription = async (
       startDate: new Date(subscriptionStart_ms),
       endDate: new Date(subscriptionEnd_ms),
       status: "active",
-      remainingQuestions:plan.questions,
-      remainingExams:plan.exams,
-      remainingAssignments:plan.assignments
+      remainingQuestions: plan.questions,
+      remainingExams: plan.exams,
+      remainingAssignments: plan.assignments,
     });
 
     console.log("subscription created successfully.", subscription);
@@ -212,7 +213,7 @@ const createSubscription = async (
 // @route   /webhook
 // @access  stripe
 exports.webhookCheckout = async (req, res) => {
-  console.log("webhook start")
+  console.log("webhook start");
   let event = res.body;
   // Replace this endpoint secret with your endpoint's unique secret
   // If you are testing with the CLI, find the secret by running 'stripe listen'
