@@ -20,6 +20,8 @@ exports.createPayment = async (req, res) => {
   const planDuration = req.body.planDuration;
   const validPlanTypes = ["basic", "premium","professional"];
   const validPlanDurations = [30, 365];
+console.log("i am in create payment function ===> ")
+console.log(planType,planDuration)
 
   //****Validation****//
   if (
