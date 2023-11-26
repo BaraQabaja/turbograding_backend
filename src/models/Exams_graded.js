@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = require('./database');
-
+//
 const User = sequelize.define('exams_graded', {
     // Model attributes are defined here
     id: {

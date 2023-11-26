@@ -18,8 +18,8 @@ exports.createPayment = async (req, res) => {
   // 1) Get Plan Type and Duration (1 month or 12 month)
   const planType = req.body.planType;
   const planDuration = req.body.planDuration;
-  const validPlanTypes = ["basic", "premium"];
-  const validPlanDurations = [1, 12];
+  const validPlanTypes = ["basic", "premium","professional"];
+  const validPlanDurations = [30, 365];
 
   //****Validation****//
   if (

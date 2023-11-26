@@ -67,24 +67,24 @@ exports.updateUsername = async (req, res, next) => {
 
     const isValidFirstName = /^[a-zA-Z0-9_]+$/.test(firstName);
     const isValidLastName = /^[a-zA-Z0-9_]+$/.test(lastName);
-    if (!isValidFirstName) {
+    if (!isValidFirstName || !isValidLastName) {
       return res.status(400).json({
         status: httpStatusText.FAIL,
         data: {
           title:
-            "Invalid First Name. names can only contain letters, numbers, and underscores.",
+            "Invalid First Name or Last Name. names can only contain letters, numbers, and underscores.",
         },
       });
     }
-    if (!isValidLastName) {
-      return res.status(400).json({
-        status: httpStatusText.FAIL,
-        data: {
-          title:
-            "Invalid Last Name. names can only contain letters, numbers, and underscores.",
-        },
-      });
-    }
+    // if (!isValidLastName) {
+    //   return res.status(400).json({
+    //     status: httpStatusText.FAIL,
+    //     data: {
+    //       title:
+    //         "Invalid Last Name. names can only contain letters, numbers, and underscores.",
+    //     },
+    //   });
+    // }
 
     const userId = req.user.id;
     const user = await User.findByPk(userId);
