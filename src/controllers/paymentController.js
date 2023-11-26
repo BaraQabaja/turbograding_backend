@@ -57,17 +57,26 @@ exports.checkoutSession = async (req, res) => {
   const validPlanTypes = ["professional", "premium"];
   const validPlanDurations = [30, 365];
   console.log("checkoutSession inputs ", planType, planDuration);
-  console.log(
-    !validPlanTypes.includes(planType) ||
-      !validPlanDurations.includes(planDuration)
-  );
-  console.log( !validPlanTypes.includes(planType))
-  console.log( !validPlanDurations.includes(planDuration))
+  console.log(typeof planDuration)
+  // console.log(
+  //   !validPlanTypes.includes(planType) ||
+  //     !validPlanDurations.includes(planDuration)
+  // );
+  // console.log( !validPlanTypes.includes(planType))
+  // console.log( !validPlanDurations.includes(planDuration))
   // console.log(planType, planDuration);
   //****Validation****//
+  // if (
+  //   !validPlanTypes.includes(planType) ||
+  //   !validPlanDurations.includes(planDuration)
+  // ) {
+  //   return res.status(404).json({
+  //     status: httpStatusText.FAIL,
+  //     data: { title: "invalid inputs, please try again." },
+  //   });
+  // }
   if (
-    !validPlanTypes.includes(planType) ||
-    !validPlanDurations.includes(planDuration)
+    !validPlanTypes.includes(planType)
   ) {
     return res.status(404).json({
       status: httpStatusText.FAIL,
