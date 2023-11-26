@@ -23,10 +23,8 @@ exports.createPayment = async (req, res) => {
 
   //****Validation****//
   if (
-    !(
-      validPlanTypes.includes(planType) &&
-      validPlanDurations.includes(planDuration)
-    )
+    !validPlanTypes.includes(planType) || !validPlanDurations.includes(planDuration)
+    
   ) {
     return res.json({
       statsu: httpStatusText.FAIL,
