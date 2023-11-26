@@ -20,7 +20,7 @@ const User = require("../models/User");
 const Plan = require("../models/Plan");
 const Subscription = require("../models/Subscription");
 
-// @desc    Protect logic (verify token issue) authinticaion middleware
+// @desc   Protect logic (verify token issue) authinticaion middleware
 exports.protect = async (req, res, next) => {
   console.log("i am in protect function");
   //Check if token sent with req or not
@@ -325,25 +325,32 @@ exports.loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } });
     console.log("user exist", password);
+
+    // if user not found
     if (!user) {
       return res.status(404).json({
         status: httpStatusText.FAIL,
-        data: { title: "incorrect email or password" },
+        data: { title: "Invalid email or password" },
       });
     }
 
-    // Compaire hash(login pass) to hash (db user password hash)
-
+    // Compaire hash(login pass) to hash (db user password hash) - password varification
     const correctPassword = await bcrypt.compare(password, user.password);
     if (!correctPassword) {
-      console.log("incorpass", correctPassword);
+      console.log("incor pass", correctPassword);
 
       return res.status(404).json({
         status: httpStatusText.FAIL,
-        data: { title: "incorrect email or password" },
+        data: { title: "Invalid email or password" },
       });
     }
-
+ // Check if email is verified
+ if (!user.verifiedEmail) {
+  return res.status(401).json({
+    status: httpStatusText.FAIL,
+    data: { title: "Please verify your email before logging in" },
+  });
+}
     //   const token = createToken(userId: user.id, firstName: user.firstName, lastName: user.lastName ); //Bara code
     //   const refreshToken= createRefreshToken(userId: user.id, firstName: user.firstName, lastName: user.lastName )
     // User is authenticated, issue a token
@@ -362,7 +369,7 @@ exports.loginUser = async (req, res) => {
     // Send the token to the client
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "logged in successfully", user: user },
+      data: { title: "Logged in successfully", user: user },
       token,
     });
   } catch (error) {
