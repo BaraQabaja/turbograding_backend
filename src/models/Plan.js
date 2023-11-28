@@ -22,7 +22,8 @@ const Plan = sequelize.define(
     },
     price: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true, // Allow null or 0 value
+      defaultValue: 0.0, // Set default value to 0.0
     },
     currency: {
       type: DataTypes.STRING,
