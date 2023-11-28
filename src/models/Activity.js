@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("./database");
 
-const UserActivities = sequelize.define(
-  "UserActivities",
+const Activity = sequelize.define(
+  "Activity",
   {
     id: {
         type: DataTypes.INTEGER,
@@ -34,7 +34,7 @@ const UserActivities = sequelize.define(
   
 );
 
-// Plan.associate = (models) => {
-//   Plan.hasMany(models.Subscription, { foreignKey: "planId" });
-// };
-module.exports = UserActivities;
+// // User & Activity (One -> Many)
+// User.hasMany(Activity)
+// Activity.belongsTo(User);
+module.exports = Activity;

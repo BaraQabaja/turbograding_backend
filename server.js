@@ -11,7 +11,7 @@ const axios = require("axios");
 const cors = require("cors");
 const morgan = require("morgan");
 const bodyparser = require("body-parser");
-const {webhookCheckout}=require('./src/controllers/paymentController')
+const { webhookCheckout } = require("./src/controllers/paymentController");
 //const { Configuration, OpenAIApi } = require("openai");
 const jwt = require("jsonwebtoken");
 //for thired party login
@@ -20,8 +20,8 @@ const passportJWT = require("passport-jwt");
 const compression = require("compression");
 const dotenv = require("dotenv");
 dotenv.config({ path: "config.env" });
-const auth = require('./src/controllers/authController');
-var xss = require("xss");// to prevent xss attach - related to sql injection attack
+const auth = require("./src/controllers/authController");
+var xss = require("xss"); // to prevent xss attach - related to sql injection attack
 
 //! (Security) rate limiting middleware for all operations
 const limiter = rateLimit({
@@ -33,20 +33,21 @@ const limiter = rateLimit({
 const app = express();
 // Specify allowed origins
 const allowedOrigins = [
-  'http://localhost:3000/*','http://localhost:3000',
-  'chrome-extension:\/\/pfgjachlphejjkgnenknlbhncljapfia'
+  "http://localhost:3000/*",
+  "http://localhost:3000",
+  "chrome-extension://pfgjachlphejjkgnenknlbhncljapfia",
   // Add your frontend URL
   // 'https://yourproductionfrontendurl.com', // Add your production frontend URL
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log("cors origin ===> ",origin)
-    console.log("allowedOrigins chrome extention ===> ",allowedOrigins)
+    console.log("cors origin ===> ", origin);
+    console.log("allowedOrigins chrome extention ===> ", allowedOrigins);
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
 };
@@ -58,9 +59,6 @@ app.use(cors(corsOptions));
     apiKey: config.api.gpt_key,
 });*/
 //const openai = new OpenAIApi(configuration);
-
-
-
 
 let ExtractJwt = passportJWT.ExtractJwt;
 let JwtStrategy = passportJWT.Strategy;
@@ -86,7 +84,8 @@ let jwtOptions = {
 //! Checkout webhook  (stripe related)
 app.post(
   "/webhook",
-  express.raw({ type: "application/json" }),webhookCheckout
+  express.raw({ type: "application/json" }),
+  webhookCheckout
 );
 
 //! Middleware
@@ -94,11 +93,9 @@ app.use(compression()); // Compress all responses
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
+require("./src/utils/subscriptionScheduler"); // Include the subscription scheduler code performed every day at 0.0 am to make sure that the user subscription endDate is expired or not based on that he will update the subscription status to inactive or he will leave it active as it is.
 
-require('./src/utils/subscriptionScheduler');// Include the subscription scheduler code performed every day at 0.0 am to make sure that the user subscription endDate is expired or not based on that he will update the subscription status to inactive or he will leave it active as it is. 
-
-require('./src/utils/basicSubscriptionScheduler');// Include the basic subscription scheduler code performed begin of the month to update remainingQuestions, remainingExams and remainingAssignments 
-
+require("./src/utils/basicSubscriptionScheduler"); // Include the basic subscription scheduler code performed begin of the month to update remainingQuestions, remainingExams and remainingAssignments
 
 //! environment setup
 
@@ -111,23 +108,19 @@ if (process.env.NODE_ENV === "development") {
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
-
-//! xss attack prevention 
+//! xss attack prevention
 // Middleware to sanitize all incoming request data
 app.use((req, res, next) => {
-  console.log("entered the xss middleware ===> ",req.body)
+  console.log("entered the xss middleware ===> ", req.body);
   for (const key in req.body) {
     if (Object.hasOwnProperty.call(req.body, key)) {
-      console.log("req.body[key] before ====> ",req.body[key])
+      console.log("req.body[key] before ====> ", req.body[key]);
       req.body[key] = xss(req.body[key]);
-      console.log("req.body[key] after ====> ",req.body[key])
-
+      console.log("req.body[key] after ====> ", req.body[key]);
     }
   }
   next();
 });
-
-
 
 //! GPT fucntion
 // const gptFunctions = require('./src/middleware/gpt');
@@ -148,7 +141,6 @@ app.use(express.static("public"));
 //apply requests limiter as a middleware, to limit the incomming requests rate
 // app.use("/api", limiter);
 
-
 //! Routes
 // app.use('/api/users', usersRoutes);
 app.use("/api/auth", authRoutes);
@@ -159,18 +151,61 @@ app.use("/api/profile", profileRoutes);
 
 //! Modals
 const UserModal = require("./src/models/User");
+const UniversityModal = require("./src/models/University");
+const UserUniversityModal = require("./src/models/UserUniversity");
+const CourseModal = require("./src/models/Course");
+const CourseOfferingModal = require("./src/models/CourseOffering");
+const ActivityModal = require("./src/models/Activity");
+
+const StudentModal = require("./src/models/Student");
+const CourseOfferingModal = require("./src/models/CourseOffering");
+const EnrollmentModal = require("./src/models/Enrollment");
+
+const GradeModal = require("./src/models/Grade");
+const ExamModal = require("./src/models/Exam");
+
 const PaymentModal = require("./src/models/Payment");
 const PlanModal = require("./src/models/Plan");
 const SubscriptionModal = require("./src/models/Subscription");
-const UserActivitiesModal=require("./src/models/userActivities")
+const UserActivitiesModal = require("./src/models/Activity");
 // references: {
 //   model: 'users',
 //   key: 'id'
 // }
 //! Tables Relations
-// User Relations
+//* User Relations
 UserModal.hasMany(SubscriptionModal, { foreignKey: "userId" });
 SubscriptionModal.belongsTo(UserModal, { foreignKey: "userId" });
+
+// User & University (Many -> Many)
+UserModal.belongsToMany(UniversityModal, { through: UserUniversityModal });
+UniversityModal.belongsToMany(UserModal, { through: UserUniversityModal });
+
+// Course & User ( Many -> Many )
+CourseModal.belongsToMany(UserModal, { through: CourseOfferingModal });
+UserModal.belongsToMany(CourseModal, { through: CourseOfferingModal });
+
+// CourseOffering & Student ( Many -> Many )
+StudentModal.belongsToMany(CourseOfferingModal, { through: EnrollmentModal });
+CourseOfferingModal.belongsToMany(StudentModal, { through: EnrollmentModal });
+
+// University & Student (One -> Many)
+UniversityModal.hasMany(StudentModal);
+StudentModal.belongsTo(UniversityModal);
+
+// Grade & Exam (One -> Many)
+ExamModal.hasMany(GradeModal);
+GradeModal.belongsTo(ExamModal);
+
+// Grade & Enrollment (One -> One)
+// every enrollment(student) has one grade and every grade has one enrollment(student)
+EnrollmentModal.hasOne(GradeModal);
+GradeModal.belongsTo(EnrollmentModal);
+
+// User & Activity (One -> Many)
+// we use in user activity tracing
+UserModal.hasMany(ActivityModal);
+ActivityModal.belongsTo(UserModal);
 
 // Payment Relations
 PaymentModal.belongsTo(SubscriptionModal, { foreignKey: "subscriptionId" });
@@ -189,10 +224,11 @@ const PORT = process.env.PORT || 5000; //port number
 app.all("*", (req, res, next) => {
   res.status(400).send(`Can't find this route: ${req.originalUrl}`);
 });
+//************End of Table Relations Section************/
 //! On Production
 const HOSTProduction = "0.0.0.0"; //production
 sequelize
-  .sync({ forse: true })
+  .sync({ force: true }) //keep this in your mind { alter: true }
   .then(() => {
     console.log("DB Sync Done Successfully!");
     app.listen(process.env.PORT || 5000, HOSTProduction, () => {
@@ -205,7 +241,7 @@ sequelize
 
 //On Development
 // sequelize
-//   .sync({ forse: true })
+//   .sync({ force: true })
 //   .then(() => {
 //     console.log("DB Sync Done Successfully!");
 //     app.listen(PORT, process.env.HOST, () => {
