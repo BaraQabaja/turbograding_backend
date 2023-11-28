@@ -232,7 +232,7 @@ sequelize
   .then(() => {
     console.log("DB Sync Done Successfully!");
     app.listen(process.env.PORT || 5000, HOSTProduction, () => {
-      console.log(`Server is listening on ${PORT}`);
+      console.log(`Server is listening on  ${PORT}`);
     });
   })
   .catch((err) => {
