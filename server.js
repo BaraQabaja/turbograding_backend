@@ -171,7 +171,6 @@ const SubscriptionModal = require("./src/models/Subscription");
 //   key: 'id'
 // }
 //! Tables Relations
-//* User Relations
 // User & Subscription (One -> Many)
 UserModal.hasMany(SubscriptionModal, { foreignKey: "userId" });
 SubscriptionModal.belongsTo(UserModal, { foreignKey: "userId" });

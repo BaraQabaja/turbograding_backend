@@ -1,8 +1,7 @@
 const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 const sequelize = require("./database");
-const Student = require("./Student");
-const CourseOffering = require("./CourseOffering");
+
 
 const Enrollment = sequelize.define(
   "Enrollment",
