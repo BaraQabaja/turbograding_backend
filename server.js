@@ -166,13 +166,13 @@ const ExamModal = require("./src/models/Exam");
 const PaymentModal = require("./src/models/Payment");
 const PlanModal = require("./src/models/Plan");
 const SubscriptionModal = require("./src/models/Subscription");
-const UserActivitiesModal = require("./src/models/Activity");
 // references: {
 //   model: 'users',
 //   key: 'id'
 // }
 //! Tables Relations
 //* User Relations
+// User & Subscription (One -> Many)
 UserModal.hasMany(SubscriptionModal, { foreignKey: "userId" });
 SubscriptionModal.belongsTo(UserModal, { foreignKey: "userId" });
 
@@ -206,24 +206,23 @@ GradeModal.belongsTo(EnrollmentModal);
 UserModal.hasMany(ActivityModal);
 ActivityModal.belongsTo(UserModal);
 
-// Payment Relations
+
+// Plan & Subscription (One -> Many)
+PlanModal.hasMany(SubscriptionModal, { foreignKey: "planId" });
+SubscriptionModal.belongsTo(PlanModal, { foreignKey: "planId" });
+
+// Payment & Subscription (One -> One)
+SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
 PaymentModal.belongsTo(SubscriptionModal, { foreignKey: "subscriptionId" });
 
-// Plan Relations
-PlanModal.hasMany(SubscriptionModal, { foreignKey: "planId" });
+//************End of Table Relations Section************/
 
-// Subscription Relations
-SubscriptionModal.belongsTo(UserModal, { foreignKey: "userId" });
-SubscriptionModal.belongsTo(PlanModal, { foreignKey: "planId" });
-SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
-UserActivitiesModal.belongsTo(UserModal, { foreignKey: "userId" });
 
 const PORT = process.env.PORT || 5000; //port number
 
 app.all("*", (req, res, next) => {
   res.status(400).send(`Can't find this route: ${req.originalUrl}`);
 });
-//************End of Table Relations Section************/
 //! On Production
 const HOSTProduction = "0.0.0.0"; //production
 sequelize
