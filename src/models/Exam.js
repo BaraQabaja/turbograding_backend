@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const sequelize = require("./database");
 
 const Exam = sequelize.define(
-  "exam",
+  "Exam",
   {
     // Model attributes are defined here
     id: {

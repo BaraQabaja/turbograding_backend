@@ -5,7 +5,7 @@ const Student = require("./Student");
 const CourseOffering = require("./CourseOffering");
 
 const Enrollment = sequelize.define(
-  "enrollment",
+  "Enrollment",
   {
     // Model attributes are defined here
     id: {

@@ -9,10 +9,7 @@ const Activity = sequelize.define(
         autoIncrement: true,
         primaryKey: true
     },
-    userId: {
-        type: DataTypes.INTEGER,
-      
-    },
+    
     activityType: {
         type: DataTypes.STRING,
         allowNull: false,
