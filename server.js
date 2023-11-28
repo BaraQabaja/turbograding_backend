@@ -154,7 +154,6 @@ const UserModal = require("./src/models/User");
 const UniversityModal = require("./src/models/University");
 const UserUniversityModal = require("./src/models/UserUniversity");
 const CourseModal = require("./src/models/Course");
-const CourseOfferingModal = require("./src/models/CourseOffering");
 const ActivityModal = require("./src/models/Activity");
 
 const StudentModal = require("./src/models/Student");
