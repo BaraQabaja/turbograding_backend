@@ -36,6 +36,8 @@ const allowedOrigins = [
   "http://localhost:3000/*",
   "http://localhost:3000",
   "chrome-extension://pfgjachlphejjkgnenknlbhncljapfia",
+  "http://127.0.0.1:5500/*",
+  "http://127.0.0.1:5500"
   // Add your frontend URL
   // 'https://yourproductionfrontendurl.com', // Add your production frontend URL
 ];
@@ -148,6 +150,7 @@ app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/plan", planRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/user", userRoutes);
 
 //! Modals
 const UserModal = require("./src/models/User");
