@@ -233,7 +233,7 @@ app.all("*", (req, res, next) => {
 //! On Production
 const HOSTProduction = "0.0.0.0"; //production
 sequelize
-  .sync({ force: true }) //keep this in your mind { alter: true }
+  .sync() //keep this in your mind { force: true } { alter: true }
   .then(() => {
     console.log("DB Sync Done Successfully!");
     app.listen(process.env.PORT || 5000, HOSTProduction, () => {
