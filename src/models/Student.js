@@ -33,19 +33,17 @@ const Student = sequelize.define(
     // Other model options go here
     createdAt: true, // disable createdAt
     updatedAt: false, // disable updatedAt
-    // Add a unique constraint for the composite primary key
-    indexes: [
-      {
-        unique: true,
-        fields: ['id', 'universityId'],
-      },
-    ],
+  
     
   }
 );
-// // University & Student (One -> Many)
-// University.hasMany(Student)
-// Student.belongsTo(University);
+
+// Add a unique constraint for the composite primary key
+Student.addIndex(
+  ["id", "universityId"],
+  { unique: true, name: "unique_student_university" }
+);
+
 
 
 module.exports = Student;
