@@ -12,7 +12,7 @@ const University = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
-    univesity_name:{
+    university_name:{
         type: DataTypes.STRING,
         allowNull: false,
     },
