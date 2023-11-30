@@ -18,7 +18,7 @@ const httpStatusText = require("../utils/httpStatusText");
 // @access  private / user
 exports.gradingExam = async (req, res) => {
   console.log("user info recieved ===> ");
-  console.log(req.body.data);
+  console.log(req.body);
 
   try {
     const info = req.body.data;
