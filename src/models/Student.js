@@ -13,6 +13,11 @@ const Student = sequelize.define(
       primaryKey:true,
       allowNull: false,
     },
+    universityID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+    },
     fist_name:{
         type: DataTypes.STRING,
         allowNull: false,
