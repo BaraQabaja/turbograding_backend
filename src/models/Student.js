@@ -35,7 +35,7 @@ const Student = sequelize.define(
     indexes: [
       {
         unique: true,
-        fields: ['studentID', 'universityID'],
+        fields: ['id', 'universityID'],
       },
     ],
     
