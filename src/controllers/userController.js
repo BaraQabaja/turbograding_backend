@@ -75,7 +75,7 @@ exports.gradingExam = async (req, res) => {
     }
     // - create the courseOffering
     const courseOffering = await CourseOffering.create({
-      semester_name: info.semester_name,
+      semester_name: info.semester,
       class_code: info.class_code,
       courseId: course_intity.id,
       UserId: req.user.id,
@@ -83,8 +83,8 @@ exports.gradingExam = async (req, res) => {
     // 5) Create Student
     const student = await Student.create({
       id: info.studentId,
-      first_name: info.semester_name,
-      last_name: info.class_code,
+      first_name: info.studentFirstName,
+      last_name: info.studentLastName,
       universityId: university_intity.id,
     });
     // 6) Create Enrollment for this student on specific course
