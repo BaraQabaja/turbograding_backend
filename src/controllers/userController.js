@@ -30,7 +30,7 @@ exports.gradingExam = async (req, res) => {
 
     // 2) Create University
     const university = await University.create({
-      univesity_name: info.univesity_name,
+      university_name: info.university_name,
     });
 
     // 3) Create userUniversity
