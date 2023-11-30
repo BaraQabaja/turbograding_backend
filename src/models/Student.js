@@ -12,7 +12,6 @@ const Student = sequelize.define(
       // autoIncrement: true,
       primaryKey:true,
       allowNull: false,
-      primaryKey: true,
 
     },
     universityId: {
