@@ -33,16 +33,21 @@ const Student = sequelize.define(
     // Other model options go here
     createdAt: true, // disable createdAt
     updatedAt: false, // disable updatedAt
-  
+    indexes: [
+      {
+        unique: true,
+        fields: ["id", "universityId"],
+      },
+    ],
     
   }
 );
 
-// Add a unique constraint for the composite primary key
-Student.addIndex(
-  ["id", "universityId"],
-  { unique: true, name: "unique_student_university" }
-);
+// // Add a unique constraint for the composite primary key
+// Student.addIndex(
+//   ["id", "universityId"],
+//   { unique: true, name: "unique_student_university" }
+// );
 
 
 
