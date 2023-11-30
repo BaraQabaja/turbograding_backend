@@ -14,13 +14,6 @@ const Student = sequelize.define(
       allowNull: false,
 
     },
-    universityId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey:true,
-
-
-    },
     fist_name:{
         type: DataTypes.STRING,
         allowNull: false,
@@ -34,12 +27,12 @@ const Student = sequelize.define(
     // Other model options go here
     createdAt: true, // disable createdAt
     updatedAt: false, // disable updatedAt
-    indexes: [
-      {
-        unique: true,
-        fields: ["id", "universityId"],
-      },
-    ],
+    // indexes: [
+    //   {
+    //     unique: true,
+    //     fields: ["id", "universityId"],
+    //   },
+    // ],
     
   }
 );
