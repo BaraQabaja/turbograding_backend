@@ -6,7 +6,7 @@ const University = sequelize.define(
   "university",
   {
     // Model attributes are defined here
-    universityId: {
+    id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       allowNull: false,
