@@ -37,7 +37,7 @@ exports.gradingExam = async (req, res) => {
     // - get university_name to access the university id
     const university_intity = await University.findOne({
       where: {
-        univesity_name: info.univesity_name,
+        university_name: info.university_name,
       },
     });
     if (!university_intity) {
