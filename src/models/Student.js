@@ -13,11 +13,6 @@ const Student = sequelize.define(
       primaryKey:true,
       allowNull: false,
     },
-    universityID:{
-      type: DataTypes.INTEGER,
-      primaryKey:true,
-      allowNull: false,
-    },
     fist_name:{
         type: DataTypes.STRING,
         allowNull: false,
@@ -32,7 +27,7 @@ const Student = sequelize.define(
     createdAt: true, // disable createdAt
     updatedAt: false, // disable updatedAt
 
-    primaryKey: ['id', 'universityID'],//composite primary key
+    
   }
 );
 // // University & Student (One -> Many)
