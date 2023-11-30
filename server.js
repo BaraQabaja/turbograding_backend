@@ -192,7 +192,7 @@ CourseOfferingModal.belongsToMany(StudentModal, { through: EnrollmentModal });
 
 // University & Student (One -> Many)
 UniversityModal.hasMany(StudentModal);
-StudentModal.belongsTo(UniversityModal);
+StudentModal.belongsTo(UniversityModal,{ foreignKey: 'universityID' });
 
 // Grade & Exam (One -> Many)
 ExamModal.hasMany(GradeModal);
