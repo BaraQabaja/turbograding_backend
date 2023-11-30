@@ -21,7 +21,7 @@ exports.gradingExam = async (req, res) => {
   console.log(req.body);
 
   try {
-    const info = req.body.data;
+    const info = req.body;
     // 1) Create Course
     const course = await Course.create({
       course_code: info.course_code,
