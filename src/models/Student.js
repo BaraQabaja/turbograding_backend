@@ -10,10 +10,12 @@ const Student = sequelize.define(
     id: {
       type: DataTypes.INTEGER,
       // autoIncrement: true,
+      primaryKey:true,
       allowNull: false,
     },
     universityID:{
       type: DataTypes.INTEGER,
+      primaryKey:true,
       allowNull: false,
     },
     fist_name:{
