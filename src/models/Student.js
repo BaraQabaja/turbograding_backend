@@ -11,11 +11,9 @@ const Student = sequelize.define(
       type: DataTypes.INTEGER,
       // autoIncrement: true,
       allowNull: false,
-      primaryKey: true,
     },
     universityID:{
       type: DataTypes.INTEGER,
-      primaryKey: true,
       allowNull: false,
     },
     fist_name:{
@@ -31,6 +29,8 @@ const Student = sequelize.define(
     // Other model options go here
     createdAt: true, // disable createdAt
     updatedAt: false, // disable updatedAt
+
+    primaryKey: ['id', 'universityID'],//composite primary key
   }
 );
 // // University & Student (One -> Many)
