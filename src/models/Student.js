@@ -12,8 +12,15 @@ const Student = sequelize.define(
       // autoIncrement: true,
       primaryKey:true,
       allowNull: false,
+      primaryKey: true,
+
     },
-   
+    universityId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+
+    },
     fist_name:{
         type: DataTypes.STRING,
         allowNull: false,
@@ -31,7 +38,7 @@ const Student = sequelize.define(
     indexes: [
       {
         unique: true,
-        fields: ['id', 'universityID'],
+        fields: ['id', 'universityId'],
       },
     ],
     
