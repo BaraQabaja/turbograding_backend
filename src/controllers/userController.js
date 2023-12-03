@@ -91,7 +91,7 @@ exports.gradingExam = async (req, res) => {
     // 4) Create Semester
     const semester_entity = await Semester.findOne({
       where: {
-        semester_name: semester,
+        Semester_name: semester,
       },
     });
     if (!semester_entity) {
