@@ -85,8 +85,8 @@ exports.gradingExam = async (req, res) => {
         UserId: req.user.id,
       });
     }
-
-    // 4) Create CourseOffering
+    
+      // 4) Create CourseOffering
     // - get the course id we want to offer
     const course_intity = await Course.findOne({
       where: {
@@ -122,8 +122,14 @@ exports.gradingExam = async (req, res) => {
         UserId: req.user.id,
       });
     }
+    // 5) Create Semester
 
-    // 5) Create Student
+    // 6) Create CourseOfferingSemester
+
+    // 7) Create Class
+
+
+    // 8) Create Student
     // check if the student exist or not
     const student = await Student.findOne({
       where: {
@@ -142,7 +148,7 @@ exports.gradingExam = async (req, res) => {
         universityId: university_intity.id,
       });
     }
-    // 6) Create Enrollment for this student on specific course(offered course)
+    // 9) Create Enrollment - for this student on specific course(offered course)
     // - get the courseOffering id (the id of the offeredCourse we just created in step 4)
 
     const courseOffering_intity = await CourseOffering.findOne({
@@ -179,14 +185,14 @@ exports.gradingExam = async (req, res) => {
       });
     }
 
-    // // 7) Create Exam
+    // // 10) Create Exam
     // const exam = await Exam.create({
     //   id: info.studentId,
     //   first_name: info.semester_name,
     //   last_name: info.class_code,
     //   universityId: university_intity.id,
     // });
-    // // 8) Create Grade
+    // // 11) Create Grade
     // const grade = await Grade.create({
     //   id: info.studentId,
     //   first_name: info.semester_name,
