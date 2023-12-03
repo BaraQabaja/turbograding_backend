@@ -12,6 +12,7 @@ const Enrollment = require("../models/Enrollment");
 const Exam = require("../models/Exam");
 const Grade = require("../models/Grade");
 const Class = require("../models/Class_Info");
+const User = require("../models/Class_Info");
 
 //httpStatus key words
 const httpStatusText = require("../utils/httpStatusText");
