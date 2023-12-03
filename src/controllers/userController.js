@@ -89,20 +89,19 @@ exports.gradingExam = async (req, res) => {
       });
     }
     // 4) Create Semester
+    // check if semester is exist or not
     const semester_entity = await Semester.findOne({
       where: {
         Semester_name: semester,
       },
     });
     if (!semester_entity) {
-      console.log("fail finding semester");
+    
+   // - create the semester
+   await Semester.create({
+    Semester_name: semester,
 
-      return res.status(400).json({
-        status: httpStatusText.FAIL,
-        data: {
-          title: "The semester that you are looking for is not exist.",
-        },
-      });
+  });
     }
     // 5) Create CourseOffering
     // - get the course id we want to offer
