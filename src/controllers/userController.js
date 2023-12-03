@@ -178,7 +178,7 @@ exports.gradingExam = async (req, res) => {
       });
     }
     // check if the student exist or not
-    const student = await Student.findOne({
+    const student_check = await Student.findOne({
       where: {
         id: studentId,
         first_name: studentFirstName,
@@ -186,7 +186,7 @@ exports.gradingExam = async (req, res) => {
         universityId: university_for_student.id,
       },
     });
-    if (!student) {
+    if (!student_check) {
       // create student
       await Student.create({
         id: studentId,
