@@ -14,7 +14,7 @@ const Student = sequelize.define(
       allowNull: false,
 
     },
-    fist_name:{
+    first_name:{
         type: DataTypes.STRING,
         allowNull: false,
     },
