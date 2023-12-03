@@ -268,3 +268,34 @@ exports.gradingExam = async (req, res) => {
     });
   }
 };
+
+// @desc    Get user universities logic - universities related to a spicific user
+// @route   GET /api/user/get-user-universities
+// @access  user
+exports.getUserUniversities = async (req, res) => {
+  const userId = req.user.id; 
+  try {
+
+
+    const userUniversities = await User.findByPk(userId, {
+      include: {
+        model: University,
+        through: UserUniversity, // This is important for a many-to-many association
+        attributes: ['id', 'university_name'], // Specify the attributes you want to retrieve
+      },
+    })
+console.log("the uni found ===> ")
+console.log(userUniversities)
+
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: { title: "university found.", userUniversities },
+    });
+  } catch (error) {
+    console.log("error in getUserUniversities ===> ", error.message  )
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: { title:"something went wrong, please try again." },
+    });
+  }
+};

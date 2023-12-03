@@ -23,7 +23,6 @@ const UserUniversity = sequelize.define(
   }
 );
 
-// UserUniversity.belongsTo(User);
-// UserUniversity.belongsTo(University);
+
 
 module.exports = UserUniversity;
