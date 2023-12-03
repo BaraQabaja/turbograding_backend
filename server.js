@@ -194,9 +194,9 @@ SemesterModal.belongsToMany(CourseOfferingModal, { through: CourseOfferingSemest
 CourseModal.belongsToMany(UserModal, { through: CourseOfferingModal });
 UserModal.belongsToMany(CourseModal, { through: CourseOfferingModal });
 
-// CourseOffering & Student ( Many -> Many )
-StudentModal.belongsToMany(CourseOfferingModal, { through: EnrollmentModal });
-CourseOfferingModal.belongsToMany(StudentModal, { through: EnrollmentModal });
+// Class & Student ( Many -> Many )
+StudentModal.belongsToMany(ClassModal, { through: EnrollmentModal });
+ClassModal.belongsToMany(StudentModal, { through: EnrollmentModal });
 
 
 // University & Student (One -> Many)
@@ -210,7 +210,7 @@ foreignKey: {
 */
 
 
-// Class_Info(Class) & CourseOffering (One -> Many)
+// Class & CourseOffering (One -> Many)
 CourseOfferingModal.hasMany(ClassModal);
 ClassModal.belongsTo(CourseOfferingModal);
 
