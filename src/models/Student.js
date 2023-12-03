@@ -8,12 +8,13 @@ const Student = sequelize.define(
   {
     // Model attributes are defined here
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING,
+      // autoIncrement: true,
+      primaryKey:true,
       allowNull: false,
-      primaryKey: true,
+
     },
-    fist_name:{
+    first_name:{
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -26,11 +27,22 @@ const Student = sequelize.define(
     // Other model options go here
     createdAt: true, // disable createdAt
     updatedAt: false, // disable updatedAt
+    // indexes: [
+    //   {
+    //     unique: true,
+    //     fields: ["id", "universityId"],
+    //   },
+    // ],
+    
   }
 );
-// // University & Student (One -> Many)
-// University.hasMany(Student)
-// Student.belongsTo(University);
+
+// // Add a unique constraint for the composite primary key
+// Student.addIndex(
+//   ["id", "universityId"],
+//   { unique: true, name: "unique_student_university" }
+// );
+
 
 
 module.exports = Student;

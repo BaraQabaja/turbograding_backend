@@ -1,4 +1,4 @@
-// routes/plans.js
+// routes /plans
 const express = require('express');
 const authenticateToken = require('../middleware/authenticateToken');
 const plansController = require('../controllers/planController');

@@ -1,24 +1,20 @@
+
 const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 const sequelize = require("./database");
 
-const University = sequelize.define(
-  "university",
+const Class_Info = sequelize.define(
+  "Class_Info",
   {
-    // Model attributes are defined here
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       allowNull: false,
       primaryKey: true,
     },
-    university_name:{
+    class_code:{
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    country:{
-        type: DataTypes.STRING,
-        allowNull: true,
     }
   },
   {
@@ -29,5 +25,4 @@ const University = sequelize.define(
 );
 
 
-
-module.exports = University;
+module.exports = Class_Info;

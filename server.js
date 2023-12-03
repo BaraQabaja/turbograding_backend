@@ -36,6 +36,8 @@ const allowedOrigins = [
   "http://localhost:3000/*",
   "http://localhost:3000",
   "chrome-extension://pfgjachlphejjkgnenknlbhncljapfia",
+  "http://127.0.0.1:5500/*",
+  "http://127.0.0.1:5500"
   // Add your frontend URL
   // 'https://yourproductionfrontendurl.com', // Add your production frontend URL
 ];
@@ -148,6 +150,7 @@ app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/plan", planRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/user", userRoutes);
 
 //! Modals
 const UserModal = require("./src/models/User");
@@ -155,6 +158,9 @@ const UniversityModal = require("./src/models/University");
 const UserUniversityModal = require("./src/models/UserUniversity");
 const CourseModal = require("./src/models/Course");
 const ActivityModal = require("./src/models/Activity");
+// const CourseOfferingSemesterModal = require("./src/models/CourseOfferingSemester");
+const SemesterModal = require("./src/models/Semester");
+const ClassModal = require("./src/models/Class_Info");
 
 const StudentModal = require("./src/models/Student");
 const CourseOfferingModal = require("./src/models/CourseOffering");
@@ -179,17 +185,35 @@ SubscriptionModal.belongsTo(UserModal, { foreignKey: "userId" });
 UserModal.belongsToMany(UniversityModal, { through: UserUniversityModal });
 UniversityModal.belongsToMany(UserModal, { through: UserUniversityModal });
 
+// CourseOffering & Semester (One -> Many)
+SemesterModal.hasMany(CourseOfferingModal);
+CourseOfferingModal.belongsTo(SemesterModal);
+
+
+
 // Course & User ( Many -> Many )
 CourseModal.belongsToMany(UserModal, { through: CourseOfferingModal });
 UserModal.belongsToMany(CourseModal, { through: CourseOfferingModal });
 
-// CourseOffering & Student ( Many -> Many )
-StudentModal.belongsToMany(CourseOfferingModal, { through: EnrollmentModal });
-CourseOfferingModal.belongsToMany(StudentModal, { through: EnrollmentModal });
+// Class & Student ( Many -> Many )
+StudentModal.belongsToMany(ClassModal, { through: EnrollmentModal });
+ClassModal.belongsToMany(StudentModal, { through: EnrollmentModal });
+
 
 // University & Student (One -> Many)
 UniversityModal.hasMany(StudentModal);
 StudentModal.belongsTo(UniversityModal);
+/*
+foreignKey: {
+    name: 'universityId',
+    primaryKey: true,
+  },
+*/
+
+
+// Class & CourseOffering (One -> Many)
+CourseOfferingModal.hasMany(ClassModal);
+ClassModal.belongsTo(CourseOfferingModal);
 
 // Grade & Exam (One -> Many)
 ExamModal.hasMany(GradeModal);
@@ -225,7 +249,7 @@ app.all("*", (req, res, next) => {
 //! On Production
 const HOSTProduction = "0.0.0.0"; //production
 sequelize
-  .sync({ force: true }) //keep this in your mind { alter: true }
+  .sync() //keep this in your mind { force: true } { alter: true }
   .then(() => {
     console.log("DB Sync Done Successfully!");
     app.listen(process.env.PORT || 5000, HOSTProduction, () => {

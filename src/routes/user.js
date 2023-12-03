@@ -1,3 +1,9 @@
+// routes/ user
+const express = require('express');
+const userController = require('../controllers/userController');
+const router = express.Router();
+const auth = require('../controllers/authController');
+
 // const express = require('express');
 // const multer = require('multer');
 // const { v4: uuidv4 } = require('uuid');
@@ -14,7 +20,8 @@
 // const upload = multer({ storage: storage });
 
 
-// router.post('/exam', authenticateToken, usersController.gradingExam);
+router.post('/grading-exam',auth.protect, userController.gradingExam);
+router.get('/get-user-universities',auth.protect, userController.getUserUniversities);
 // router.post('/assignment', authenticateToken, upload.single('file'), usersController.gradingAssignment);
 
 // router.get('/profile', authenticateToken, usersController.getProfile);  // Fetch user profile
@@ -25,4 +32,4 @@
 
 // // ... more routes ...
 
-// module.exports = router;
+module.exports = router;

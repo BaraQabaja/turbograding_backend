@@ -12,14 +12,14 @@ const CourseOffering = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
-    semester_name:{
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    class_code:{
-        type: DataTypes.STRING,
-        allowNull: false,
-    }
+    // semester_name:{
+    //     type: DataTypes.STRING,
+    //     allowNull: false,
+    // },
+    // class_code:{
+    //     type: DataTypes.STRING,
+    //     allowNull: false,
+    // }
   },
   {
     // Other model options go here
@@ -28,9 +28,7 @@ const CourseOffering = sequelize.define(
   }
 );
 
-// // Course & User ( Many -> Many )
-// Course.belongsToMany(User, { through: CourseOffering });
-// User.belongsToMany(Course, { through: CourseOffering });
+
 
 
 
