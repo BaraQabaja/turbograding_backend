@@ -2,6 +2,8 @@ const config = require("../config");
 
 // Required Controllers
 const Course = require("../models/Course");
+const Semester = require("../models/Semester");
+
 const University = require("../models/University");
 const UserUniversity = require("../models/UserUniversity");
 const CourseOffering = require("../models/CourseOffering");
@@ -9,6 +11,7 @@ const Student = require("../models/Student");
 const Enrollment = require("../models/Enrollment");
 const Exam = require("../models/Exam");
 const Grade = require("../models/Grade");
+const Class = require("../models/Class_Info");
 
 //httpStatus key words
 const httpStatusText = require("../utils/httpStatusText");
@@ -58,12 +61,12 @@ exports.gradingExam = async (req, res) => {
     }
     // 3) Create userUniversity
     // - get university_name to access the university id
-    const university_intity = await University.findOne({
+    const university_entity = await University.findOne({
       where: {
         university_name: university_name,
       },
     });
-    if (!university_intity) {
+    if (!university_entity) {
       console.log("fail finding university");
 
       return res.status(400).json({
@@ -75,25 +78,40 @@ exports.gradingExam = async (req, res) => {
     }
     // check if the userUniversity is exist or not, if the professor is working at this university or not
     const userUniversity = await UserUniversity.findOne({
-      where: { universityId: university_intity.id, UserId: req.user.id },
+      where: { universityId: university_entity.id, UserId: req.user.id },
     });
 
     if (!userUniversity) {
       // - create the userUniversity
       await UserUniversity.create({
-        universityId: university_intity.id,
+        universityId: university_entity.id,
         UserId: req.user.id,
       });
     }
-    
-      // 4) Create CourseOffering
+    // 4) Create Semester
+    const semester_entity = await Semester.findOne({
+      where: {
+        semester_name: semester,
+      },
+    });
+    if (!semester_entity) {
+      console.log("fail finding semester");
+
+      return res.status(400).json({
+        status: httpStatusText.FAIL,
+        data: {
+          title: "The semester that you are looking for is not exist.",
+        },
+      });
+    }
+    // 5) Create CourseOffering
     // - get the course id we want to offer
-    const course_intity = await Course.findOne({
+    const course_entity = await Course.findOne({
       where: {
         course_code: course_code,
       },
     });
-    if (!course_intity) {
+    if (!course_entity) {
       console.log("fail finding course");
 
       return res.status(400).json({
@@ -107,80 +125,115 @@ exports.gradingExam = async (req, res) => {
     // check if the course offered or not
     const courseOffering = await CourseOffering.findOne({
       where: {
-        semester_name: semester,
-        class_code: class_code,
-        courseId: course_intity.id,
+        SemesterId: semester_entity.id,
+        courseId: course_entity.id,
         UserId: req.user.id,
       },
     });
     if (!courseOffering) {
       // - create the courseOffering
       await CourseOffering.create({
-        semester_name: semester,
+        SemesterId: semester_entity.id,
         class_code: class_code,
-        courseId: course_intity.id,
+        courseId: course_entity.id,
         UserId: req.user.id,
       });
     }
-    // 5) Create Semester
 
-    // 6) Create CourseOfferingSemester
+    // 6) Create Class
+    // check if the class exist or not
+    const class_info_entity = await Class.findOne({
+      where: {
+        class_code: class_code,
+      },
+    });
+    const courseOffering_for_class = await CourseOffering.findOne({
+      where: {
+        SemesterId: semester_entity.id,
+        courseId: course_entity.id,
+        UserId: req.user.id,
+      },
+    });
+    if (!class_info_entity) {
+      // - create the class
+      await Class.create({
+        class_code: class_code,
+        courseOfferingId: courseOffering_for_class.id,
+      });
+    }
 
-    // 7) Create Class
+    // 7) Create Student
 
-
-    // 8) Create Student
+    const university_for_student = await University.findOne({
+      where: {
+        university_name: university_name,
+      },
+    });
+    if (!university_for_student) {
+      console.log("fail finding university");
+      return res.status(400).json({
+        status: httpStatusText.FAIL,
+        data: {
+          title: "The University that you are looking for is not exist.",
+        },
+      });
+    }
     // check if the student exist or not
     const student = await Student.findOne({
       where: {
-        id: info.studentId,
+        id: studentId,
         first_name: studentFirstName,
         last_name: studentLastName,
-        universityId: university_intity.id,
+        universityId: university_for_student.id,
       },
     });
     if (!student) {
       // create student
       await Student.create({
-        id: info.studentId,
+        id: studentId,
         first_name: studentFirstName,
         last_name: studentLastName,
-        universityId: university_intity.id,
+        universityId: university_entity.id,
       });
     }
-    // 9) Create Enrollment - for this student on specific course(offered course)
-    // - get the courseOffering id (the id of the offeredCourse we just created in step 4)
+    // 8) Create Enrollment - for this student on specific class that related to specific course(offered course)
 
-    const courseOffering_intity = await CourseOffering.findOne({
-      where: {
-        //we match all these attributes because every attribute can be changed while other attributes still fixed
-        semester_name: semester,
-        class_code: class_code,
-        courseId: course_intity.id,
-        UserId: req.user.id,
-      },
-    });
-    if (!courseOffering_intity) {
-      console.log("fail finding courseOffering");
+    //check if student is exist or not
+    const student_for_enrollment = await Student.findByPk(studentId);
+    if (!student_for_enrollment) {
+      console.log("fail finding the student");
       return res.status(400).json({
         status: httpStatusText.FAIL,
         data: {
-          title: "The Course that you are looking for is not Offered.",
+          title: "The student that you are looking for is not exist.",
         },
       });
     }
-    // check if the student enrolled in the courseoffering or not
+
+    const class_for_enrollment = await Class.findOne({where:{
+      class_code:class_code
+    }});
+    if (!class_for_enrollment) {
+      console.log("fail finding the class");
+      return res.status(400).json({
+        status: httpStatusText.FAIL,
+        data: {
+          title: "The class that you are looking for is not exist.",
+        },
+      });
+    }
+    // check if the student enrolled in the class that related to specific course or not
     const enrollment = await Enrollment.findOne({
       where: {
-        courseOfferingId: courseOffering_intity.id,
+        ClassInfoId: class_for_enrollment.id,
         studentId: studentId,
       },
     });
 
     if (!enrollment) {
-      // - create the courseOffering
+      // - create the enrollment for this student
       await Enrollment.create({
-        courseOfferingId: courseOffering_intity.id,
+        ClassInfoId: class_for_enrollment.id,
         studentId: studentId,
       });
     }
@@ -216,20 +269,3 @@ exports.gradingExam = async (req, res) => {
     });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
