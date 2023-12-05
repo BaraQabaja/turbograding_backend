@@ -340,15 +340,7 @@ exports.getUserCourses = async (req, res) => {
         userId: userId,
         SemesterId: semester.id,
         universityId: university.id,
-      },
-      include: [
-        {
-          model: Course,
-          
-          attributes: [], // Include only userId and semesterId from CourseOffering
-        },
-      ],
-    });
+      });
     console.log("user courses in university name based on semester ===> ");
     console.log(courses);
     return res.json({
