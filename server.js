@@ -161,6 +161,7 @@ const ActivityModal = require("./src/models/Activity");
 // const CourseOfferingSemesterModal = require("./src/models/CourseOfferingSemester");
 const SemesterModal = require("./src/models/Semester");
 const ClassModal = require("./src/models/Class_Info");
+const LocationModal = require("./src/models/Location_Info");
 
 const StudentModal = require("./src/models/Student");
 const CourseOfferingModal = require("./src/models/CourseOffering");
@@ -184,6 +185,10 @@ SubscriptionModal.belongsTo(UserModal, { foreignKey: "userId" });
 // User & University (Many -> Many)
 UserModal.belongsToMany(UniversityModal, { through: UserUniversityModal });
 UniversityModal.belongsToMany(UserModal, { through: UserUniversityModal });
+
+// User & Locaiton (one -> one)
+UserModal.hasOne(LocationModal);
+LocationModal.belongsTo(UserModal);
 
 // University and Course (Many-to-Many through CourseOfferingModal)
 UniversityModal.belongsToMany(CourseModal, { through: CourseOfferingModal });

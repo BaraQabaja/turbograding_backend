@@ -50,10 +50,16 @@ const Plan = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    status: {
+      
+      type: DataTypes.BOOLEAN,
+      values: ["active","inactive"],
+      defaultValue: "active",
+    },
   },
   {
     // Other model options go here
-    createdAt: false, // disable createdAt
+    createdAt: true, // disable createdAt
     updatedAt: false, // disable updatedAt
   }
   

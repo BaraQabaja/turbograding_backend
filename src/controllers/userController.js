@@ -339,30 +339,37 @@ exports.getUserCourses = async (req, res) => {
       where: {
         UserId: userId,
         SemesterId: semester.id,
-        universityId: university.id
-      }})
-  
-      const courseDetails = [];
-  
-      for (const offeredCourse of offeredCourses) {
-        const courseId = offeredCourse.courseId;
-  
-        // Retrieve course details using courseId
-        const courseInfo = await Course.findOne({
-          where: {
-            id: courseId,
-          },
-          attributes: ['course_name', 'course_code'], // Include only specific attributes
-        });
-  
-        // Add course details to the result array
-        courseDetails.push(courseInfo);
-      }
+        universityId: university.id,
+      },
+    });
+
+    const courseDetails = [];
+
+    for (const offeredCourse of offeredCourses) {
+      const courseId = offeredCourse.courseId;
+
+      // Retrieve course details using courseId
+      const courseInfo = await Course.findOne({
+        where: {
+          id: courseId,
+        },
+        attributes: ["course_name", "course_code"], // Include only specific attributes
+      });
+
+      // Add course details to the result array
+      courseDetails.push(courseInfo);
+    }
     console.log("user courses in university name based on semester ===> ");
     console.log(courseDetails);
+    // if (courseDetails.length == 0) {
+    //   return res.json({
+    //     status: httpStatusText.SUCCESS,
+    //     data: { title: "no courses yet." },
+    //   });
+    // }
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Courses found successfully." ,courseDetails},
+      data: { title: "Courses found successfully.", courseDetails },
     });
   } catch (error) {
     console.log("error in getUserCourses controller ===> ", error.message);
@@ -371,6 +378,4 @@ exports.getUserCourses = async (req, res) => {
       data: { title: "Error finding courses, please try again." },
     });
   }
-
-  
 };

@@ -52,48 +52,14 @@ exports.checkoutSession = async (req, res) => {
   // app settings
   const taxPrice = 0;
   // 1) Get Plan Type and Duration (1 month or 12 month)
-  const planType = req.body.planType;// make the front-end send the plan id 
-  const planDuration = req.body.planDuration;
+  const planId = req.body.planId;
+  console.log("checkoutSession inputs ", planId);
+  
+ 
 
-  const validPlanTypes = ["professional", "premium"];//get all details from db
-  const validPlanDurations = [30, 365];
-  console.log("checkoutSession inputs ", planType, planDuration);
-  console.log(typeof planDuration)
-  // console.log(
-  //   !validPlanTypes.includes(planType) ||
-  //     !validPlanDurations.includes(planDuration)
-  // );
-  // console.log( !validPlanTypes.includes(planType))
-  // console.log( !validPlanDurations.includes(planDuration))
-  // console.log(planType, planDuration);
-  //****Validation****//
-  // if (
-  //   !validPlanTypes.includes(planType) ||
-  //   !validPlanDurations.includes(planDuration)
-  // ) {
-  //   return res.status(404).json({
-  //     status: httpStatusText.FAIL,
-  //     data: { title: "invalid inputs, please try again." },
-  //   });
-  // }
-  if (
-    !validPlanTypes.includes(planType)
-  ) {
-    return res.status(404).json({
-      status: httpStatusText.FAIL,
-      data: { title: "invalid inputs, please try again." },
-    });
-  }
-  //********/
+  // 2) Get Plan Price depending on Plan id
 
-  // 2) Get Plan Price depending on Plan Type and Duration
-
-  const selectedPlan = await Plan.findOne({
-    where: {
-      name: planType,
-      duration: planDuration,
-    },
-  });
+  const selectedPlan = await Plan.findByPk(planId);
   if (!selectedPlan) {
     return res.status(400).json({
       status: httpStatusText.FAIL,
