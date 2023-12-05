@@ -335,18 +335,34 @@ exports.getUserCourses = async (req, res) => {
         data: { title: "Semester not found, please try again." },
       });
     }
-    const courses = await CourseOffering.findAll({
+    const offeredCourses = await CourseOffering.findAll({
       where: {
         UserId: userId,
         SemesterId: semester.id,
         universityId: university.id
       }})
-
+  
+      const courseDetails = [];
+  
+      for (const offeredCourse of offeredCourses) {
+        const courseId = offeredCourse.courseId;
+  
+        // Retrieve course details using courseId
+        const courseInfo = await Course.findOne({
+          where: {
+            id: courseId,
+          },
+          attributes: ['course_name', 'course_code'], // Include only specific attributes
+        });
+  
+        // Add course details to the result array
+        courseDetails.push(courseInfo);
+      }
     console.log("user courses in university name based on semester ===> ");
-    console.log(courses);
+    console.log(courseDetails);
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Courses found successfully." ,courses},
+      data: { title: "Courses found successfully." ,courseDetails},
     });
   } catch (error) {
     console.log("error in getUserCourses controller ===> ", error.message);
