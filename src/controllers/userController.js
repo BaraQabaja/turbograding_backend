@@ -97,12 +97,10 @@ exports.gradingExam = async (req, res) => {
       },
     });
     if (!semester_entity) {
-    
-   // - create the semester
-   await Semester.create({
-    Semester_name: semester,
-
-  });
+      // - create the semester
+      await Semester.create({
+        Semester_name: semester,
+      });
     }
     // 5) Create CourseOffering
     // - get the course id we want to offer
@@ -210,9 +208,11 @@ exports.gradingExam = async (req, res) => {
       });
     }
 
-    const class_for_enrollment = await Class.findOne({where:{
-      class_code:class_code
-    }});
+    const class_for_enrollment = await Class.findOne({
+      where: {
+        class_code: class_code,
+      },
+    });
     if (!class_for_enrollment) {
       console.log("fail finding the class");
       return res.status(400).json({
@@ -274,29 +274,27 @@ exports.gradingExam = async (req, res) => {
 // @route   GET /api/user/get-user-universities
 // @access  user
 exports.getUserUniversities = async (req, res) => {
-  const userId = req.user.id; 
+  const userId = req.user.id;
   try {
-
-
     const userUniversities = await User.findByPk(userId, {
       include: {
         model: University,
         through: UserUniversity, // This is important for a many-to-many association
-        attributes: ['id', 'university_name'], // Specify the attributes you want to retrieve
+        attributes: ["id", "university_name"], // Specify the attributes you want to retrieve
       },
-    })
-console.log("the uni found ===> ")
-console.log(userUniversities)
+    });
+    console.log("the uni found ===> ");
+    console.log(userUniversities);
 
     return res.json({
       status: httpStatusText.SUCCESS,
       data: { title: "university found.", userUniversities },
     });
   } catch (error) {
-    console.log("error in getUserUniversities ===> ", error.message  )
+    console.log("error in getUserUniversities ===> ", error.message);
     return res.status(500).json({
       status: httpStatusText.ERROR,
-      data: { title:"something went wrong, please try again." },
+      data: { title: "something went wrong, please try again." },
     });
   }
 };
@@ -305,19 +303,18 @@ console.log(userUniversities)
 // @route   GET /api/user/get-user-courses
 // @access  private - user
 exports.getUserCourses = async (req, res) => {
-
-  try{
-    const userId = req.user.id; 
+  try {
+    const userId = req.user.id;
     // Get the university name from the query parameter
     const universityName = req.query.universityName;
     const semesterName = req.query.semesterName;
 
-  console.log("university name ===>",universityName)
+    console.log("university name ===>", universityName);
     // Find the university based on the name
     const university = await University.findOne({
-      where: { university_name: universityName }
+      where: { university_name: universityName },
     });
-  
+
     if (!university) {
       return res.json({
         status: httpStatusText.FAIL,
@@ -325,74 +322,73 @@ exports.getUserCourses = async (req, res) => {
       });
     }
 
-  // Find the semester
-  const semester = await Semester.findOne({
-    where: { Semester_name: semesterName }
-  });
-
-  if (!semester) {
-    return res.json({
-      status: httpStatusText.FAIL,
-      data: { title: "Semester not found, please try again." },
+    // Find the semester
+    const semester = await Semester.findOne({
+      where: { Semester_name: semesterName },
     });
-   
-  }
- // Fetch courses associated with the user, university, and semester
- const userUniversityCourses = await Course.findAll({
-  include: [
-    {
-      model: User,
-      where: { id: userId }
-    },
-    {
-      model: University,
-      where: { id: university.id }
-    },
-    {
-      model: CourseOffering,
+
+    if (!semester) {
+      return res.json({
+        status: httpStatusText.FAIL,
+        data: { title: "Semester not found, please try again." },
+      });
+    }
+    // Fetch courses associated with the user, university, and semester
+     const userUniversityCourses = await Course.findAll({
       include: [
         {
-          model: Semester,
-          where: { id: semester.id }
+          model: User,
+          where: { id: userId }
+        },
+        {
+          model: University,
+          where: { id: university.id }
+        },
+        {
+          model: CourseOffering,
+          include: [
+            {
+              model: Semester,
+              where: { id: semester.id }
+            }
+          ]
         }
       ]
-    }
-  ]
-});
-console.log("user courses in university name based on semester ===> ")
-console.log(userUniversityCourses)
-return res.json({
-  status: httpStatusText.SUCCESS,
-  data: { title: "Courses found successfully.",userUniversityCourses},
-});
-  }catch(error){
-
+    });
+    console.log("user courses in university name based on semester ===> ");
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: { title: "Courses found successfully." },
+    });
+  } catch (error) {
+    console.log("error in getUserCourses controller ===> ", error.message);
+    return res.json({
+      status: httpStatusText.ERROR,
+      data: { title: "Error finding courses, please try again." },
+    });
   }
- 
 
-//   try {
+  //   try {
 
+  //     const userUniversities = await User.findByPk(userId, {
+  //       include: {
+  //         model: University,
+  //         through: UserUniversity, // This is important for a many-to-many association
+  //         attributes: ['id', 'university_name'], // Specify the attributes you want to retrieve
+  //       },
+  //     })
+  // console.log("the uni found ===> ")
+  // console.log(userUniversities)
 
-//     const userUniversities = await User.findByPk(userId, {
-//       include: {
-//         model: University,
-//         through: UserUniversity, // This is important for a many-to-many association
-//         attributes: ['id', 'university_name'], // Specify the attributes you want to retrieve
-//       },
-//     })
-// console.log("the uni found ===> ")
-// console.log(userUniversities)
-
-    // return res.json({
-    //   status: httpStatusText.SUCCESS,
-    //   data: { title: "university found.", userUniversities },
-    // });
-//   } catch (error) {
-//     console.log("error in getUserUniversities ===> ", error.message  )
-//     return res.status(500).json({
-//       status: httpStatusText.ERROR,
-//       data: { title:"something went wrong, please try again." },
-//     });
-//   }
+  // return res.json({
+  //   status: httpStatusText.SUCCESS,
+  //   data: { title: "university found.", userUniversities },
+  // });
+  //   } catch (error) {
+  //     console.log("error in getUserUniversities ===> ", error.message  )
+  //     return res.status(500).json({
+  //       status: httpStatusText.ERROR,
+  //       data: { title:"something went wrong, please try again." },
+  //     });
+  //   }
 };
-
