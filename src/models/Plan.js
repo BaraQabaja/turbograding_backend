@@ -52,7 +52,7 @@ const Plan = sequelize.define(
     },
     status: {
       
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.STRING,
       values: ["active","inactive"],
       defaultValue: "active",
     },
