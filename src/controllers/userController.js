@@ -361,6 +361,10 @@ exports.getUserCourses = async (req, res) => {
 });
 console.log("user courses in university name based on semester ===> ")
 console.log(userUniversityCourses)
+return res.json({
+  status: httpStatusText.SUCCESS,
+  data: { title: "Courses found successfully.",userUniversityCourses},
+});
   }catch(error){
 
   }
