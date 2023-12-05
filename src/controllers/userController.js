@@ -335,15 +335,16 @@ exports.getUserCourses = async (req, res) => {
         data: { title: "Semester not found, please try again." },
       });
     }
-    const courses = await Course.findAll({
+    const courses = await CourseOffering.findAll({
+      where: {
+        userId: userId,
+        SemesterId: semester.id,
+        universityId: university.id,
+      },
       include: [
         {
-          model: CourseOffering,
-          where: {
-            userId: userId,
-            SemesterId: semester.id,
-            universityId: university.id,
-          },
+          model: Course,
+          
           attributes: [], // Include only userId and semesterId from CourseOffering
         },
       ],
