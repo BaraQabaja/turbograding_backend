@@ -231,6 +231,7 @@ exports.registerUser = async (req, res) => {
                   content: `Click <a href="${verificationLink}">here</a> to verify your account.`,
                 });
               } catch (error) {
+                console.log("error in user regesteration ====> ",error.message)
                 user.emailVerificationToken = null;
 
                 await user.save();
