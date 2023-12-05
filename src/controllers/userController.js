@@ -338,7 +338,9 @@ exports.getUserCourses = async (req, res) => {
       include: [
         {
           model: User,
-          where: { id: userId }
+          where: { id: userId },
+          through: { where: { universityId: university.id, SemesterId: semester.id } }
+
         },
         {
           model: University,
