@@ -305,31 +305,62 @@ console.log(userUniversities)
 // @route   GET /api/user/get-user-courses
 // @access  private - user
 exports.getUserCourses = async (req, res) => {
-  
+
   try{
     const userId = req.user.id; 
     // Get the university name from the query parameter
     const universityName = req.query.universityName;
-  console.log("university name ===>",universityName)
-    // // Find the university based on the name
-    // const university = await University.findOne({
-    //   where: { university_name: universityName }
-    // });
-  
-    // if (!university) {
-    //   return res.json({
-    //     status: httpStatusText.FAIL,
-    //     data: { title: "university not found, please try again." },
-    //   });
-    // }
+    const semesterName = req.query.semesterName;
 
-    // const userUniversityCourses = await User.findByPk(userId, {
-    //   include: {
-    //     model: University,
-    //     through: UserUniversity, // This is important for a many-to-many association
-    //     attributes: ['id', 'university_name'], // Specify the attributes you want to retrieve
-    //   },
-    // })
+  console.log("university name ===>",universityName)
+    // Find the university based on the name
+    const university = await University.findOne({
+      where: { university_name: universityName }
+    });
+  
+    if (!university) {
+      return res.json({
+        status: httpStatusText.FAIL,
+        data: { title: "university not found, please try again." },
+      });
+    }
+
+  // Find the semester
+  const semester = await Semester.findOne({
+    where: { Semester_name: semesterName }
+  });
+
+  if (!semester) {
+    return res.json({
+      status: httpStatusText.FAIL,
+      data: { title: "Semester not found, please try again." },
+    });
+   
+  }
+ // Fetch courses associated with the user, university, and semester
+ const userUniversityCourses = await Course.findAll({
+  include: [
+    {
+      model: User,
+      where: { id: userId }
+    },
+    {
+      model: University,
+      where: { id: university.id }
+    },
+    {
+      model: CourseOffering,
+      include: [
+        {
+          model: Semester,
+          where: { id: semester.id }
+        }
+      ]
+    }
+  ]
+});
+console.log("user courses in university name based on semester ===> ")
+console.log(userUniversityCourses)
   }catch(error){
 
   }
