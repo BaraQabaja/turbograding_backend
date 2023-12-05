@@ -304,12 +304,14 @@ exports.getUserUniversities = async (req, res) => {
 // @access  private - user
 exports.getUserCourses = async (req, res) => {
   try {
+    // 1) User id
     const userId = req.user.id;
     // Get the university name from the query parameter
     const universityName = req.query.universityName;
     const semesterName = req.query.semesterName;
 
     console.log("university name ===>", universityName);
+    // 2) university id
     // Find the university based on the name
     const university = await University.findOne({
       where: { university_name: universityName },
@@ -321,7 +323,7 @@ exports.getUserCourses = async (req, res) => {
         data: { title: "university not found, please try again." },
       });
     }
-
+    // 3) semester id
     // Find the semester
     const semester = await Semester.findOne({
       where: { Semester_name: semesterName },
@@ -333,25 +335,16 @@ exports.getUserCourses = async (req, res) => {
         data: { title: "Semester not found, please try again." },
       });
     }
-    // Fetch courses associated with the user, university, and semester
-    const courses = await User.findOne({
-      where: { id: userId },
+    const courses = await Course.findAll({
       include: [
         {
-          model: University,
-          where: { id: university.id },
-          through: { attributes: [] }, // Exclude UserUniversity association attributes
-          include: [
-            {
-              model: Course,
-              through: {
-                model: CourseOffering,
-                where: { SemesterId: semester.id },
-                attributes: [] // Exclude CourseOffering association attributes
-              },
-              attributes: ['course_name', 'course_code'], // Include specific Course attributes
-            },
-          ],
+          model: CourseOffering,
+          where: {
+            userId: userId,
+            SemesterId: semester.id,
+            universityId: university.id,
+          },
+          attributes: [], // Include only userId and semesterId from CourseOffering
         },
       ],
     });
@@ -369,27 +362,5 @@ exports.getUserCourses = async (req, res) => {
     });
   }
 
-  //   try {
-
-  //     const userUniversities = await User.findByPk(userId, {
-  //       include: {
-  //         model: University,
-  //         through: UserUniversity, // This is important for a many-to-many association
-  //         attributes: ['id', 'university_name'], // Specify the attributes you want to retrieve
-  //       },
-  //     })
-  // console.log("the uni found ===> ")
-  // console.log(userUniversities)
-
-  // return res.json({
-  //   status: httpStatusText.SUCCESS,
-  //   data: { title: "university found.", userUniversities },
-  // });
-  //   } catch (error) {
-  //     console.log("error in getUserUniversities ===> ", error.message  )
-  //     return res.status(500).json({
-  //       status: httpStatusText.ERROR,
-  //       data: { title:"something went wrong, please try again." },
-  //     });
-  //   }
+  
 };
