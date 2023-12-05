@@ -185,6 +185,11 @@ SubscriptionModal.belongsTo(UserModal, { foreignKey: "userId" });
 UserModal.belongsToMany(UniversityModal, { through: UserUniversityModal });
 UniversityModal.belongsToMany(UserModal, { through: UserUniversityModal });
 
+// University and Course (Many-to-Many through CourseOfferingModal)
+UniversityModal.belongsToMany(CourseModal, { through: CourseOfferingModal });
+CourseModal.belongsToMany(UniversityModal, { through: CourseOfferingModal });
+
+
 // CourseOffering & Semester (One -> Many)
 SemesterModal.hasMany(CourseOfferingModal);
 CourseOfferingModal.belongsTo(SemesterModal);
