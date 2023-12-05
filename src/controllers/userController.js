@@ -339,8 +339,9 @@ exports.getUserCourses = async (req, res) => {
       where: {
         userId: userId,
         SemesterId: semester.id,
-        universityId: university.id,
-      });
+        universityId: university.id
+      }})
+
     console.log("user courses in university name based on semester ===> ");
     console.log(courses);
     return res.json({
