@@ -53,7 +53,7 @@ exports.checkoutSession = async (req, res) => {
   const taxPrice = 0;
   // 1) Get Plan Type and Duration (1 month or 12 month)
   const planId = req.body.planId;
-  console.log("checkoutSession inputs ", planId);
+  console.log("checkoutSession inputss ", planId);
   
  
 
