@@ -334,30 +334,27 @@ exports.getUserCourses = async (req, res) => {
       });
     }
     // Fetch courses associated with the user, university, and semester
-     const userUniversityCourses = await Course.findAll({
+    const courses = await User.findOne({
+      where: { id: userId },
       include: [
         {
-          model: User,
-          where: { id: userId },
-          through: { where: { universityId: university.id, SemesterId: semester.id } }
-
-        },
-        {
           model: University,
-          where: { id: university.id }
-        },
-        {
-          model: CourseOffering,
+          where: { id: university.id },
+          through: { attributes: [] }, // Exclude UserUniversity association attributes
           include: [
             {
-              model: Semester,
-              where: { id: semester.id }
-            }
-          ]
-        }
-      ]
+              model: Course,
+              through: {
+                model: CourseOffering,
+                where: { SemesterId: semester.id },
+                attributes: [] // Exclude CourseOffering association attributes
+              },
+            },
+          ],
+        },
+      ],
     });
-    console.log("user courses in university name based on semester ===> ");
+    console.log("user courses in university name based on semester ===> ",courses);
     return res.json({
       status: httpStatusText.SUCCESS,
       data: { title: "Courses found successfully." },
