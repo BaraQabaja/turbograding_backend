@@ -359,7 +359,7 @@ exports.getUserCourses = async (req, res) => {
     console.log(courses);
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Courses found successfully." },
+      data: { title: "Courses found successfully." ,courses},
     });
   } catch (error) {
     console.log("error in getUserCourses controller ===> ", error.message);
