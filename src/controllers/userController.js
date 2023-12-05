@@ -349,12 +349,14 @@ exports.getUserCourses = async (req, res) => {
                 where: { SemesterId: semester.id },
                 attributes: [] // Exclude CourseOffering association attributes
               },
+              attributes: ['course_name', 'course_code'], // Include specific Course attributes
             },
           ],
         },
       ],
     });
-    console.log("user courses in university name based on semester ===> ",courses);
+    console.log("user courses in university name based on semester ===> ");
+    console.log(courses);
     return res.json({
       status: httpStatusText.SUCCESS,
       data: { title: "Courses found successfully." },
