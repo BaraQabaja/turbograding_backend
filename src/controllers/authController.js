@@ -220,9 +220,9 @@ exports.registerUser = async (req, res) => {
               await user.save();
               try {
                 //${req.protocole}://${req.get('host')}/orders
-                console.log(
-                  `${req.protocole}://${req.get("host")}/verify/${token}`
-                );
+                // console.log(
+                //   `${req.protocole}://${req.get("host")}/verify/${token}`
+                // );
                 const verificationLink = `http://localhost:3000/verify/${token}`; //! for now keep it like this, when you want to deploy the app you should change it to be   const verificationLink = `${req.protocole}://${req.get('host')}/verify/${token}`;
 
                 await sendEmail({
@@ -266,6 +266,8 @@ exports.registerUser = async (req, res) => {
 
                 console.log("subscription created successfully.", subscription);
               } catch (error) {
+                console.log("regestration error");
+
                 console.log(error.message);
                 return res.status(500).json({
                   status: httpStatusText.FAIL,
