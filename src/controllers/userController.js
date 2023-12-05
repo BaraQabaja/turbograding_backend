@@ -337,7 +337,7 @@ exports.getUserCourses = async (req, res) => {
     }
     const courses = await CourseOffering.findAll({
       where: {
-        userId: userId,
+        UserId: userId,
         SemesterId: semester.id,
         universityId: university.id
       }})
