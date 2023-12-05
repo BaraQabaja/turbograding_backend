@@ -52,9 +52,10 @@ exports.checkoutSession = async (req, res) => {
   // app settings
   const taxPrice = 0;
   // 1) Get Plan Type and Duration (1 month or 12 month)
-  const planType = req.body.planType;
+  const planType = req.body.planType;// make the front-end send the plan id 
   const planDuration = req.body.planDuration;
-  const validPlanTypes = ["professional", "premium"];
+
+  const validPlanTypes = ["professional", "premium"];//get all details from db
   const validPlanDurations = [30, 365];
   console.log("checkoutSession inputs ", planType, planDuration);
   console.log(typeof planDuration)

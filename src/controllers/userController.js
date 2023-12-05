@@ -300,3 +300,64 @@ console.log(userUniversities)
     });
   }
 };
+
+// @desc    Get user university courses - courses related to a spicific university
+// @route   GET /api/user/get-user-courses
+// @access  private - user
+exports.getUserCourses = async (req, res) => {
+  
+  try{
+    const userId = req.user.id; 
+    // Get the university name from the query parameter
+    const universityName = req.query.universityName;
+  console.log("university name ===>",universityName)
+    // // Find the university based on the name
+    // const university = await University.findOne({
+    //   where: { university_name: universityName }
+    // });
+  
+    // if (!university) {
+    //   return res.json({
+    //     status: httpStatusText.FAIL,
+    //     data: { title: "university not found, please try again." },
+    //   });
+    // }
+
+    // const userUniversityCourses = await User.findByPk(userId, {
+    //   include: {
+    //     model: University,
+    //     through: UserUniversity, // This is important for a many-to-many association
+    //     attributes: ['id', 'university_name'], // Specify the attributes you want to retrieve
+    //   },
+    // })
+  }catch(error){
+
+  }
+ 
+
+//   try {
+
+
+//     const userUniversities = await User.findByPk(userId, {
+//       include: {
+//         model: University,
+//         through: UserUniversity, // This is important for a many-to-many association
+//         attributes: ['id', 'university_name'], // Specify the attributes you want to retrieve
+//       },
+//     })
+// console.log("the uni found ===> ")
+// console.log(userUniversities)
+
+    // return res.json({
+    //   status: httpStatusText.SUCCESS,
+    //   data: { title: "university found.", userUniversities },
+    // });
+//   } catch (error) {
+//     console.log("error in getUserUniversities ===> ", error.message  )
+//     return res.status(500).json({
+//       status: httpStatusText.ERROR,
+//       data: { title:"something went wrong, please try again." },
+//     });
+//   }
+};
+
