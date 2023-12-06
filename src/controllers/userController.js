@@ -287,12 +287,12 @@ exports.getUserUniversities = async (req, res) => {
     });
     console.log("the uni found ===> ");
     console.log(userUniversities);
-if(!userUniversities){
-  return res.json({
-    status: httpStatusText.FAIL,
-    data: { title: "no universities" },
-  });
-}
+    if (!userUniversities) {
+      return res.json({
+        status: httpStatusText.FAIL,
+        data: { title: "no universities" },
+      });
+    }
     return res.json({
       status: httpStatusText.SUCCESS,
       data: { title: "university found.", userUniversities },
@@ -371,7 +371,7 @@ exports.getUserCourses = async (req, res) => {
         through: {
           model: UserCourseOffering,
           where: {},
-          attributes: ["UserId", "courseOfferingId"],
+          attributes: ["id","UserId", "courseOfferingId"],
         },
         include: {
           model: Course,
@@ -405,7 +405,7 @@ exports.getSemesters = async (req, res) => {
     if (!semesters) {
       return res.json({
         status: httpStatusText.FAIL,
-        data: { title: "no semester"},
+        data: { title: "no semester" },
       });
     }
     console.log("semesters", semesters);
@@ -419,6 +419,36 @@ exports.getSemesters = async (req, res) => {
     return res.status(500).json({
       status: httpStatusText.ERROR,
       data: { title: "something went wrong, please try again." },
+    });
+  }
+};
+
+// @desc    Get user classes - courses related to a spicific user working at specific university for specific course
+// @route   GET /api/user/get-user-classes
+// @access  private - user
+exports.getUserClasses = async (req, res) => {
+  try {
+    const userCourseOfferingId = req.query.userCourseOfferingId
+    const classes = await Class.findAll({where:{
+      UserCourseOfferingId:userCourseOfferingId
+    }});
+    if (!classes) {
+      return res.json({
+        status: httpStatusText.FAIL,
+        data: { title: "no classes" },
+      });
+    }
+    console.log("classes =====> ", classes);
+
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: { title: "classes found successfully.", classes: classes },
+    });
+  } catch (error) {
+    console.log("error in getUserClasses ===> ", error.message);
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: { title: "Something went wrong, please try again." },
     });
   }
 };
