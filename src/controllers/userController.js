@@ -462,15 +462,18 @@ exports.getUserClasses = async (req, res) => {
 exports.getStudentsExamInfo = async (req, res) => {
   try {
     const examId = req.query.examId;
+    console.log("examId =====> ", examId);
+
     const studentsExamInfo = await Grade.findAll({
       where: {
         ExamId: examId,
       },
       include: {
         model: Enrollment,
-        include: {
-          model: Student,
-        },
+      
+      },
+      include: {
+        model: Student,
       },
     });
 
