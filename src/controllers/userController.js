@@ -470,9 +470,7 @@ exports.getStudentsExamInfo = async (req, res) => {
       },
       include: {
         model: Enrollment,
-        include: {
-          model: Student,
-        },
+        
       },
       
     });
