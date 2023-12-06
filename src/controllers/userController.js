@@ -343,7 +343,7 @@ exports.getUserCourses = async (req, res) => {
     model: CourseOffering,
     through: UserCourseOffering,
     attributes: ["courseId"],
-   }})
+   } ,attributes: [],})
   console.log("user_course_ids")
   console.log(user_course_ids)
 
