@@ -339,7 +339,7 @@ exports.getUserCourses = async (req, res) => {
     }
 
     // Find the course offerings for the user, university, and semester
-    const courseOfferings = await User.findByPk(userId, {
+    const userCourses = await User.findByPk(userId, {
       include: [
         {
           model: CourseOffering,
@@ -352,9 +352,15 @@ exports.getUserCourses = async (req, res) => {
         },
       ],
     });
-
+// Extract course_name and course_code from the result
+const courses = userCourses?.CourseOffering?.map(course => {
+  return {
+    course_name: course.Course.course_name,
+    course_code: course.Course.course_code,
+  };
+}) || [];
     console.log("courseOfferings ====> ");
-    console.log(courseOfferings);
+    console.log(courses);
     // // Extract course_name and course_code from courseOfferings
     // const userCourses = courseOfferings.map((offering) => {
     //   return {
