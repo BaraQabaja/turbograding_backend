@@ -479,14 +479,14 @@ exports.getStudentsExamInfo = async (req, res) => {
         data: { title: "no exams" },
       });
     }
-    console.log("exams =====> ", exams);
+    console.log("exams =====> ", studentsExamInfo);
 
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Exams found successfully.", exams: exams },
+      data: { title: "getStudentsExamInfo found successfully.", studentsExamInfo: studentsExamInfo },
     });
   } catch (error) {
-    console.log("error in getClassExams ===> ", error.message);
+    console.log("error in getStudentsExamInfo ===> ", error.message);
     return res.status(500).json({
       status: httpStatusText.ERROR,
       data: { title: "Something went wrong, please try again." },
