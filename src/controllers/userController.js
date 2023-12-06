@@ -310,7 +310,8 @@ exports.getUserCourses = async (req, res) => {
     const userId = req.user.id;
     // Get the university name from the query parameter
     const universityName = req.query.universityName;
-    const semesterName = req.query.semesterName;
+    // const semesterName = req.query.semesterName;
+    const semesterName = '23U';
 
     console.log("university name ===>", universityName);
     // 2) university id
