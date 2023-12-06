@@ -274,7 +274,7 @@ exports.gradingExam = async (req, res) => {
 
 // @desc    Get user universities logic - universities related to a spicific user
 // @route   GET /api/user/get-user-universities
-// @access  user
+// @access  private - user
 exports.getUserUniversities = async (req, res) => {
   const userId = req.user.id;
   try {
@@ -310,8 +310,8 @@ exports.getUserCourses = async (req, res) => {
     const userId = req.user.id;
     // Get the university name from the query parameter
     const universityName = req.query.universityName;
-    // const semesterName = req.query.semesterName;
-    const semesterName = '23U';
+    const semesterName = req.query.semesterName;
+    // const semesterName = '23U';
 
     console.log("university name ===>", universityName);
     // 2) university id
@@ -374,6 +374,34 @@ exports.getUserCourses = async (req, res) => {
     return res.json({
       status: httpStatusText.ERROR,
       data: { title: "Error finding courses, please try again." },
+    });
+  }
+};
+
+// @desc    Get all semesters
+// @route   GET /api/user/get-semesters
+// @access  private - user
+exports.getSemesters = async (req, res) => {
+  try {
+    const semesters = await Semester.findAll();
+    console.log("the uni found ===> ");
+    if(!semesters){
+      return res.json({
+        status: httpStatusText.SUCCESS,
+        data: { title: "university found.", semesters:[] },
+      });
+    }
+    console.log("semesters",semesters);
+
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: { title: "semesters found successfully.",  semesters:semesters  },
+    });
+  } catch (error) {
+    console.log("error in getSemesters ===> ", error.message);
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: { title: "something went wrong, please try again." },
     });
   }
 };

@@ -23,6 +23,7 @@ const auth = require('../controllers/authController');
 router.post('/grading-exam',auth.protect, userController.gradingExam);
 router.get('/get-user-universities',auth.protect, userController.getUserUniversities);
 router.get('/get-user-courses',auth.protect, userController.getUserCourses);
+router.get('/get-semesters',auth.protect, userController.getSemesters);
 // router.post('/assignment', authenticateToken, upload.single('file'), usersController.gradingAssignment);
 
 // router.get('/profile', authenticateToken, usersController.getProfile);  // Fetch user profile
