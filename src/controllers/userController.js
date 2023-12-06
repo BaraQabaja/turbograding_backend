@@ -317,7 +317,7 @@ exports.getUserCourses = async (req, res) => {
     const universityName = req.query.universityName;
     let semesterName = req.query.semesterName;
     console.log("semesterName ====> ", semesterName);
-    if (semesterName == "defualt") {
+    if (semesterName == "default") {
       const latestSemester = await Semester.findOne({
         order: [["createdAt", "DESC"]], // Order by createdAt in descending order
       });
