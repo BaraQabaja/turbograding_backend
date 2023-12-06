@@ -7,6 +7,8 @@ const Semester = require("../models/Semester");
 const University = require("../models/University");
 const UserUniversity = require("../models/UserUniversity");
 const CourseOffering = require("../models/CourseOffering");
+const UserCourseOffering = require("../models/CourseOffering");
+
 const Student = require("../models/Student");
 const Enrollment = require("../models/Enrollment");
 const Exam = require("../models/Exam");
@@ -335,32 +337,66 @@ exports.getUserCourses = async (req, res) => {
         data: { title: "Semester not found, please try again." },
       });
     }
-    const offeredCourses = await CourseOffering.findAll({
-      where: {
-        UserId: userId,
-        SemesterId: semester.id,
-        universityId: university.id,
-      },
+
+    // Find the course offerings for the user, university, and semester
+    const courseOfferings = await User.findByPk(userId, {
+      include: [
+        {
+          model: UserCourseOffering,
+          where: { UserId: userId },
+          include: [
+            {
+              model: CourseOffering,
+              where: { universityId: university.id, SemesterId: semester.id },
+              include: [
+                {
+                  model: Course,
+                  attributes: ["course_name", "course_code"],
+                },
+              ],
+              attributes: [],
+            },
+          ],
+          attributes: [],
+        },
+      ],
     });
 
-    const courseDetails = [];
+    console.log("courseOfferings ====> ");
+    console.log(courseOfferings);
+    // // Extract course_name and course_code from courseOfferings
+    // const userCourses = courseOfferings.map((offering) => {
+    //   return {
+    //     course_name: offering.Course.course_name,
+    //     course_code: offering.Course.course_code,
+    //   };
+    // });
 
-    for (const offeredCourse of offeredCourses) {
-      const courseId = offeredCourse.courseId;
+    // const offeredCourses = await CourseOffering.findAll({
+    //   where: {
+    //     SemesterId: semester.id,
+    //     universityId: university.id,
+    //   },
+    // });
 
-      // Retrieve course details using courseId
-      const courseInfo = await Course.findOne({
-        where: {
-          id: courseId,
-        },
-        attributes: ["course_name", "course_code"], // Include only specific attributes
-      });
+    // const courseDetails = [];
 
-      // Add course details to the result array
-      courseDetails.push(courseInfo);
-    }
-    console.log("user courses in university name based on semester ===> ");
-    console.log(courseDetails);
+    // for (const offeredCourse of offeredCourses) {
+    //   const courseId = offeredCourse.courseId;
+
+    //   // Retrieve course details using courseId
+    //   const courseInfo = await Course.findOne({
+    //     where: {
+    //       id: courseId,
+    //     },
+    //     attributes: ["course_name", "course_code"], // Include only specific attributes
+    //   });
+
+    //   // Add course details to the result array
+    //   courseDetails.push(courseInfo);
+    // }
+    // console.log("user courses in university name based on semester ===> ");
+    // console.log(courseDetails);
     // if (courseDetails.length == 0) {
     //   return res.json({
     //     status: httpStatusText.SUCCESS,
@@ -369,7 +405,7 @@ exports.getUserCourses = async (req, res) => {
     // }
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Courses found successfully.", courseDetails },
+      data: { title: "Courses found successfully." },
     });
   } catch (error) {
     console.log("error in getUserCourses controller ===> ", error.message);
