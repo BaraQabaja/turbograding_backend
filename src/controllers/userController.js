@@ -342,22 +342,13 @@ exports.getUserCourses = async (req, res) => {
     const courseOfferings = await User.findByPk(userId, {
       include: [
         {
-          model: UserCourseOffering,
-          where: { UserId: userId },
+          model: CourseOffering,
+          // where: { universityId: university.id, SemesterId: semester.id },
+          through:   UserCourseOffering ,
           include: [
-            {
-              model: CourseOffering,
-              where: { universityId: university.id, SemesterId: semester.id },
-              include: [
-                {
-                  model: Course,
-                  attributes: ["course_name", "course_code"],
-                },
-              ],
-              attributes: [],
-            },
+            { model: Course, attributes: ["course_name", "course_code"] },
           ],
-          attributes: [],
+          attributes: [] ,
         },
       ],
     });
