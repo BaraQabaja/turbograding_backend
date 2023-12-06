@@ -371,7 +371,7 @@ exports.getUserCourses = async (req, res) => {
         through: {
           model: UserCourseOffering,
           where: {},
-          attributes: ["id","UserId", "courseOfferingId"],
+          attributes: ["id", "UserId", "courseOfferingId"],
         },
         include: {
           model: Course,
@@ -428,10 +428,13 @@ exports.getSemesters = async (req, res) => {
 // @access  private - user
 exports.getUserClasses = async (req, res) => {
   try {
-    const userCourseOfferingId = req.query.userCourseOfferingId
-    const classes = await Class.findAll({where:{
-      UserCourseOfferingId:userCourseOfferingId
-    }});
+    const userCourseOfferingId = req.query.userCourseOfferingId;
+    const classes = await Class.findAll({
+      where: {
+        UserCourseOfferingId: userCourseOfferingId,
+      },
+      include: { model: Exam },
+    });
     if (!classes) {
       return res.json({
         status: httpStatusText.FAIL,
@@ -453,16 +456,17 @@ exports.getUserClasses = async (req, res) => {
   }
 };
 
-
 // @desc    Get user exams - exams related to a spicific user class
 // @route   GET /api/user/get-class-exams
 // @access  private - user
 exports.getClassExams = async (req, res) => {
   try {
-    const classInfoId = req.query.classInfoId
-    const exams = await Exam.findAll({where:{
-      ClassInfoId:classInfoId
-    }});
+    const classInfoId = req.query.classInfoId;
+    const exams = await Exam.findAll({
+      where: {
+        ClassInfoId: classInfoId,
+      },
+    });
     if (!exams) {
       return res.json({
         status: httpStatusText.FAIL,
