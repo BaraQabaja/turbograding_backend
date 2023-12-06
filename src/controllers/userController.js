@@ -473,6 +473,9 @@ exports.getStudentsExamInfo = async (req, res) => {
         },
       },
     });
+
+
+
     if (!studentsExamInfo) {
       return res.json({
         status: httpStatusText.FAIL,

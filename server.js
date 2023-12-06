@@ -235,7 +235,9 @@ foreignKey: {
 */
 
 
-
+//! Direct relationship between Student and Enrollment
+StudentModal.hasOne(EnrollmentModal);
+EnrollmentModal.belongsTo(StudentModal);
 
 // Grade & Exam (One -> Many)
 ExamModal.hasMany(GradeModal);
