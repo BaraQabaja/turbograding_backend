@@ -452,3 +452,34 @@ exports.getUserClasses = async (req, res) => {
     });
   }
 };
+
+
+// @desc    Get user exams - exams related to a spicific user class
+// @route   GET /api/user/get-class-exams
+// @access  private - user
+exports.getClassExams = async (req, res) => {
+  try {
+    const classInfoId = req.query.classInfoId
+    const exams = await Exam.findAll({where:{
+      ClassInfoId:classInfoId
+    }});
+    if (!exams) {
+      return res.json({
+        status: httpStatusText.FAIL,
+        data: { title: "no exams" },
+      });
+    }
+    console.log("exams =====> ", exams);
+
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: { title: "Exams found successfully.", exams: exams },
+    });
+  } catch (error) {
+    console.log("error in getClassExams ===> ", error.message);
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: { title: "Something went wrong, please try again." },
+    });
+  }
+};
