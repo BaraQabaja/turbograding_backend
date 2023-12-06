@@ -7,7 +7,7 @@ const Semester = require("../models/Semester");
 const University = require("../models/University");
 const UserUniversity = require("../models/UserUniversity");
 const CourseOffering = require("../models/CourseOffering");
-const UserCourseOffering = require("../models/CourseOffering");
+const UserCourseOffering = require("../models/UserCourseOffering");
 
 const Student = require("../models/Student");
 const Enrollment = require("../models/Enrollment");
