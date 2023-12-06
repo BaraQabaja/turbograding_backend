@@ -338,19 +338,30 @@ exports.getUserCourses = async (req, res) => {
       });
     }
 
-   // 4) find couseOffered IDs for specific user
-   const user_course_ids=await User.findByPk(userId,{include: {
-    model: CourseOffering,
-    through: {model:UserCourseOffering,where:{courseOfferingId:1,},attributes: ["UserId","courseOfferingId"],},
-    attributes: ["courseId"],
-
-   } ,attributes: [],})
-  console.log("user_course_ids")
-  console.log(user_course_ids)
+    // 4) find couseOffered IDs for specific user
+    const user_course_ids = await User.findByPk(userId, {
+      include: {
+        model: CourseOffering,
+        where:{
+          universityId:university.id,
+          SemesterId:semester.id
+       },
+       attributes: ["courseId"],
+        through: {
+          model: UserCourseOffering,
+          where: { courseOfferingId: 1 },
+          attributes: ["UserId", "courseOfferingId"],
+        },
+       
+      },
+      attributes: [],
+    });
+    console.log("user_course_ids");
+    console.log(user_course_ids);
 
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Courses found successfully.",user_course_ids },
+      data: { title: "Courses found successfully.", user_course_ids },
     });
   } catch (error) {
     console.log("error in getUserCourses controller ===> ", error.message);
