@@ -199,6 +199,9 @@ LocationModal.belongsTo(UserModal);
 UniversityModal.hasMany(CourseOfferingModal);
 CourseOfferingModal.belongsTo(UniversityModal);
 
+//* Class and Exam (One -> Many) 
+ClassModal.hasMany(ExamModal);
+ExamModal.belongsTo(ClassModal);
 
 //* CourseOffering & Semester (One -> Many)
 SemesterModal.hasMany(CourseOfferingModal);
