@@ -287,7 +287,12 @@ exports.getUserUniversities = async (req, res) => {
     });
     console.log("the uni found ===> ");
     console.log(userUniversities);
-
+if(!userUniversities){
+  return res.json({
+    status: httpStatusText.FAIL,
+    data: { title: "no university" },
+  });
+}
     return res.json({
       status: httpStatusText.SUCCESS,
       data: { title: "university found.", userUniversities },
@@ -310,7 +315,21 @@ exports.getUserCourses = async (req, res) => {
     const userId = req.user.id;
     // Get the university name from the query parameter
     const universityName = req.query.universityName;
-    const semesterName = req.query.semesterName;
+    let semesterName = req.query.semesterName;
+    if (semesterName == "defualt") {
+      const latestSemester = await Semester.findOne({
+        order: [["createdAt", "DESC"]], // Order by createdAt in descending order
+      });
+
+      if (latestSemester) {
+        semesterName = latestSemester.Semester_name;
+      } else {
+        return res.json({
+          status: httpStatusText.FAIL,
+          data: { title: "no semester" },
+        });
+      }
+    }
     // const semesterName = '23U';
 
     console.log("university name ===>", universityName);
@@ -323,7 +342,7 @@ exports.getUserCourses = async (req, res) => {
     if (!university) {
       return res.json({
         status: httpStatusText.FAIL,
-        data: { title: "university not found, please try again." },
+        data: { title: "no universiy" },
       });
     }
     // 3) semester id
@@ -335,7 +354,7 @@ exports.getUserCourses = async (req, res) => {
     if (!semester) {
       return res.json({
         status: httpStatusText.FAIL,
-        data: { title: "Semester not found, please try again." },
+        data: { title: "no semester" },
       });
     }
 
@@ -343,22 +362,20 @@ exports.getUserCourses = async (req, res) => {
     const user_course_ids = await User.findByPk(userId, {
       include: {
         model: CourseOffering,
-        where:{
-          universityId:university.id,
-          SemesterId:semester.id
-       },
-       attributes: ["courseId"],
+        where: {
+          universityId: university.id,
+          SemesterId: semester.id,
+        },
+        attributes: ["courseId"],
         through: {
           model: UserCourseOffering,
-          where: {  },
+          where: {},
           attributes: ["UserId", "courseOfferingId"],
         },
-        include:{
+        include: {
           model: Course,
           // attributes: ["courseId"],
-
-        }
-       
+        },
       },
       attributes: [],
     });
@@ -384,18 +401,17 @@ exports.getUserCourses = async (req, res) => {
 exports.getSemesters = async (req, res) => {
   try {
     const semesters = await Semester.findAll();
-    console.log("the uni found ===> ");
-    if(!semesters){
+    if (!semesters) {
       return res.json({
-        status: httpStatusText.SUCCESS,
-        data: { title: "university found.", semesters:[] },
+        status: httpStatusText.FAIL,
+        data: { title: "no semester"},
       });
     }
-    console.log("semesters",semesters);
+    console.log("semesters", semesters);
 
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "semesters found successfully.",  semesters:semesters  },
+      data: { title: "semesters found successfully.", semesters: semesters },
     });
   } catch (error) {
     console.log("error in getSemesters ===> ", error.message);
