@@ -338,75 +338,16 @@ exports.getUserCourses = async (req, res) => {
       });
     }
 
-    // Find the course offerings for the user, university, and semester
-    const userCourses = await User.findByPk(userId, {
-      include: [
-        {
-          model: CourseOffering,
-          where: { universityId: university.id, SemesterId: semester.id },
-          through:   UserCourseOffering ,
-          include: [
-            { model: Course, attributes: ["course_name", "course_code"] },
-          ],
-          attributes: [] ,
-        },
-      ],
-      attributes: [] , 
-    }, 
-    );
-    console.log("userCourses ====> ");
-    console.log(userCourses);
-// Extract course_name and course_code from the result
-// const courses = userCourses?.courseOfferings?.map(course => {
-//   return {
-//     course_name: course.Course.course_name,
-//     course_code: course.Course.course_code,
-//   };
-// }) || [];
-//     console.log("courseOfferings ====> ");
-//     console.log(courses);
-    // // Extract course_name and course_code from courseOfferings
-    // const userCourses = courseOfferings.map((offering) => {
-    //   return {
-    //     course_name: offering.Course.course_name,
-    //     course_code: offering.Course.course_code,
-    //   };
-    // });
+   // 4) find couseOffered IDs for specific user
+   const user_course_ids=await Semester.findAll({where:{
+    UserId:userId
+   }})
+  console.log("user_course_ids")
+  console.log(user_course_ids)
 
-    // const offeredCourses = await CourseOffering.findAll({
-    //   where: {
-    //     SemesterId: semester.id,
-    //     universityId: university.id,
-    //   },
-    // });
-
-    // const courseDetails = [];
-
-    // for (const offeredCourse of offeredCourses) {
-    //   const courseId = offeredCourse.courseId;
-
-    //   // Retrieve course details using courseId
-    //   const courseInfo = await Course.findOne({
-    //     where: {
-    //       id: courseId,
-    //     },
-    //     attributes: ["course_name", "course_code"], // Include only specific attributes
-    //   });
-
-    //   // Add course details to the result array
-    //   courseDetails.push(courseInfo);
-    // }
-    // console.log("user courses in university name based on semester ===> ");
-    // console.log(courseDetails);
-    // if (courseDetails.length == 0) {
-    //   return res.json({
-    //     status: httpStatusText.SUCCESS,
-    //     data: { title: "no courses yet." },
-    //   });
-    // }
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Courses found successfully.",userCourses },
+      data: { title: "Courses found successfully.",user_course_ids },
     });
   } catch (error) {
     console.log("error in getUserCourses controller ===> ", error.message);
