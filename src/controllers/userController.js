@@ -352,6 +352,8 @@ exports.getUserCourses = async (req, res) => {
         },
       ],
     });
+    console.log("userCourses ====> ");
+    console.log(userCourses);
 // Extract course_name and course_code from the result
 const courses = userCourses?.CourseOffering?.map(course => {
   return {
