@@ -468,7 +468,9 @@ if(examId){
     where: {
       ExamId: examId,
     },
-   
+   include:{
+    model:Enrollment
+   }
   }
   );
 
