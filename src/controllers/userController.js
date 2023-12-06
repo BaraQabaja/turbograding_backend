@@ -343,7 +343,7 @@ exports.getUserCourses = async (req, res) => {
       include: [
         {
           model: CourseOffering,
-          // where: { universityId: university.id, SemesterId: semester.id },
+          where: { universityId: university.id, SemesterId: semester.id },
           through:   UserCourseOffering ,
           include: [
             { model: Course, attributes: ["course_name", "course_code"] },
@@ -357,14 +357,14 @@ exports.getUserCourses = async (req, res) => {
     console.log("userCourses ====> ");
     console.log(userCourses);
 // Extract course_name and course_code from the result
-const courses = userCourses?.courseOfferings?.map(course => {
-  return {
-    course_name: course.Course.course_name,
-    course_code: course.Course.course_code,
-  };
-}) || [];
-    console.log("courseOfferings ====> ");
-    console.log(courses);
+// const courses = userCourses?.courseOfferings?.map(course => {
+//   return {
+//     course_name: course.Course.course_name,
+//     course_code: course.Course.course_code,
+//   };
+// }) || [];
+//     console.log("courseOfferings ====> ");
+//     console.log(courses);
     // // Extract course_name and course_code from courseOfferings
     // const userCourses = courseOfferings.map((offering) => {
     //   return {
@@ -406,7 +406,7 @@ const courses = userCourses?.courseOfferings?.map(course => {
     // }
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Courses found successfully." },
+      data: { title: "Courses found successfully.",userCourses },
     });
   } catch (error) {
     console.log("error in getUserCourses controller ===> ", error.message);
