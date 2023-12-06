@@ -339,8 +339,10 @@ exports.getUserCourses = async (req, res) => {
     }
 
    // 4) find couseOffered IDs for specific user
-   const user_course_ids=await UserCourseOffering.findAll({where:{
-    UserId:userId
+   const user_course_ids=await User.findByPk(userId,{include: {
+    model: CourseOffering,
+    through: UserCourseOffering,
+    attributes: ["courseId"],
    }})
   console.log("user_course_ids")
   console.log(user_course_ids)

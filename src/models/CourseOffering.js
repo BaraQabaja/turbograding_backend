@@ -12,14 +12,7 @@ const CourseOffering = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
-    // semester_name:{
-    //     type: DataTypes.STRING,
-    //     allowNull: false,
-    // },
-    // class_code:{
-    //     type: DataTypes.STRING,
-    //     allowNull: false,
-    // }
+  
   },
   {
     // Other model options go here
