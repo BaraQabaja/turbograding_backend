@@ -290,7 +290,7 @@ exports.getUserUniversities = async (req, res) => {
 if(!userUniversities){
   return res.json({
     status: httpStatusText.FAIL,
-    data: { title: "no university" },
+    data: { title: "no universities" },
   });
 }
     return res.json({
@@ -327,7 +327,7 @@ exports.getUserCourses = async (req, res) => {
       } else {
         return res.json({
           status: httpStatusText.FAIL,
-          data: { title: "no semester" },
+          data: { title: "no semesters" },
         });
       }
     }
@@ -343,7 +343,7 @@ exports.getUserCourses = async (req, res) => {
     if (!university) {
       return res.json({
         status: httpStatusText.FAIL,
-        data: { title: "no universiy" },
+        data: { title: "no universities" },
       });
     }
     // 3) semester id
@@ -355,12 +355,12 @@ exports.getUserCourses = async (req, res) => {
     if (!semester) {
       return res.json({
         status: httpStatusText.FAIL,
-        data: { title: "no semester" },
+        data: { title: "no semesteres" },
       });
     }
 
     // 4) find couseOffered IDs for specific user
-    const user_course_ids = await User.findByPk(userId, {
+    const user_courses = await User.findByPk(userId, {
       include: {
         model: CourseOffering,
         where: {
@@ -380,12 +380,12 @@ exports.getUserCourses = async (req, res) => {
       },
       attributes: [],
     });
-    console.log("user_course_ids");
-    console.log(user_course_ids);
+    console.log("user_courses");
+    console.log(user_courses);
 
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Courses found successfully.", user_course_ids },
+      data: { title: "Courses found successfully.", user_courses },
     });
   } catch (error) {
     console.log("error in getUserCourses controller ===> ", error.message);
