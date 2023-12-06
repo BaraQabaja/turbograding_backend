@@ -352,6 +352,11 @@ exports.getUserCourses = async (req, res) => {
           where: {  },
           attributes: ["UserId", "courseOfferingId"],
         },
+        include:{
+          model: Course,
+          // attributes: ["courseId"],
+
+        }
        
       },
       attributes: [],
