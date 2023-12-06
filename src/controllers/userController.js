@@ -349,7 +349,7 @@ exports.getUserCourses = async (req, res) => {
        attributes: ["courseId"],
         through: {
           model: UserCourseOffering,
-          where: { courseOfferingId: 1 },
+          where: {  },
           attributes: ["UserId", "courseOfferingId"],
         },
        
