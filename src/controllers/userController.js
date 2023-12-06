@@ -463,32 +463,39 @@ exports.getStudentsExamInfo = async (req, res) => {
   try {
     const examId = req.query.examId;
     console.log("examId =====> ", examId);
-
-    const studentsExamInfo = await Grade.findAll({
-      where: {
-        ExamId: examId,
-      },
-      include: {
-        model: Enrollment,
-        
-      },
+if(examId){
+  const studentsExamInfo = await Grade.findAll({
+    where: {
+      ExamId: examId,
+    },
+    include: {
+      model: Enrollment,
       
-    });
+    },
+    
+  }
+  
+  );
 
-
-
-    if (!studentsExamInfo) {
-      return res.json({
-        status: httpStatusText.FAIL,
-        data: { title: "no exams" },
-      });
-    }
-    console.log("exams =====> ", studentsExamInfo);
-
+  if (!studentsExamInfo) {
     return res.json({
-      status: httpStatusText.SUCCESS,
-      data: { title: "getStudentsExamInfo found successfully.", studentsExamInfo: studentsExamInfo },
+      status: httpStatusText.FAIL,
+      data: { title: "no exams" },
     });
+  }
+  console.log("exams =====> ", studentsExamInfo);
+
+  return res.json({
+    status: httpStatusText.SUCCESS,
+    data: { title: "getStudentsExamInfo found successfully.", studentsExamInfo: studentsExamInfo },
+  });
+
+}
+   
+
+
+
+   
   } catch (error) {
     console.log("error in getStudentsExamInfo ===> ", error.message);
     return res.status(500).json({
