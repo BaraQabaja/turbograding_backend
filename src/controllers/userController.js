@@ -339,7 +339,7 @@ exports.getUserCourses = async (req, res) => {
     }
 
    // 4) find couseOffered IDs for specific user
-   const user_course_ids=await Semester.findAll({where:{
+   const user_course_ids=await UserCourseOffering.findAll({where:{
     UserId:userId
    }})
   console.log("user_course_ids")
