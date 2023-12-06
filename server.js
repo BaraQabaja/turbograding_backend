@@ -165,6 +165,8 @@ const LocationModal = require("./src/models/Location_Info");
 
 const StudentModal = require("./src/models/Student");
 const CourseOfferingModal = require("./src/models/CourseOffering");
+const UserCourseOfferingModal = require("./src/models/UserCourseOffering");
+
 const EnrollmentModal = require("./src/models/Enrollment");
 
 const GradeModal = require("./src/models/Grade");
@@ -173,6 +175,7 @@ const ExamModal = require("./src/models/Exam");
 const PaymentModal = require("./src/models/Payment");
 const PlanModal = require("./src/models/Plan");
 const SubscriptionModal = require("./src/models/Subscription");
+
 // references: {
 //   model: 'users',
 //   key: 'id'
@@ -182,6 +185,8 @@ const SubscriptionModal = require("./src/models/Subscription");
 UserModal.hasMany(SubscriptionModal, { foreignKey: "userId" });
 SubscriptionModal.belongsTo(UserModal, { foreignKey: "userId" });
 
+
+
 // User & University (Many -> Many)
 UserModal.belongsToMany(UniversityModal, { through: UserUniversityModal });
 UniversityModal.belongsToMany(UserModal, { through: UserUniversityModal });
@@ -190,20 +195,29 @@ UniversityModal.belongsToMany(UserModal, { through: UserUniversityModal });
 UserModal.hasOne(LocationModal);
 LocationModal.belongsTo(UserModal);
 
-// University and Course (Many-to-Many through CourseOfferingModal)
-UniversityModal.belongsToMany(CourseModal, { through: CourseOfferingModal });
-CourseModal.belongsToMany(UniversityModal, { through: CourseOfferingModal });
+//* University and CourseOfferingModal (One -> Many) 
+UniversityModal.hasMany(CourseOfferingModal);
+CourseOfferingModal.belongsTo(UniversityModal);
 
+//* Class and Exam (One -> Many) 
+ClassModal.hasMany(ExamModal);
+ExamModal.belongsTo(ClassModal);
 
-// CourseOffering & Semester (One -> Many)
+//* CourseOffering & Semester (One -> Many)
 SemesterModal.hasMany(CourseOfferingModal);
 CourseOfferingModal.belongsTo(SemesterModal);
 
+//* CourseOffering & Course (One -> One)
+CourseModal.hasMany(CourseOfferingModal);
+CourseOfferingModal.belongsTo(CourseModal);
 
+//* CourseOffering & User ( Many -> Many ) through UserCourseOffering
+CourseOfferingModal.belongsToMany(UserModal, { through: UserCourseOfferingModal });
+UserModal.belongsToMany(CourseOfferingModal, { through: UserCourseOfferingModal });
 
-// Course & User ( Many -> Many )
-CourseModal.belongsToMany(UserModal, { through: CourseOfferingModal });
-UserModal.belongsToMany(CourseModal, { through: CourseOfferingModal });
+//* Class & UserCourseOfferingModal (One -> Many)
+UserCourseOfferingModal.hasMany(ClassModal);
+ClassModal.belongsTo(UserCourseOfferingModal);
 
 // Class & Student ( Many -> Many )
 StudentModal.belongsToMany(ClassModal, { through: EnrollmentModal });
@@ -221,9 +235,9 @@ foreignKey: {
 */
 
 
-// Class & CourseOffering (One -> Many)
-CourseOfferingModal.hasMany(ClassModal);
-ClassModal.belongsTo(CourseOfferingModal);
+//! Direct relationship between Student and Enrollment
+StudentModal.hasOne(EnrollmentModal);
+EnrollmentModal.belongsTo(StudentModal);
 
 // Grade & Exam (One -> Many)
 ExamModal.hasMany(GradeModal);

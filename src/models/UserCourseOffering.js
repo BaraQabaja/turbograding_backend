@@ -2,8 +2,8 @@ const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 const sequelize = require("./database");
 
-const CourseOffering = sequelize.define(
-  "courseOffering",
+const UserCourseOffering = sequelize.define(
+  "UserCourseOffering",
   {
     // Model attributes are defined here
     id: {
@@ -12,7 +12,7 @@ const CourseOffering = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
-  
+
   },
   {
     // Other model options go here
@@ -25,4 +25,4 @@ const CourseOffering = sequelize.define(
 
 
 
-module.exports = CourseOffering;
+module.exports = UserCourseOffering;

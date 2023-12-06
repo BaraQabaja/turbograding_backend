@@ -7,6 +7,8 @@ const Semester = require("../models/Semester");
 const University = require("../models/University");
 const UserUniversity = require("../models/UserUniversity");
 const CourseOffering = require("../models/CourseOffering");
+const UserCourseOffering = require("../models/UserCourseOffering");
+
 const Student = require("../models/Student");
 const Enrollment = require("../models/Enrollment");
 const Exam = require("../models/Exam");
@@ -120,25 +122,71 @@ exports.gradingExam = async (req, res) => {
       });
     }
 
+    const university_for_courseOffering = await University.findOne({
+      where: {
+        university_name: university_name,
+      },
+    });
+    if (!university_for_courseOffering) {
+      console.log("fail finding univerisy");
+
+      return res.status(400).json({
+        status: httpStatusText.FAIL,
+        data: {
+          title: "The univerisy that you are looking for is not exist.",
+        },
+      });
+    }
+
     // check if the course offered or not
     const courseOffering = await CourseOffering.findOne({
       where: {
         SemesterId: semester_entity.id,
+        universityId: university_for_courseOffering.id,
         courseId: course_entity.id,
-        UserId: req.user.id,
       },
     });
     if (!courseOffering) {
       // - create the courseOffering
       await CourseOffering.create({
         SemesterId: semester_entity.id,
-        class_code: class_code,
+        universityId: university_for_courseOffering.id,
         courseId: course_entity.id,
-        UserId: req.user.id,
       });
     }
+// 6) Create UserCourseOffering
+const courseOffering_for_userCourseOffering = await CourseOffering.findOne({
+  where: {
+    SemesterId: semester_entity.id,
+    universityId: university_for_courseOffering.id,
+    courseId: course_entity.id,
+  },
+});
+if (!courseOffering_for_userCourseOffering) {
+  console.log("fail finding courseOffering");
 
-    // 6) Create Class
+  return res.status(400).json({
+    status: httpStatusText.FAIL,
+    data: {
+      title: "The courseOffering that you are looking for is not exist.",
+    },
+  });
+}
+    const UserCourseOffering_entity = await UserCourseOffering.findOne({
+      where: {
+        courseOfferingId:courseOffering_for_userCourseOffering.id,
+        UserId: req.user.id,
+      },
+    });
+   
+    if (!UserCourseOffering_entity) {
+      // - create the UserCourseOffering
+      await UserCourseOffering.create({
+        courseOfferingId:courseOffering_for_userCourseOffering.id,
+        UserId: req.user.id,
+      });
+
+    // 7) Create Class
     // check if the class exist or not
     const class_info_entity = await Class.findOne({
       where: {
@@ -160,7 +208,7 @@ exports.gradingExam = async (req, res) => {
       });
     }
 
-    // 7) Create Student
+    // 8) Create Student
 
     const university_for_student = await University.findOne({
       where: {
@@ -194,7 +242,7 @@ exports.gradingExam = async (req, res) => {
         universityId: university_entity.id,
       });
     }
-    // 8) Create Enrollment - for this student on specific class that related to specific course(offered course)
+    // 9) Create Enrollment - for this student on specific class that related to specific course(offered course)
 
     //check if student is exist or not
     const student_for_enrollment = await Student.findByPk(studentId);
@@ -272,7 +320,7 @@ exports.gradingExam = async (req, res) => {
 
 // @desc    Get user universities logic - universities related to a spicific user
 // @route   GET /api/user/get-user-universities
-// @access  user
+// @access  private - user
 exports.getUserUniversities = async (req, res) => {
   const userId = req.user.id;
   try {
@@ -285,7 +333,12 @@ exports.getUserUniversities = async (req, res) => {
     });
     console.log("the uni found ===> ");
     console.log(userUniversities);
-
+    if (!userUniversities) {
+      return res.json({
+        status: httpStatusText.FAIL,
+        data: { title: "no universities" },
+      });
+    }
     return res.json({
       status: httpStatusText.SUCCESS,
       data: { title: "university found.", userUniversities },
@@ -308,7 +361,23 @@ exports.getUserCourses = async (req, res) => {
     const userId = req.user.id;
     // Get the university name from the query parameter
     const universityName = req.query.universityName;
-    const semesterName = req.query.semesterName;
+    let semesterName = req.query.semesterName;
+    console.log("semesterName ====> ", semesterName);
+    if (semesterName == "default") {
+      const latestSemester = await Semester.findOne({
+        order: [["createdAt", "DESC"]], // Order by createdAt in descending order
+      });
+
+      if (latestSemester) {
+        semesterName = latestSemester.Semester_name;
+      } else {
+        return res.json({
+          status: httpStatusText.FAIL,
+          data: { title: "no semesters" },
+        });
+      }
+    }
+    // const semesterName = '23U';
 
     console.log("university name ===>", universityName);
     // 2) university id
@@ -320,7 +389,7 @@ exports.getUserCourses = async (req, res) => {
     if (!university) {
       return res.json({
         status: httpStatusText.FAIL,
-        data: { title: "university not found, please try again." },
+        data: { title: "no universities" },
       });
     }
     // 3) semester id
@@ -332,50 +401,152 @@ exports.getUserCourses = async (req, res) => {
     if (!semester) {
       return res.json({
         status: httpStatusText.FAIL,
-        data: { title: "Semester not found, please try again." },
+        data: { title: "no semesteres" },
       });
     }
-    const offeredCourses = await CourseOffering.findAll({
-      where: {
-        UserId: userId,
-        SemesterId: semester.id,
-        universityId: university.id,
-      },
-    });
 
-    const courseDetails = [];
-
-    for (const offeredCourse of offeredCourses) {
-      const courseId = offeredCourse.courseId;
-
-      // Retrieve course details using courseId
-      const courseInfo = await Course.findOne({
+    // 4) find couseOffered IDs for specific user
+    const user_courses = await User.findByPk(userId, {
+      include: {
+        model: CourseOffering,
         where: {
-          id: courseId,
+          universityId: university.id,
+          SemesterId: semester.id,
         },
-        attributes: ["course_name", "course_code"], // Include only specific attributes
-      });
+        attributes: ["courseId"],
+        through: {
+          model: UserCourseOffering,
+          where: {},
+          attributes: ["id", "UserId", "courseOfferingId"],
+        },
+        include: {
+          model: Course,
+          // attributes: ["courseId"],
+        },
+      },
+      attributes: [],
+    });
+    console.log("user_courses");
+    console.log(user_courses);
 
-      // Add course details to the result array
-      courseDetails.push(courseInfo);
-    }
-    console.log("user courses in university name based on semester ===> ");
-    console.log(courseDetails);
-    // if (courseDetails.length == 0) {
-    //   return res.json({
-    //     status: httpStatusText.SUCCESS,
-    //     data: { title: "no courses yet." },
-    //   });
-    // }
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Courses found successfully.", courseDetails },
+      data: { title: "Courses found successfully.", user_courses },
     });
   } catch (error) {
     console.log("error in getUserCourses controller ===> ", error.message);
     return res.json({
       status: httpStatusText.ERROR,
       data: { title: "Error finding courses, please try again." },
+    });
+  }
+};
+
+// @desc    Get all semesters
+// @route   GET /api/user/get-semesters
+// @access  private - user
+exports.getSemesters = async (req, res) => {
+  try {
+    const semesters = await Semester.findAll();
+    if (!semesters) {
+      return res.json({
+        status: httpStatusText.FAIL,
+        data: { title: "no semester" },
+      });
+    }
+    console.log("semesters", semesters);
+
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: { title: "semesters found successfully.", semesters: semesters },
+    });
+  } catch (error) {
+    console.log("error in getSemesters ===> ", error.message);
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: { title: "something went wrong, please try again." },
+    });
+  }
+};
+
+// @desc    Get user classes - courses related to a spicific user working at specific university for specific course
+// @route   GET /api/user/get-user-classes
+// @access  private - user
+exports.getUserClasses = async (req, res) => {
+  try {
+    const userCourseOfferingId = req.query.userCourseOfferingId;
+    const classes = await Class.findAll({
+      where: {
+        UserCourseOfferingId: userCourseOfferingId,
+      },
+      include: { model: Exam },
+    });
+    if (!classes) {
+      return res.json({
+        status: httpStatusText.FAIL,
+        data: { title: "no classes" },
+      });
+    }
+    console.log("classes =====> ", classes);
+
+    return res.json({
+      status: httpStatusText.SUCCESS,
+      data: { title: "classes found successfully.", classes: classes },
+    });
+  } catch (error) {
+    console.log("error in getUserClasses ===> ", error.message);
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: { title: "Something went wrong, please try again." },
+    });
+  }
+};
+
+// @desc    Get sudents exam info - sudents exam info related to a spicific student class and exam
+// @route   GET /api/user/students-exam-info
+// @access  private - user
+exports.getStudentsExamInfo = async (req, res) => {
+  try {
+    const examId = req.query.examId;
+    console.log("examId =====> ", examId);
+if(examId){
+  const studentsExamInfo = await Grade.findAll({
+    where: {
+      ExamId: examId,
+    },
+   include:{
+    model:Enrollment,
+    include:{
+      model:Student
+     }
+   }
+  }
+  );
+
+  if (!studentsExamInfo) {
+    return res.json({
+      status: httpStatusText.FAIL,
+      data: { title: "no exams" },
+    });
+  }
+  console.log("exams =====> ", studentsExamInfo);
+
+  return res.json({
+    status: httpStatusText.SUCCESS,
+    data: { title: "getStudentsExamInfo found successfully.", studentsExamInfo: studentsExamInfo },
+  });
+
+}
+   
+
+
+
+   
+  } catch (error) {
+    console.log("error in getStudentsExamInfo ===> ", error.message);
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: { title: "Something went wrong, please try again." },
     });
   }
 };
