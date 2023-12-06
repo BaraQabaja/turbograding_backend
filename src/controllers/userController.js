@@ -456,18 +456,24 @@ exports.getUserClasses = async (req, res) => {
   }
 };
 
-// @desc    Get user exams - exams related to a spicific user class
-// @route   GET /api/user/get-class-exams
+// @desc    Get sudents exam info - sudents exam info related to a spicific student class and exam
+// @route   GET /api/user/students-exam-info
 // @access  private - user
-exports.getClassExams = async (req, res) => {
+exports.getStudentsExamInfo = async (req, res) => {
   try {
-    const classInfoId = req.query.classInfoId;
-    const exams = await Exam.findAll({
+    const examId = req.query.examId;
+    const studentsExamInfo = await Grade.findAll({
       where: {
-        ClassInfoId: classInfoId,
+        ExamId: examId,
+      },
+      include: {
+        model: Enrollment,
+        include: {
+          model: Student,
+        },
       },
     });
-    if (!exams) {
+    if (!studentsExamInfo) {
       return res.json({
         status: httpStatusText.FAIL,
         data: { title: "no exams" },

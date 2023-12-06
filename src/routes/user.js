@@ -26,6 +26,7 @@ router.get('/get-user-courses',auth.protect, userController.getUserCourses);
 router.get('/get-semesters',auth.protect, userController.getSemesters);
 router.get('/get-user-classes',auth.protect, userController.getUserClasses);
 router.get('/get-class-exams',auth.protect, userController.getClassExams);
+router.get('/students-exam-info',auth.protect, userController.getStudentsExamInfo);
 // router.post('/assignment', authenticateToken, upload.single('file'), usersController.gradingAssignment);
 
 // router.get('/profile', authenticateToken, usersController.getProfile);  // Fetch user profile
