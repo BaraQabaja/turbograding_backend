@@ -469,7 +469,10 @@ if(examId){
       ExamId: examId,
     },
    include:{
-    model:Enrollment
+    model:Enrollment,
+    include:{
+      model:Student
+     }
    }
   }
   );
