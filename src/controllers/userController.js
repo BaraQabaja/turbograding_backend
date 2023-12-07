@@ -404,7 +404,7 @@ exports.getUserUniversities = async (req, res) => {
     if (!userUniversities) {
       return res.json({
         status: httpStatusText.FAIL,
-        data: { title: "no universities" ,userUniversities:[]},
+        data: { title: "no universities" ,userUniversities:{universities:[]}},
       });
     }
     return res.json({
@@ -415,7 +415,7 @@ exports.getUserUniversities = async (req, res) => {
     console.log("error in getUserUniversities ===> ", error.message);
     return res.status(500).json({
       status: httpStatusText.ERROR,
-      data: { title: "something went wrong, please try again." ,userUniversities:[]},
+      data: { title: "something went wrong, please try again." },
     });
   }
 };
