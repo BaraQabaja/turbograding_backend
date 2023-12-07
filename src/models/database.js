@@ -1,7 +1,26 @@
 const config = require('../config');
 
 const Sequelize = require('sequelize');
-
+// ... Other imports
+const {
+  UserModal,
+  UniversityModal,
+  UserUniversityModal,
+  CourseModal,
+  ActivityModal,
+  SemesterModal,
+  ClassModal,
+  LocationModal,
+  StudentModal,
+  CourseOfferingModal,
+  UserCourseOfferingModal,
+  EnrollmentModal,
+  GradeModal,
+  ExamModal,
+  PaymentModal,
+  PlanModal,
+  SubscriptionModal,
+} = require("./index");
 //! on Development
 // const sequelize = new Sequelize(
 //     config.db.database,

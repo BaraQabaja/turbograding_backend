@@ -1,5 +1,4 @@
 const {
-  sequelize,
   UserModal,
   UniversityModal,
   UserUniversityModal,
@@ -17,6 +16,8 @@ const {
   PaymentModal,
   PlanModal,
   SubscriptionModal,
+  sequelize,
+
 } = require("./database");
 //! Tables Relations
 // User & Subscription (One -> Many)
