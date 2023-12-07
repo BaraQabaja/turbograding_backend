@@ -176,7 +176,7 @@ exports.gradingExam = async (req, res) => {
     // 6) Create UserCourseOffering
     const courseOffering_for_userCourseOffering = await CourseOffering.findOne({
       where: {
-        SemesterId: semester_entity.id,
+        SemesterId: semester_for_courseOffering.id,
         universityId: university_for_courseOffering.id,
         courseId: course_entity.id,
       },
