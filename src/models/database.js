@@ -1,6 +1,6 @@
-const config = require('../config');
+const config = require("../config");
 
-const Sequelize = require('sequelize');
+const Sequelize = require("sequelize");
 // ... Other imports
 const {
   UserModal,
@@ -36,23 +36,23 @@ const {
 //     });
 
 //! on production
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: 'postgres',
-    protocol: 'postgres',
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false, // <<<<<<< This is important
-      },
+const sequelizeInstance = new Sequelize(process.env.DATABASE_URL, {
+  dialect: "postgres",
+  protocol: "postgres",
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // <<<<<<< This is important
     },
-    pool: {
-      max: 20, // Adjust as needed
-      min: 0,
-      acquire: 30000,
-      idle: 10000,
-    },
-    // other configurations...
-  });
+  },
+  pool: {
+    max: 20, // Adjust as needed
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
+  },
+  // other configurations...
+});
 //! Modals
 const UserModal = require("./User");
 const UniversityModal = require("./University");
@@ -77,22 +77,23 @@ const PaymentModal = require("./Payment");
 const PlanModal = require("./Plan");
 const SubscriptionModal = require("./Subscription");
 
-
-module.exports = {sequelize,   UserModal,
+module.exports = {
+  sequelize: sequelizeInstance,
+  UserModal,
   UniversityModal,
   UserUniversityModal,
   CourseModal,
   ActivityModal,
   SemesterModal,
-ClassModal,
-LocationModal,
-StudentModal,
-CourseOfferingModal,
-UserCourseOfferingModal,
-EnrollmentModal,
-GradeModal,
-ExamModal,
-PaymentModal,
-PlanModal,
-SubscriptionModal,};
-
+  ClassModal,
+  LocationModal,
+  StudentModal,
+  CourseOfferingModal,
+  UserCourseOfferingModal,
+  EnrollmentModal,
+  GradeModal,
+  ExamModal,
+  PaymentModal,
+  PlanModal,
+  SubscriptionModal,
+};

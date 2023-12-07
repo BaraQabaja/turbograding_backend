@@ -16,7 +16,6 @@ const {
   PaymentModal,
   PlanModal,
   SubscriptionModal,
-  sequelize,
 
 } = require("./database");
 //! Tables Relations
@@ -102,7 +101,6 @@ PaymentModal.belongsTo(SubscriptionModal, { foreignKey: "subscriptionId" });
 
 //************End of Table Relations Section************/
 module.exports = {
-  sequelize,
   UserModal,
   UniversityModal,
   UserUniversityModal,
