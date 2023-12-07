@@ -36,28 +36,28 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   });
   
 //! Modals
-const UserModal = require("./src/models/User");
-const UniversityModal = require("./src/models/University");
-const UserUniversityModal = require("./src/models/UserUniversity");
-const CourseModal = require("./src/models/Course");
-const ActivityModal = require("./src/models/Activity");
+const UserModal = require("./User");
+const UniversityModal = require("./University");
+const UserUniversityModal = require("./UserUniversity");
+const CourseModal = require("./Course");
+const ActivityModal = require("./Activity");
 // const CourseOfferingSemesterModal = require("./src/models/CourseOfferingSemester");
-const SemesterModal = require("./src/models/Semester");
-const ClassModal = require("./src/models/Class_Info");
-const LocationModal = require("./src/models/Location_Info");
+const SemesterModal = require("./Semester");
+const ClassModal = require("./Class_Info");
+const LocationModal = require("./Location_Info");
 
-const StudentModal = require("./src/models/Student");
-const CourseOfferingModal = require("./src/models/CourseOffering");
-const UserCourseOfferingModal = require("./src/models/UserCourseOffering");
+const StudentModal = require("./Student");
+const CourseOfferingModal = require("./CourseOffering");
+const UserCourseOfferingModal = require("./UserCourseOffering");
 
-const EnrollmentModal = require("./src/models/Enrollment");
+const EnrollmentModal = require("./Enrollment");
 
-const GradeModal = require("./src/models/Grade");
-const ExamModal = require("./src/models/Exam");
+const GradeModal = require("./Grade");
+const ExamModal = require("./Exam");
 
-const PaymentModal = require("./src/models/Payment");
-const PlanModal = require("./src/models/Plan");
-const SubscriptionModal = require("./src/models/Subscription");
+const PaymentModal = require("./Payment");
+const PlanModal = require("./Plan");
+const SubscriptionModal = require("./Subscription");
 
 //! Tables Relations
 // User & Subscription (One -> Many)
