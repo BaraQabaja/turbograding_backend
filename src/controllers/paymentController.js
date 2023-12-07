@@ -93,7 +93,7 @@ exports.checkoutSession = async (req, res) => {
       // },
       success_url: `${config.client.url}/dashboard/success`, //Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains success_url:`${req.protocol}://${req.get('host')}/success`.
       cancel_url: `${config.client.url}/dashboard/failed`, // Here the domain address typed statically and this will make problems when deploying the app on real servers so we use dynamic domains cancel_url:`${req.protocol}://${req.get('host')}/dashboard`.
-      // customer_email:req.user.email,
+      // customer_email:req.user.email,,
       // client_reference_id:req.params.id,
       // customer_email: req.user.email,
       customer: user.stripeCustomerId,
