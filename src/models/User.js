@@ -61,14 +61,7 @@ const User = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },//Bara optional
-    country:{
-      type:DataTypes.STRING,
-      allowNull: true
-    },//Bara optional
-    city:{
-      type:DataTypes.STRING,
-      allowNull: true
-    },//anything about the user, optional
+   
     about:{
       type:DataTypes.STRING,
       allowNull:true,

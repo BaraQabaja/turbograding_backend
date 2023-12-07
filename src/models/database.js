@@ -17,7 +17,7 @@ const Sequelize = require('sequelize');
 //     });
 
 //! on production
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize(config.db.db_url, {
     dialect: 'postgres',
     protocol: 'postgres',
     dialectOptions: {
@@ -34,7 +34,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
     },
     // other configurations...
   });
-  
+
 
 module.exports = sequelize;
 

@@ -144,7 +144,6 @@ app.use(express.static("public"));
 // app.use("/api", limiter);
 
 //! Routes
-// app.use('/api/users', usersRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/payment", paymentRoutes);
@@ -175,17 +174,10 @@ const ExamModal = require("./src/models/Exam");
 const PaymentModal = require("./src/models/Payment");
 const PlanModal = require("./src/models/Plan");
 const SubscriptionModal = require("./src/models/Subscription");
-
-// references: {
-//   model: 'users',
-//   key: 'id'
-// }
 //! Tables Relations
 // User & Subscription (One -> Many)
 UserModal.hasMany(SubscriptionModal, { foreignKey: "userId" });
 SubscriptionModal.belongsTo(UserModal, { foreignKey: "userId" });
-
-
 
 // User & University (Many -> Many)
 UserModal.belongsToMany(UniversityModal, { through: UserUniversityModal });
@@ -195,11 +187,11 @@ UniversityModal.belongsToMany(UserModal, { through: UserUniversityModal });
 UserModal.hasOne(LocationModal);
 LocationModal.belongsTo(UserModal);
 
-//* University and CourseOfferingModal (One -> Many) 
+//* University and CourseOfferingModal (One -> Many)
 UniversityModal.hasMany(CourseOfferingModal);
 CourseOfferingModal.belongsTo(UniversityModal);
 
-//* Class and Exam (One -> Many) 
+//* Class and Exam (One -> Many)
 ClassModal.hasMany(ExamModal);
 ExamModal.belongsTo(ClassModal);
 
@@ -212,8 +204,12 @@ CourseModal.hasMany(CourseOfferingModal);
 CourseOfferingModal.belongsTo(CourseModal);
 
 //* CourseOffering & User ( Many -> Many ) through UserCourseOffering
-CourseOfferingModal.belongsToMany(UserModal, { through: UserCourseOfferingModal });
-UserModal.belongsToMany(CourseOfferingModal, { through: UserCourseOfferingModal });
+CourseOfferingModal.belongsToMany(UserModal, {
+  through: UserCourseOfferingModal,
+});
+UserModal.belongsToMany(CourseOfferingModal, {
+  through: UserCourseOfferingModal,
+});
 
 //* Class & UserCourseOfferingModal (One -> Many)
 UserCourseOfferingModal.hasMany(ClassModal);
@@ -222,7 +218,6 @@ ClassModal.belongsTo(UserCourseOfferingModal);
 // Class & Student ( Many -> Many )
 StudentModal.belongsToMany(ClassModal, { through: EnrollmentModal });
 ClassModal.belongsToMany(StudentModal, { through: EnrollmentModal });
-
 
 // University & Student (One -> Many)
 UniversityModal.hasMany(StudentModal);
@@ -233,7 +228,6 @@ foreignKey: {
     primaryKey: true,
   },
 */
-
 
 //! Direct relationship between Student and Enrollment
 StudentModal.hasOne(EnrollmentModal);
@@ -253,7 +247,6 @@ GradeModal.belongsTo(EnrollmentModal);
 UserModal.hasMany(ActivityModal);
 ActivityModal.belongsTo(UserModal);
 
-
 // Plan & Subscription (One -> Many)
 PlanModal.hasMany(SubscriptionModal, { foreignKey: "planId" });
 SubscriptionModal.belongsTo(PlanModal, { foreignKey: "planId" });
@@ -263,9 +256,7 @@ SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
 PaymentModal.belongsTo(SubscriptionModal, { foreignKey: "subscriptionId" });
 
 //************End of Table Relations Section************/
-
-
-const PORT = process.env.PORT || 5000; //port number
+const PORT = config.app.PORT || 5000; //port number
 
 app.all("*", (req, res, next) => {
   res.status(400).send(`Can't find this route: ${req.originalUrl}`);
@@ -276,7 +267,7 @@ sequelize
   .sync() //keep this in your mind { force: true } { alter: true }
   .then(() => {
     console.log("DB Sync Done Successfully!");
-    app.listen(process.env.PORT || 5000, HOSTProduction, () => {
+    app.listen(config.app.PORT || 5000, HOSTProduction, () => {
       console.log(`Server is listening on  ${PORT}`);
     });
   })
