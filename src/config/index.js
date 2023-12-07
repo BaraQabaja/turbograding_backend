@@ -6,12 +6,16 @@ module.exports = {
   app: {
     http_port: process.env.HTTP_PORT,
     https_port: process.env.HTTPS_PORT,
+    host:process.env.HOST,
+    PORT:process.env.PORT,
   },
   db: {
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
+    db_url: process.env.DATABASE_URL,
+    db_port: process.env.DB_PORT
   },
   auth: {
     accessToken: process.env.ACCESS_TOKEN_SECRET,
@@ -20,6 +24,7 @@ module.exports = {
   api: {
     gpt_key: process.env.GPT_KEY,
   },
+ 
   ssl: {
     key_file: "./ssl_key/server.key",
     crt_file: "./ssl_key/server.crt",
@@ -32,8 +37,11 @@ module.exports = {
     stripe_secret: process.env.STRIPE_SECRET,
     signing_secret: process.env.SIGNING_SECRET,
   },
-  server_url: {
-    production_url: process.env.PRODUCTION_URL,
-    local_url: process.env.LOCAL_URL,
+  email:{
+    email_host:process.env.EMAIL_HOST,
+    email_port:process.env.EMAIL_PORT,
+    email_user:process.env.EMAIL_USER,
+    email_password:process.env.EMAIL_PASSWORD,
   },
+  
 };

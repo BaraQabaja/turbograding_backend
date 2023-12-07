@@ -256,7 +256,7 @@ SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
 PaymentModal.belongsTo(SubscriptionModal, { foreignKey: "subscriptionId" });
 
 //************End of Table Relations Section************/
-const PORT = process.env.PORT || 5000; //port number
+const PORT = config.app.PORT || 5000; //port number
 
 app.all("*", (req, res, next) => {
   res.status(400).send(`Can't find this route: ${req.originalUrl}`);
@@ -267,7 +267,7 @@ sequelize
   .sync() //keep this in your mind { force: true } { alter: true }
   .then(() => {
     console.log("DB Sync Done Successfully!");
-    app.listen(process.env.PORT || 5000, HOSTProduction, () => {
+    app.listen(config.app.PORT || 5000, HOSTProduction, () => {
       console.log(`Server is listening on  ${PORT}`);
     });
   })
