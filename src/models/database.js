@@ -17,7 +17,7 @@ const Sequelize = require("sequelize");
 //     });
 
 //! on production
-const sequelize = new Sequelize(config.db.db_url, {
+const sequelizeInstance  = new Sequelize(config.db.db_url, {
   dialect: "postgres",
   protocol: "postgres",
   dialectOptions: {
@@ -141,4 +141,4 @@ SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
 PaymentModal.belongsTo(SubscriptionModal, { foreignKey: "subscriptionId" });
 
 //************End of Table Relations Section************/
-module.exports = sequelize;
+module.exports = sequelizeInstance ;
