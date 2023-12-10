@@ -1,3 +1,27 @@
+const UserModal = require("./User");
+const UniversityModal = require("./University");
+const UserUniversityModal = require("./UserUniversity");
+const CourseModal = require("./Course");
+const ActivityModal = require("./Activity");
+// const CourseOfferingSemesterModal = require("./CourseOfferingSemester");
+const SemesterModal = require("./Semester");
+const ClassModal = require("./Class_Info");
+const LocationModal = require("./Location_Info");
+
+const StudentModal = require("./Student");
+const CourseOfferingModal = require("./CourseOffering");
+const UserCourseOfferingModal = require("./UserCourseOffering");
+
+const EnrollmentModal = require("./Enrollment");
+
+const GradeModal = require("./Grade");
+const ExamModal = require("./Exam");
+
+const PaymentModal = require("./Payment");
+const PlanModal = require("./Plan");
+const SubscriptionModal = require("./Subscription");
+//! Tables Relations
+const tableRelation=require('./tableRelation')
 
 // User & Subscription (One -> Many)
 UserModal.hasMany(SubscriptionModal, { foreignKey: "userId" });
