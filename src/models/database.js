@@ -34,6 +34,7 @@ const sequelizeInstance  = new Sequelize(config.db.db_url, {
   },
   // other configurations...
 });
+module.exports = sequelizeInstance ;
 
 //! Define Models
 const UserModal = require("./User");
@@ -141,4 +142,4 @@ SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
 PaymentModal.belongsTo(SubscriptionModal, { foreignKey: "subscriptionId" });
 
 //************End of Table Relations Section************/
-module.exports = sequelizeInstance ;
+
