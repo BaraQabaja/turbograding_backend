@@ -86,6 +86,7 @@ exports.protect = async (req, res, next) => {
 };
 
 exports.emailVerification = async (req, res) => {
+
   const token = req.params.token;
   const user = await User.findOne({ where: { emailVerificationToken: token } });
   if (!user) {
