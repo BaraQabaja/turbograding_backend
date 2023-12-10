@@ -1,3 +1,5 @@
+const sequelize = require("./database");
+
 const UserModal = require("./User");
 const UniversityModal = require("./University");
 const UserUniversityModal = require("./UserUniversity");
@@ -21,7 +23,7 @@ const PaymentModal = require("./Payment");
 const PlanModal = require("./Plan");
 const SubscriptionModal = require("./Subscription");
 //! Tables Relations
-const tableRelation=require('./tableRelation')
+// const tableRelation=require('./tableRelation')
 
 // User & Subscription (One -> Many)
 UserModal.hasMany(SubscriptionModal, { foreignKey: "userId" });
