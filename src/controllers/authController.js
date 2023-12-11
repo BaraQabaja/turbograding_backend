@@ -398,7 +398,7 @@ exports.loginUser = async (req, res) => {
     // Send the token to the client
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Logged in successfully", user: user },
+      data: { title: "Logged in successfully", user: user,role:user.role },
       token,
     });
   } catch (error) {
