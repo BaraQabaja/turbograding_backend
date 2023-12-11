@@ -131,6 +131,7 @@ app.use((req, res, next) => {
 const sequelize = require("./src/models/database");
 
 //! Routes End points
+const adminRoutes = require("./src/routes/admin");
 const userRoutes = require("./src/routes/user");
 const authRoutes = require("./src/routes/auth");
 const subscriptionRoutes = require("./src/routes/subscription");
