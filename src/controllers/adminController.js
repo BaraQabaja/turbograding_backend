@@ -94,7 +94,7 @@ exports.adminRegister = async (req, res) => {
             password: hashPassword,
             verifiedEmail: false,
             joinDate: Date.now(),
-            stripeCustomerId: customer.id,
+            role:'admin'
           })
             .then(async (user) => {
               if (user) {
