@@ -144,6 +144,7 @@ app.use(express.static("public"));
 // app.use("/api", limiter);
 
 //! Routes
+app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/payment", paymentRoutes);

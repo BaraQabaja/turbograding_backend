@@ -70,8 +70,8 @@ const User = sequelize.define(
     role: {
       type: DataTypes.STRING, //(e.g., admin, educator, student).
       allowNull: false,
-      values: ["admin ", "educator ", "student"],
-      defaultValue: "student",
+      values: ["admin ", "teacher ", "student"],
+      defaultValue: "teacher",
     },
     stripeCustomerId:{//user id in stripe, stripe give each customer a unique id
       type:DataTypes.STRING,
