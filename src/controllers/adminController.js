@@ -185,8 +185,7 @@ exports.adminRegister = async (req, res) => {
                   status: httpStatusText.SUCCESS,
                   data: {
                     title:
-                      "email verification link sent to your email, please check your inbox.",
-                    stripeCustomerId: customer.id,
+                      "email verification link sent to your email, please check your inbox."
                   },
                 });
   
