@@ -184,7 +184,7 @@ exports.getPersonalInformations = async (req, res) => {
 
     const subscriptionPlanId = latestSubscription.planId;
 
-    // 3) find user plan via planId
+    // 3) find user plann via planId
     const plan = await Plan.findByPk(subscriptionPlanId);
     //  needed data from plan object
     const planName = plan.name;
