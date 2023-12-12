@@ -17,8 +17,7 @@ const httpStatusText = require("../utils/httpStatusText");
 
 //models
 const User = require("../models/User");
-const Plan = require("../models/Plan");
-const Subscription = require("../models/Subscription");
+
 
 
 // @desc    Register admin logic, create new user with role admin

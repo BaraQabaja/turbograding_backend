@@ -1,18 +1,18 @@
 // routes /plans
-const express = require('express');
-const authenticateToken = require('../middleware/authenticateToken');
-const plansController = require('../controllers/planController');
+// const express = require('express');
+// const authenticateToken = require('../middleware/authenticateToken');
+// const plansController = require('../controllers/adminPlanController');
 
-const router = express.Router();
+// const router = express.Router();
 
-router.get('/get-all-plans', plansController.getPlans);  // Fetch all plans
+// router.get('/get-all-plans', plansController.getPlans);  // Fetch all plans
 
-router.post('/create-plan', plansController.createPlan);  // Create a new plan
+// router.post('/create-plan', plansController.createPlan);  // Create a new plan
 
 
-router.delete('/delete-plan/:id', plansController.deletePlan);  // Delete a plan
+// router.delete('/delete-plan/:id', plansController.deletePlan);  // Delete a plan
 
-router.delete('/update-plan/:id', plansController.updatePlan);  // update a plan
+// router.delete('/update-plan/:id', plansController.updatePlan);  // update a plan
 /*
 
 router.get('/:id', authenticateToken, plansController.getPlan);  // Fetch a specific plan
@@ -20,4 +20,4 @@ router.post('/', authenticateToken, plansController.createPlan);  // Create a ne
 router.put('/:id', authenticateToken, plansController.updatePlan);  // Update a plan
 router.delete('/:id', authenticateToken, plansController.deletePlan);  // Delete a plan
 */
-module.exports = router;
+// module.exports = router;

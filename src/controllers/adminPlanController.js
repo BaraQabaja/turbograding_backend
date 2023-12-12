@@ -65,6 +65,8 @@ exports.getPlans = async (req, res) => {
 // @access  admin
 exports.deletePlan = async (req, res) => {
   const  id  = req.params.id; // Get the plan ID from URL parameters
+  // const universityName = req.query.universityName;
+
   try {
     const plan = await Plan.findByPk(id);
     if (!plan) {

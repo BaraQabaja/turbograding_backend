@@ -136,7 +136,7 @@ const userRoutes = require("./src/routes/user");
 const authRoutes = require("./src/routes/auth");
 const subscriptionRoutes = require("./src/routes/subscription");
 const paymentRoutes = require("./src/routes/payment");
-const planRoutes = require("./src/routes/plan");
+// const planRoutes = require("./src/routes/plan");
 const profileRoutes = require("./src/routes/profile");
 
 //! Middlewares
@@ -149,7 +149,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/payment", paymentRoutes);
-app.use("/api/plan", planRoutes);
+// app.use("/api/plan", planRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/user", userRoutes);
 
