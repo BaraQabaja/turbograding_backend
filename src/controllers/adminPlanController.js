@@ -11,7 +11,7 @@ const httpStatusText = require("../utils/httpStatusText");
 exports.createPlan = async (req, res) => {
   const { name, description, price,currency, duration, questions, assignments,exams, priceId,status } =
     req.body;
-    console.log("createPlan ===> ")
+    console.log("createPlan ==> ")
     console.log(req.body)
 
   try {
