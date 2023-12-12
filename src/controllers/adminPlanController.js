@@ -64,7 +64,7 @@ exports.getPlans = async (req, res) => {
 // @route   DELETE /api/admin/delete-plan/:id
 // @access  admin
 exports.deletePlan = async (req, res) => {
-  const  id  = req.params.id; // Get the plan ID from URL parameters
+  const  id  = req.query.planId; // Get the plan ID from URL parameters
   // const universityName = req.query.universityName;
 
   try {
