@@ -61,10 +61,10 @@ exports.getPlans = async (req, res) => {
 
 
 // @desc    Get all plans logic
-// @route   DELETE /api/admin/delete-plan/:id
+// @route   DELETE /api/admin/delete-plan?planId=number
 // @access  admin
 exports.deletePlan = async (req, res) => {
-  const  id  = req.query.planId; // Get the plan ID from URL parameters
+  const  id  = req.query.planId; // Get the plan ID from URL query 
   // const universityName = req.query.universityName;
 
   try {
@@ -76,10 +76,12 @@ exports.deletePlan = async (req, res) => {
       });
     }
     await plan.destroy();
+    const remainingPlans = await Plan.findAll();
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Plan deleted successfully" },
+      data: { title: "Plan deleted successfully" ,plans:remainingPlans},
     });
+
   } catch (error) {
     return res.status(500).json({
       status: httpStatusText.FAIL,
