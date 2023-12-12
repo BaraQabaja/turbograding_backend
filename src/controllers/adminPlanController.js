@@ -6,7 +6,7 @@ const httpStatusText = require("../utils/httpStatusText");
 
 
 // @desc    Create plan logic
-// @route   POST /api/plan/create-plan
+// @route   POST /api/admin/create-plan
 // @access  admin
 exports.createPlan = async (req, res) => {
   const { name, description, price,currency, duration, questions, assignments,exams, priceId } =
@@ -40,14 +40,14 @@ exports.createPlan = async (req, res) => {
 
 
 // @desc    Get all plans logic
-// @route   GET /api/plan/get-all-plans
+// @route   GET /api/admin/get-all-plans
 // @access  admin
 exports.getPlans = async (req, res) => {
   try {
     const plans = await Plan.findAll();
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
-      data: plans,
+      data:{title:"plans fetched successfully.", plans:plans},
     });
   } catch (error) {
     return res.status(500).json({
@@ -61,7 +61,7 @@ exports.getPlans = async (req, res) => {
 
 
 // @desc    Get all plans logic
-// @route   DELETE /api/plan/delete-plan/:id
+// @route   DELETE /api/admin/delete-plan/:id
 // @access  admin
 exports.deletePlan = async (req, res) => {
   const  id  = req.params.id; // Get the plan ID from URL parameters
@@ -90,7 +90,7 @@ exports.deletePlan = async (req, res) => {
 
 
 // @desc    Update plan logic
-// @route   Put /api/plan/update-plan/:id
+// @route   Put /api/admin/update-plan/:id
 // @access  admin
 exports.updatePlan = async (req, res) => {
   const  id  = req.params.id; // Get the plan ID from URL parameters
