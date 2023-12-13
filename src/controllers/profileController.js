@@ -266,7 +266,7 @@ exports.userSubscriptionLog = async (req, res, next) => {
               attributes: ["name", "currency", "price"],
             },
           ],
-          order: [["createdAt", "DESC"]], // Order by createdAt in descending order
+          order: [["createdAt", "ASC"]], // Order by createdAt in descending order
           attributes: ["startDate","endDate"],
         },
       ],
