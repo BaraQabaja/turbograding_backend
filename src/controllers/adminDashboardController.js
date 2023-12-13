@@ -13,19 +13,19 @@ const httpStatusText = require("../utils/httpStatusText");
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-        where:{
-            role:'teacher'
-        }
-    },{
-        include:{
-            model:Subscription,
+      where: {
+        role: "teacher",
+      },
 
-            include:{
-                model:Plan
-            },
-            order: [['createdAt', 'DESC']], // Order by createdAt in descending order
-            limit: 1 // Limit the result to only the latest subscription
-        }
+      include: {
+        model: Subscription,
+
+        include: {
+          model: Plan,
+        },
+        order: [["createdAt", "DESC"]], // Order by createdAt in descending order
+        limit: 1, // Limit the result to only the latest subscription
+      },
     });
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
