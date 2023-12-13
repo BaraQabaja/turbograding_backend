@@ -48,10 +48,10 @@ exports.createPlan = async (req, res) => {
       priceId,
       status,
     });
-
+    const allPlans=await Plan.findAll()
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Plan created successfully.", plan },
+      data: { title: "Plan created successfully.", plans:allPlans },
     });
   } catch (error) {
     console.log("error in create plan ===> ", error.message);
