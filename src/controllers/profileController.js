@@ -259,12 +259,14 @@ exports.userSubscriptionLog = async (req, res, next) => {
       include: [
         {
           model: Subscription,
+          
           include: [
             {
               model: Plan,
               attributes: ["name", "currency", "price"],
             },
           ],
+          order: [["createdAt", "ASC"]], // Order by createdAt in descending order
           attributes: ["startDate","endDate"],
         },
       ],

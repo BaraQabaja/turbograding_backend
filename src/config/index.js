@@ -8,6 +8,8 @@ module.exports = {
     https_port: process.env.HTTPS_PORT,
     host:process.env.HOST,
     PORT:process.env.PORT,
+    mode:process.env.NODE_ENV,
+    mode_abbreviation:process.env.NODE_ENV_ABBREVIATION
   },
   client:{//front-end url, at this time the url will be the localhost url
     url:process.env.CLIENT_URL
