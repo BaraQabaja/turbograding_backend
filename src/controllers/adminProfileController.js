@@ -2,9 +2,9 @@ const httpStatusText = require("../utils/httpStatusText");
 //models
 const User = require("../models/User");
 
-// @desc     Get profile info from multi models - user model - plan model - subscription model
-// @route    Get /api/profile/get-personal-info
-// @access   protected/user
+// @desc     Get profile info
+// @route    Get /api/admin/get-personal-info
+// @access   protected/admin
 exports.getPersonalInformations = async (req, res) => {
   try {
     // 1) user info via userId

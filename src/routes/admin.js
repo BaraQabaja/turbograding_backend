@@ -5,8 +5,11 @@ const adminAuthController = require('../controllers/adminAuthController');
 const adminPlansController = require('../controllers/adminPlanController');
 const profileController = require('../controllers/profileController');
 const adminProfileController = require('../controllers/profileController');
+const auth = require('../controllers/authController');
+
 const router = express.Router();
- 
+
+
 
 
 router.post('/admin-register', adminAuthController.adminRegister);  // Registration route
