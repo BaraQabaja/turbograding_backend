@@ -1,4 +1,7 @@
 const User = require("../models/User");
+const Subscription = require("../models/Subscription");
+const Plan = require("../models/Plan");
+
 const config = require("../config");
 
 //httpStatus key words
@@ -9,7 +12,17 @@ const httpStatusText = require("../utils/httpStatusText");
 // @access  admin
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
+    const users = await User.findAll({
+        include:{
+            model:Subscription,
+
+            include:{
+                model:Plan
+            },
+            order: [['createdAt', 'DESC']], // Order by createdAt in descending order
+            limit: 1 // Limit the result to only the latest subscription
+        }
+    });
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
       data: { title: "Users fetched successfully.", users: users },
