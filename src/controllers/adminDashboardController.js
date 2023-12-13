@@ -13,6 +13,10 @@ const httpStatusText = require("../utils/httpStatusText");
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.findAll({
+        where:{
+            role:'teacher'
+        }
+    },{
         include:{
             model:Subscription,
 
