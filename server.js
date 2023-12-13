@@ -37,7 +37,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "chrome-extension://pfgjachlphejjkgnenknlbhncljapfia",
   "http://127.0.0.1:5500/*",
-  "http://127.0.0.1:5500"
+  "http://127.0.0.1:5500",
   // Add your frontend URL
   // 'https://yourproductionfrontendurl.com', // Add your production frontend URL
 ];
@@ -101,9 +101,9 @@ require("./src/utils/basicSubscriptionScheduler"); // Include the basic subscrip
 
 //! environment setup
 
-if (process.env.NODE_ENV === "development") {
+if (config.app.mode === "development") {
   app.use(morgan("dev"));
-  console.log(`mode: ${process.env.NODE_ENV}`);
+  console.log(`mode: ${config.app.mode_abbreviation}`);
 }
 
 //! Increase payload limit to 10MB
@@ -260,24 +260,44 @@ SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
 PaymentModal.belongsTo(SubscriptionModal, { foreignKey: "subscriptionId" });
 
 //************End of Table Relations Section************/
+
 const PORT = config.app.PORT || 5000; //port number
 
 app.all("*", (req, res, next) => {
   res.status(400).send(`Can't find this route: ${req.originalUrl}`);
 });
-//! On Production
-const HOSTProduction = "0.0.0.0"; //production
-sequelize
-  .sync() //keep this in your mind { force: true } { alter: true }
-  .then(() => {
-    console.log("DB Sync Done Successfully!");
-    app.listen(config.app.PORT || 5000, HOSTProduction, () => {
-      console.log(`Server is listening on  ${PORT}`);
+
+if (config.app.mode == "production") {
+  //! On Production
+  const HOSTProduction = "0.0.0.0"; //production
+  sequelize
+    .sync() //keep this in your mind { force: true } { alter: true }
+    .then(() => {
+      console.log("DB Sync Done Successfully!");
+      app.listen(config.app.PORT || 5000, HOSTProduction, () => {
+        console.log(`Server is listening on  ${PORT}`);
+      });
+    })
+    .catch((err) => {
+      console.log(`Failed to Sync with DB: ${err.message}`);
     });
-  })
-  .catch((err) => {
-    console.log(`Failed to Sync with DB: ${err.message}`);
-  });
+} else if (config.app.mode == "development") {
+  sequelize
+    .sync()
+    .then(() => {
+      http.createServer(app).listen(config.app.http_port, () => {
+        console.log("Express http server listening");
+      });
+      https
+        .createServer(config.https_options, app)
+        .listen(config.app.https_port, () => {
+          console.log("Express https server listening ");
+        });
+    })
+    .catch((err) => {
+      console.log(`Failed to Sync with DB: ${err.message}`);
+    });
+}
 
 //On Development
 // sequelize
