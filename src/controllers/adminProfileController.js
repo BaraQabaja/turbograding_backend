@@ -5,7 +5,7 @@ const User = require("../models/User");
 // @desc     Get profile info
 // @route    Get /api/admin/get-personal-info
 // @access   protected/admin
-exports.getPersonalInformations = async (req, res) => {
+exports.getPersonalInformation = async (req, res) => {
   try {
     // 1) user info via userId
     const userId = req.user.id;

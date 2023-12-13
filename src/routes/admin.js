@@ -4,7 +4,7 @@ const express = require('express');
 const adminAuthController = require('../controllers/adminAuthController');
 const adminPlansController = require('../controllers/adminPlanController');
 const profileController = require('../controllers/profileController');
-const adminProfileController = require('../controllers/profileController');
+const adminProfileController = require('../controllers/adminProfileController');
 const auth = require('../controllers/authController');
 
 const router = express.Router();
@@ -35,7 +35,7 @@ router.put('/update-username',auth.protect, profileController.updateUsername);  
 router.put('/update-bio',auth.protect, profileController.updateBio);  // update user bio 
 
 
-router.get('/get-personal-info',auth.protect, adminProfileController.getPersonalInformations);  // get user(admin) profile inf
+router.get('/get-personal-info',auth.protect, adminProfileController.getPersonalInformation);  // get user(admin) profile inf
 
 
 
