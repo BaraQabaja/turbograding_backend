@@ -54,7 +54,7 @@ exports.createPlan = async (req, res) => {
       data: { title: "Plan created successfully.", plans:allPlans },
     });
   } catch (error) {
-    console.log("error in create plan ===> ", error.message);
+    console.log("error in create plan ====> ", error.message);
     return res.status(500).json({
       status: httpStatusText.ERROR,
       data: {
