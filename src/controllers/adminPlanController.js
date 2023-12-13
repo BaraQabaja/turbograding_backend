@@ -32,8 +32,10 @@ exports.createPlan = async (req, res) => {
         },
       });
     }
+    console.log("price ===> ",price)
     const floatNumber = parseFloat(price);
     const formattedFloatPrice = floatNumber.toFixed(2);
+    console.log("formattedFloatPrice ===> ",formattedFloatPrice)
     const plan = await Plan.create({
       name,
       description,
