@@ -32,10 +32,10 @@ exports.createPlan = async (req, res) => {
         },
       });
     }
-    console.log("price ===> ",price)
+    console.log("price ===> ", price);
     const floatNumber = parseFloat(price);
     const formattedFloatPrice = floatNumber.toFixed(2);
-    console.log("formattedFloatPrice ===> ",formattedFloatPrice)
+    console.log("formattedFloatPrice ===> ", formattedFloatPrice);
     const plan = await Plan.create({
       name,
       description,
@@ -48,10 +48,10 @@ exports.createPlan = async (req, res) => {
       priceId,
       status,
     });
-    const allPlans=await Plan.findAll()
+    const allPlans = await Plan.findAll();
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Plan created successfully.", plans:allPlans },
+      data: { title: "Plan created successfully.", plans: allPlans },
     });
   } catch (error) {
     console.log("error in create plan ====> ", error.message);
@@ -65,7 +65,7 @@ exports.createPlan = async (req, res) => {
 };
 
 // @desc    Edit plan logic
-// @route   POST /api/admin/edit-plan
+// @route   POST /api/admin/update-plan
 // @access  admin
 exports.updatePlan = async (req, res) => {
   const {
@@ -85,15 +85,19 @@ exports.updatePlan = async (req, res) => {
   console.log(req.body);
 
   try {
-    const plan=await Plan.findByPk(id)
-if(!plan){
-  return res.status(400).json({
-    status: httpStatusText.FAIL,
-    data: {
-      title: "Plan is not found, please try again.",
-    },
-  });
-}
+    console.log("plan id ===> ", id)
+    const plan = await Plan.findByPk(id);
+    console.log("plan ===> ")
+    console.log( plan)
+
+    if (!plan) {
+      return res.status(400).json({
+        status: httpStatusText.FAIL,
+        data: {
+          title: "Plan is not found, please try again.",
+        },
+      });
+    }
     if (duration <= 0) {
       return res.status(400).json({
         status: httpStatusText.FAIL,
@@ -102,10 +106,10 @@ if(!plan){
         },
       });
     }
-    console.log("price ===> ",price)
+    console.log("price ===> ", price);
     const floatNumber = parseFloat(price);
     const formattedFloatPrice = floatNumber.toFixed(2);
-    console.log("formattedFloatPrice ===> ",formattedFloatPrice)
+    console.log("formattedFloatPrice ===> ", formattedFloatPrice);
 
     await plan.update({
       name,
@@ -119,10 +123,10 @@ if(!plan){
       priceId,
       status,
     });
-    const allPlans=await Plan.findAll()
+    const allPlans = await Plan.findAll();
     return res.status(200).json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Plan created successfully.", plans:allPlans },
+      data: { title: "Plan created successfully.", plans: allPlans },
     });
   } catch (error) {
     console.log("error in create plan ====> ", error.message);
