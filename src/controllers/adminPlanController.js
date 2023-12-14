@@ -64,6 +64,77 @@ exports.createPlan = async (req, res) => {
   }
 };
 
+// @desc    Edit plan logic
+// @route   POST /api/admin/edit-plan
+// @access  admin
+exports.updatePlan = async (req, res) => {
+  const {
+    id,
+    name,
+    description,
+    price,
+    currency,
+    duration,
+    questions,
+    assignments,
+    exams,
+    priceId,
+    status,
+  } = req.body;
+  console.log("edit Plan ==> ");
+  console.log(req.body);
+
+  try {
+    const plan=await Plan.findByPk(id)
+if(!plan){
+  return res.status(400).json({
+    status: httpStatusText.FAIL,
+    data: {
+      title: "Plan is not found, please try again.",
+    },
+  });
+}
+    if (duration <= 0) {
+      return res.status(400).json({
+        status: httpStatusText.FAIL,
+        data: {
+          title: "Plan duration should be more than or equal 1 day.",
+        },
+      });
+    }
+    console.log("price ===> ",price)
+    const floatNumber = parseFloat(price);
+    const formattedFloatPrice = floatNumber.toFixed(2);
+    console.log("formattedFloatPrice ===> ",formattedFloatPrice)
+
+    await plan.update({
+      name,
+      description,
+      price: formattedFloatPrice,
+      currency,
+      duration,
+      questions,
+      assignments,
+      exams,
+      priceId,
+      status,
+    });
+    const allPlans=await Plan.findAll()
+    return res.status(200).json({
+      status: httpStatusText.SUCCESS,
+      data: { title: "Plan created successfully.", plans:allPlans },
+    });
+  } catch (error) {
+    console.log("error in create plan ====> ", error.message);
+    return res.status(500).json({
+      status: httpStatusText.ERROR,
+      data: {
+        title: "Something went wrong, please try again.",
+      },
+    });
+  }
+};
+
 // @desc    Get all plans logic
 // @route   GET /api/admin/get-all-plans
 // @access  admin
