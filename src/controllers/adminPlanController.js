@@ -191,46 +191,46 @@ exports.deletePlan = async (req, res) => {
 // @desc    Update plan logic
 // @route   Put /api/admin/update-plan/:id
 // @access  admin
-exports.updatePlan = async (req, res) => {
-  const id = req.params.id; // Get the plan ID from URL parameters
-  const {
-    name,
-    description,
-    price,
-    currency,
-    duration,
-    questions,
-    assignments,
-    exams,
-    priceId,
-  } = req.body;
-  try {
-    const plan = await Plan.findByPk(id);
-    if (!plan) {
-      return res.status(400).json({
-        status: httpStatusText.FAIL,
-        data: { title: "plan not found." },
-      });
-    }
-    await plan.update({
-      name,
-      description,
-      price,
-      currency,
-      duration,
-      questions,
-      assignments,
-      exams,
-      priceId,
-    });
-    return res.status(200).json({
-      status: httpStatusText.SUCCESS,
-      data: { title: "Plan updated successfully" },
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: httpStatusText.FAIL,
-      data: { title: error.message || "something went wrong,please try again" },
-    });
-  }
-};
+// exports.updatePlan = async (req, res) => {
+//   const id = req.params.id; // Get the plan ID from URL parameters
+//   const {
+//     name,
+//     description,
+//     price,
+//     currency,
+//     duration,
+//     questions,
+//     assignments,
+//     exams,
+//     priceId,
+//   } = req.body;
+//   try {
+//     const plan = await Plan.findByPk(id);
+//     if (!plan) {
+//       return res.status(400).json({
+//         status: httpStatusText.FAIL,
+//         data: { title: "plan not found." },
+//       });
+//     }
+//     await plan.update({
+//       name,
+//       description,
+//       price,
+//       currency,
+//       duration,
+//       questions,
+//       assignments,
+//       exams,
+//       priceId,
+//     });
+//     return res.status(200).json({
+//       status: httpStatusText.SUCCESS,
+//       data: { title: "Plan updated successfully" },
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       status: httpStatusText.FAIL,
+//       data: { title: error.message || "something went wrong,please try again" },
+//     });
+//   }
+// };
