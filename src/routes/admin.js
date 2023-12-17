@@ -6,6 +6,7 @@ const adminPlanController = require("../controllers/adminPlanController");
 const profileController = require("../controllers/profileController");
 const adminProfileController = require("../controllers/adminProfileController");
 const adminDashboardController = require("../controllers/adminDashboardController");
+const adminSubscriptionController=require("../controllers/adminSubscriptionController");
 const auth = require("../controllers/authController");
 
 const router = express.Router();
@@ -36,4 +37,8 @@ router.get(
 
 // admin dashboard routes
 router.get("/get-all-Users", adminDashboardController.getUsers); // Fetch all Users
+
+
+// admin Subscription routes
+router.get("/get-all-Subscriptions", adminSubscriptionController.getAllSubscriptions); // Fetch all Subscriptions
 module.exports = router;
