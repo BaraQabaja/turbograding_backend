@@ -16,14 +16,20 @@ exports.getAllSubscriptions = async (req, res) => {
       include: [
         {
           model: Plan,
+          attributes: ["id", "name", "price", "currency"],
         },
-        { model: User },
+        { model: User, attributes: ["id", "firstName", "lastName", "email"] },
       ],
+      attributes: ["id", "createdAt", "endDate", "startDate", "status"],
+
       order: [["createdAt", "DESC"]], // Order by createdAt in descending order
     });
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Subscriptions fetched successfully.", subscriptions: subscriptions },
+      data: {
+        title: "Subscriptions fetched successfully.",
+        subscriptions: subscriptions,
+      },
     });
   } catch (error) {
     console.log("get Subscriptions error ===> ", error.message);
