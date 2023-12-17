@@ -21,9 +21,9 @@ exports.getAllSubscriptions = async (req, res) => {
       ],
       order: [["createdAt", "DESC"]], // Order by createdAt in descending order
     });
-    return res.status(200).json({
+    return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Subscriptions fetched successfully.", users: subscriptions },
+      data: { title: "Subscriptions fetched successfully.", subscriptions: subscriptions },
     });
   } catch (error) {
     console.log("get Subscriptions error ===> ", error.message);
