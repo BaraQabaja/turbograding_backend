@@ -154,8 +154,14 @@ const createSubscription = async (
   }
   // 2) find plan - from function parameters
   const plan = await Plan.findOne({
-    where: { priceId: planId },
+    where: { priceId: planId,status:'active' },
   });
+  if(!plan){
+    return res.status(404).json({
+      status: httpStatusText.FAIL,
+      data: { title: "Plan that you are looking for is not found, please choose another plan." },
+    });
+  }
   const planIdOriginal = plan.id; // variable called planIdOriginal is the id attribute in Plan modal but the varible called planId is the attribute named priceId in Plan modal.
 
   // 3) create subscription for the user
@@ -182,6 +188,10 @@ const createSubscription = async (
     console.log("subscription created successfully.", subscription);
   } catch (error) {
     console.log(error.message);
+    return res.status(404).json({
+      status: httpStatusText.FAIL,
+      data: { title: "something went wrong, please try again." },
+    });
   }
 };
 
