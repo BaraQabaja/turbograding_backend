@@ -141,6 +141,7 @@ const subscriptionRoutes = require("./src/routes/subscription");
 const paymentRoutes = require("./src/routes/payment");
 // const planRoutes = require("./src/routes/plan");
 const profileRoutes = require("./src/routes/profile");
+const publicRoutes = require("./src/routes/public");
 
 //! Middlewares
 app.use(express.static("public"));
@@ -155,6 +156,7 @@ app.use("/api/payment", paymentRoutes);
 // app.use("/api/plan", planRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/public", publicRoutes);
 
 //! Modals
 const UserModal = require("./src/models/User");
