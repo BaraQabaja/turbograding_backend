@@ -120,7 +120,7 @@ exports.updateBio = async (req, res, next) => {
       return res.status(400).json({
         status: httpStatusText.FAIL,
         data: {
-          title: `Invalid bio length. Maximum length is ${maxBioLength} and Minimum length is ${maxBioLength} characters.`,
+          title: `Invalid bio length. Maximum length is ${maxBioLength} and Minimum length is ${minBioLength} characters.`,
         },
       });
     }
