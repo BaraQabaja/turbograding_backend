@@ -95,7 +95,10 @@ exports.updateUsername = async (req, res, next) => {
 
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Username updated successfully." },
+      data: { title: "Username updated successfully.",username:{
+        firstname:user.firstName,
+        lastname:user.lastName
+      } },
     });
   } catch (error) {
     console.error("Error updating username:", error.message);
