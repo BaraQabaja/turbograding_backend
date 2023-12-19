@@ -15,7 +15,7 @@ exports.sendMessage = async (req, res) => {
     const minLengthName = 2;
     const maxLengthMessage = 10;
     const minLengthMessage = 500;
-    if (firstName.length > maxLengthName || firstName.length < maxLengthName) {
+    if (firstName.length > maxLengthName || firstName.length < minLengthName) {
       return res.status(400).json({
         status: httpStatusText.FAIL,
         data: {
@@ -23,7 +23,7 @@ exports.sendMessage = async (req, res) => {
         },
       });
     }
-    if (lastName.length > maxLengthName || lastName.length < maxLengthName) {
+    if (lastName.length > maxLengthName || lastName.length < minLengthName) {
       return res.status(400).json({
         status: httpStatusText.FAIL,
         data: {
