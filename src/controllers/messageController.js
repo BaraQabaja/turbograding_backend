@@ -8,6 +8,7 @@ const httpStatusText = require("../utils/httpStatusText");
 // @route   POST /api/public/send-message
 // @access  anyone (public info)
 exports.sendMessage = async (req, res) => {
+    console.log("sendMessage",req.body)
   const { firstName, lastName, email, message } = req.body;
   try {
     const maxLengthName = 50;
@@ -49,7 +50,7 @@ exports.sendMessage = async (req, res) => {
         },
       });
     }
-    
+
     await Message.create({
       firstName: firstName,
       lastName: lastName,
