@@ -11,7 +11,22 @@ const Message = sequelize.define(
         allowNull: false,
 
     },
-    
+    firstName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          isEmail: true,
+        },
+      },
     message: {
         type: DataTypes.STRING,
         allowNull: false,
