@@ -398,13 +398,17 @@ exports.loginUser = async (req, res) => {
     // Send the token to the client
     return res.json({
       status: httpStatusText.SUCCESS,
-      data: { title: "Logged in successfully", user: user,role:user.role },
+      data: { title: "Logged in successfully", user: user, role: user.role },
       token,
     });
   } catch (error) {
+    console.log("error in login ===> ", error.message);
     return res
-      .status(400)
-      .json({ status: httpStatusText.ERROR, data: { title: error.message } });
+      .status(500)
+      .json({
+        status: httpStatusText.ERROR,
+        data: { title: "something went wrong, please try again." },
+      });
   }
   /* const refreshToken = await RefreshToken.create({
          token: refreshTokenValue,
