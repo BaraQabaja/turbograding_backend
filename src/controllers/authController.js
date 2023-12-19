@@ -90,7 +90,7 @@ exports.emailVerification = async (req, res) => {
   const user = await User.findOne({ where: { emailVerificationToken: token } });
   if (!user) {
     return res.json({
-      statsu: httpStatusText.FAIL,
+      status: httpStatusText.FAIL,
       data: { title: "Invalid token" },
     });
   }
@@ -98,7 +98,7 @@ exports.emailVerification = async (req, res) => {
   user.emailVerificationToken = undefined;
   await user.save();
   return res.json({
-    statsu: httpStatusText.SUCCESS,
+    status: httpStatusText.SUCCESS,
     data: { title: "Account verified successfully" },
   });
 };
