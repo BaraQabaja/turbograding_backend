@@ -13,8 +13,8 @@ exports.sendMessage = async (req, res) => {
   try {
     const maxLengthName = 50;
     const minLengthName = 2;
-    const maxLengthMessage = 10;
-    const minLengthMessage = 500;
+    const maxLengthMessage = 500;
+    const minLengthMessage = 10;
     if (firstName.length > maxLengthName || firstName.length < minLengthName) {
       return res.status(400).json({
         status: httpStatusText.FAIL,
