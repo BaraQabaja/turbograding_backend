@@ -117,11 +117,10 @@ app.use((req, res, next) => {
   for (const key in req.body) {
     if (Object.hasOwnProperty.call(req.body, key)) {
       console.log("req.body[key] before ====> ", req.body[key]);
-      if(req.body[key]!=0){
-      req.body[key] = xss(req.body[key]);
-      
-    }
-    console.log("req.body[key] after ====> ", req.body[key]);
+      if (req.body[key] != 0) {
+        req.body[key] = xss(req.body[key]);
+      }
+      console.log("req.body[key] after ====> ", req.body[key]);
     }
   }
   next();
@@ -181,6 +180,8 @@ const ExamModal = require("./src/models/Exam");
 const PaymentModal = require("./src/models/Payment");
 const PlanModal = require("./src/models/Plan");
 const SubscriptionModal = require("./src/models/Subscription");
+const MessageModal = require("./src/models/Message");
+
 // //! Tables Relations
 // const tableRelation=require('./src/models/tableRelation')
 
@@ -231,6 +232,10 @@ ClassModal.belongsToMany(StudentModal, { through: EnrollmentModal });
 // University & Student (One -> Many)
 UniversityModal.hasMany(StudentModal);
 StudentModal.belongsTo(UniversityModal);
+
+//* Class & UserCourseOfferingModal (One -> Many)
+UserModal.hasMany(MessageModal);
+MessageModal.belongsTo(UserModal);
 /*
 foreignKey: {
     name: 'universityId',
