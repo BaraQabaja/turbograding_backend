@@ -262,6 +262,10 @@ SubscriptionModal.belongsTo(PlanModal, { foreignKey: "planId" });
 UserModal.hasMany(CustomModal);
 CustomModal.belongsTo(UserModal);
 
+// Custom & Class (One -> One)
+ClassModal.hasOne(CustomModal);
+CustomModal.belongsTo(ClassModal);
+
 // Payment & Subscription (One -> One)
 SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
 PaymentModal.belongsTo(SubscriptionModal, { foreignKey: "subscriptionId" });
