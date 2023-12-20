@@ -181,6 +181,7 @@ const PaymentModal = require("./src/models/Payment");
 const PlanModal = require("./src/models/Plan");
 const SubscriptionModal = require("./src/models/Subscription");
 const MessageModal = require("./src/models/Message");
+const CustomModal = require("./src/models/Custom");
 
 // //! Tables Relations
 // const tableRelation=require('./src/models/tableRelation')
@@ -234,12 +235,6 @@ UniversityModal.hasMany(StudentModal);
 StudentModal.belongsTo(UniversityModal);
 
 
-/*
-foreignKey: {
-    name: 'universityId',
-    primaryKey: true,
-  },
-*/
 
 //! Direct relationship between Student and Enrollment
 StudentModal.hasOne(EnrollmentModal);
@@ -262,6 +257,14 @@ ActivityModal.belongsTo(UserModal);
 // Plan & Subscription (One -> Many)
 PlanModal.hasMany(SubscriptionModal, { foreignKey: "planId" });
 SubscriptionModal.belongsTo(PlanModal, { foreignKey: "planId" });
+
+// User & Custom (One -> Many)
+UserModal.hasMany(CustomModal);
+CustomModal.belongsTo(UserModal);
+
+// Payment & Subscription (One -> One)
+SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
+PaymentModal.belongsTo(SubscriptionModal, { foreignKey: "subscriptionId" });
 
 // Payment & Subscription (One -> One)
 SubscriptionModal.hasMany(PaymentModal, { foreignKey: "subscriptionId" });
