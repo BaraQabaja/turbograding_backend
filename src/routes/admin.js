@@ -14,13 +14,13 @@ const router = express.Router();
 router.post("/admin-register", adminAuthController.adminRegister); // Registration route
 
 // Plan routes
-router.get("/get-all-plans", adminPlanController.getPlans); // Fetch all plans
+router.get("/get-all-plans", auth.protect, adminPlanController.getPlans); // Fetch all plans
 
-router.post("/create-plan", adminPlanController.createPlan); // Create a new plan
+router.post("/create-plan", auth.protect, adminPlanController.createPlan); // Create a new plan
 
-router.delete("/delete-plan", adminPlanController.deletePlan); // Delete a plan
+router.delete("/delete-plan", auth.protect, adminPlanController.deletePlan); // Delete a plan
 
-router.put("/update-plan", adminPlanController.updatePlan); // update a plan
+router.put("/update-plan", auth.protect, adminPlanController.updatePlan); // update a plan
 
 // profile routes
 router.put("/update-password", auth.protect, profileController.updatePassword); // update user(admin) password
@@ -36,9 +36,9 @@ router.get(
 ); // get user(admin) profile info
 
 // admin dashboard routes
-router.get("/get-all-Users", adminDashboardController.getUsers); // Fetch all Users
+router.get("/get-all-Users", auth.protect, adminDashboardController.getUsers); // Fetch all Users
 
 
 // admin Subscription routes
-router.get("/get-all-Subscriptions", adminSubscriptionController.getAllSubscriptions); // Fetch all Subscriptions
+router.get("/get-all-Subscriptions", auth.protect, adminSubscriptionController.getAllSubscriptions); // Fetch all Subscriptions
 module.exports = router;
