@@ -157,7 +157,7 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/public", publicRoutes);
 
-//! Modals
+//! Models
 const UserModal = require("./src/models/User");
 const UniversityModal = require("./src/models/University");
 const UserUniversityModal = require("./src/models/UserUniversity");
